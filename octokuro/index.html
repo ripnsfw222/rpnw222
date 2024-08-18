@@ -20,10 +20,10 @@
             margin: 20px 0;
             color: #ff9000; /* Título laranja */
         }
-        .counter {
+        .video-counter {
             font-size: 1.2em;
             margin-bottom: 20px;
-            color: #ff9000; /* Contador laranja */
+            color: #ff9000; /* Cor do contador de vídeos */
         }
         .video-container {
             display: none;
@@ -55,13 +55,32 @@
         a {
             text-decoration: none;
             color: #ff9000; /* Links laranja */
-            font-size: 1.2em
+            font-size: 1.2em;
+            margin-top: 20px;
+            transition: color 0.3s ease;
+        }
+        a:hover {
+            color: #fff; /* Efeito de hover */
+        }
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8em;
+            }
+            .video-container {
+                height: 200px;
+            }
+            .load-more {
+                font-size: 1em;
+            }
+            a {
+                font-size: 1em;
             }
         }
     </style>
 </head>
 <body>
-    <p><a href="../">Return to Home Page</a></p>
+    <p><a href="../">Return to Models Page</a></p>
+    <div class="video-counter">Videos: <span id="total-videos">0</span></div>
     <!-- Vídeos -->
     <iframe class="video-container active" src="https://dood.li/e/vg6nz2q004ap" scrolling="no" frameborder="0" allowfullscreen></iframe>
     <iframe class="video-container active" src="https://dood.li/e/c1boykoikysg" scrolling="no" frameborder="0" allowfullscreen></iframe>
@@ -148,16 +167,19 @@
     <iframe class="video-container" src="https://dood.li/e/j8924z551pf3" scrolling="no" frameborder="0" allowfullscreen></iframe>
 
     <!-- Botão para carregar mais vídeos -->
-    <button class="load-more" onclick="loadMore()">Load More Videos</button>
+    <button class="load-more" onclick="loadMore()">Load more</button>
 
     <p><a href="../">Return to Home Page</a></p>
 
     <script>
-        let videosShown = 3;
+        let videosShown = 0;
+        const videos = document.querySelectorAll('.video-container');
+        const totalVideos = videos.length;
+        document.getElementById('total-videos').textContent = totalVideos;
 
         function loadMore() {
-            const videos = document.querySelectorAll('.video-container');
             for (let i = videosShown; i < videosShown + 3 && i < videos.length; i++) {
+                videos[i].src = videos[i].getAttribute('data-src');
                 videos[i].classList.add('active');
             }
             videosShown += 3;
@@ -167,6 +189,9 @@
                 document.querySelector('.load-more').style.display = 'none';
             }
         }
+
+        // Carregar os primeiros 3 vídeos na inicialização
+        loadMore();
     </script>
 </body>
 </html>

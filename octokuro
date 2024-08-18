@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Octokuro</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+        iframe {
+            margin: 20px;
+            border: none;
+        }
+        a {
+            text-decoration: none;
+            color: #3498db;
+            font-size: 18px;
+        }
+        a:hover {
+            color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Octokuro Videos</h1>
+
+    <!-- Exemplo de vídeos em embed -->
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/VIDEO_ID1" allowfullscreen></iframe>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/VIDEO_ID2" allowfullscreen></iframe>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/VIDEO_ID3" allowfullscreen></iframe>
+
+    <!-- Adicione mais embeds conforme necessário -->
+
+    <p><a href="../">Voltar à Página Inicial</a></p>
+</body>
+</html>

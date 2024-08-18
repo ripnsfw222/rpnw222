@@ -7,78 +7,91 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f0f0f0;
-            padding: 20px;
+            background-color: #000; /* Fundo preto */
+            color: #fff; /* Texto branco */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         h1 {
-            font-size: 2em;
-            margin-bottom: 20px;
+            font-size: 2.5em;
+            margin: 20px 0;
+            color: #ff9000; /* Título laranja */
         }
         .video-container {
             display: none;
-            width: 100%;
+            width: 90%;
             max-width: 560px;
             height: 315px;
             margin: 20px auto;
             border: none;
+            border-radius: 10px; /* Bordas arredondadas */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Sombra */
         }
         .video-container.active {
             display: block;
         }
         .load-more {
             font-size: 1.2em;
-            color: white;
-            background-color: #3498db;
+            color: #fff; /* Texto branco */
+            background-color: #ff9000; /* Botão laranja */
             padding: 10px 20px;
             border: none;
+            border-radius: 5px;
             cursor: pointer;
-            margin-top: 20px;
+            margin: 20px 0;
+            transition: background-color 0.3s ease;
         }
         .load-more:hover {
-            background-color: #2980b9;
+            background-color: #e67e00; /* Efeito de hover */
         }
         a {
             text-decoration: none;
-            color: #3498db;
+            color: #ff9000; /* Links laranja */
             font-size: 1.2em;
-            display: block;
-            margin-top: 30px;
+            margin-top: 20px;
+            transition: color 0.3s ease;
         }
         a:hover {
-            color: #2980b9;
+            color: #fff; /* Efeito de hover */
         }
         @media (max-width: 600px) {
             h1 {
-                font-size: 1.5em;
+                font-size: 1.8em;
             }
             .video-container {
                 height: 200px;
             }
-            a, .load-more {
+            .load-more {
+                font-size: 1em;
+            }
+            a {
                 font-size: 1em;
             }
         }
     </style>
 </head>
 <body>
+    <p><a href="../">Return to Home Page</a></p>
     <!-- Vídeos -->
-    <iframe class="video-container active" width="100%" height="60%" src="https://dood.li/e/vg6nz2q004ap" scrolling="no" frameborder="0" allowfullscreen="true"></iframe>
-    <iframe class="video-container active" width="100%" height="60%" src="https://dood.li/e/c1boykoikysg" scrolling="no" frameborder="0" allowfullscreen="true"></iframe>
-    <iframe class="video-container active" width="100%" height="60%" src="https://dood.li/e/jldp3lexehf6" scrolling="no" frameborder="0" allowfullscreen="true"></iframe>
+    <iframe class="video-container active" src="https://dood.li/e/vg6nz2q004ap" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container active" src="https://dood.li/e/c1boykoikysg" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container active" src="https://dood.li/e/jldp3lexehf6" scrolling="no" frameborder="0" allowfullscreen></iframe>
 
-    <iframe class="video-container" width="100%" height="100%" src="https://dood.li/e/10uul9glha5n" scrolling="no" frameborder="0" allowfullscreen="true"></iframe>
-    <iframe class="video-container" width="100%" height="100%" src="https://dood.li/e/sist5wv21zj8" scrolling="no" frameborder="0" allowfullscreen="true"></iframe>
-    <iframe class="video-container" width="100%" height="100%" src="https://dood.li/e/ocfgqt1yigxp" scrolling="no" frameborder="0" allowfullscreen="true"></iframe>
+    <iframe class="video-container" src="https://dood.li/e/10uul9glha5n" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" src="https://dood.li/e/sist5wv21zj8" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" src="https://dood.li/e/ocfgqt1yigxp" scrolling="no" frameborder="0" allowfullscreen></iframe>
 
     <iframe class="video-container" src="https://www.youtube.com/embed/VIDEO_ID7" allowfullscreen></iframe>
     <iframe class="video-container" src="https://www.youtube.com/embed/VIDEO_ID8" allowfullscreen></iframe>
     <iframe class="video-container" src="https://www.youtube.com/embed/VIDEO_ID9" allowfullscreen></iframe>
 
     <!-- Botão para carregar mais vídeos -->
-    <button class="load-more" onclick="loadMore()">Carregar mais</button>
+    <button class="load-more" onclick="loadMore()">Load More</button>
 
-    <p><a href="../">Voltar à Página Inicial</a></p>
+    <p><a href="../">Return to Home Page</a></p>
 
     <script>
         let videosShown = 3;

@@ -80,6 +80,9 @@
 </head>
 <body>
     <p><a href="../">Return to Models Page</a></p>
+
+    <div class="video-counter">Total de vídeos: <span id="total-videos">0</span></div>
+    
     <!-- Vídeos -->
     <iframe class="video-container" data-src="https://dood.li/e/vg6nz2q004ap" scrolling="no" frameborder="0" allowfullscreen></iframe>
     <iframe class="video-container" data-src="https://dood.li/e/c1boykoikysg" scrolling="no" frameborder="0" allowfullscreen></iframe>
@@ -173,6 +176,7 @@
             let videosShown = 0;
             const videos = document.querySelectorAll('.video-container');
             const totalVideos = videos.length;
+            document.getElementById('total-videos').textContent = totalVideos;
     
             function loadMore() {
                 for (let i = videosShown; i < videosShown + 3 && i < videos.length; i++) {

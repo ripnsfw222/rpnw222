@@ -23,33 +23,175 @@
             padding-top: 50px;
             margin: 0;
         }
-        a {
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px; /* Espaçamento entre os itens */
+        }
+        .container a {
             text-decoration: none;
             font-size: 24px;
             color: #ff9000; /* Cor laranja, igual à página Octokuro */
+            flex: 1 1 calc(25% - 20px); /* 4 itens por linha */
+            box-sizing: border-box;
+            max-width: calc(25% - 20px);
         }
-        a:hover {
+        .container a:hover {
             color: #e67e00; /* Cor de hover laranja mais escura, igual à página Octokuro */
+        }
+        .container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+        .container div {
+            margin-top: 10px;
+            text-align: center;
+        }
+        /* Item fantasma */
+        .container .ghost {
+            visibility: hidden; /* Torna o item invisível */
+            flex: 1 1 calc(25% - 20px);
+            max-width: calc(25% - 20px);
+        }
+
+        @media (max-width: 768px) {
+            .container a, .container .ghost {
+                flex: 1 1 calc(50% - 20px); /* 2 itens por linha em telas menores */
+                max-width: calc(50% - 20px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container a, .container .ghost {
+                flex: 1 1 100%; /* 1 item por linha em telas muito pequenas */
+                max-width: 100%;
+            }
         }
     </style>
 </head>
 <body>
-    <p><a href="/rpnw222/adriana-chechik/">Adriana Chechik</a></p>
-    <p><a href="/rpnw222/alina-lopez/">Alina Lopez</a></p>
-    <p><a href="/rpnw222/anissa-kate/">Anissa Kate</a></p>
-    <p><a href="/rpnw222/backroomcastingcouch/">BackroomCastingCouch</a></p>
-    <p><a href="/rpnw222/brenda-trindade/">Brenda Trindade</a></p>
-    <p><a href="/rpnw222/emily-willis/">Emily Willis</a></p>
-    <p><a href="/rpnw222/eva-lovia/">Eva Lovia</a></p>
-    <p><a href="/rpnw222/jessica-starling/">Jessica Starling</a></p>
-    <p><a href="/rpnw222/jessie-rogers/">Jessie Rogers</a></p>
-    <p><a href="/rpnw222/jewelz-blu/">Jewelz Blu</a></p>
-    <p><a href="/rpnw222/lana-rhoades/">Lana Rhoades</a></p>
-    <p><a href="/rpnw222/octokuro/">Octokuro</a></p>
-    <p><a href="/rpnw222/payton-preslee/">Payton Preslee</a></p>
-    <p><a href="/rpnw222/riley-reid/">Riley Reid</a></p>
-    <p><a href="/rpnw222/tru-kait/">Tru Kait</a></p>
-    <p><a href="/rpnw222/valerica-steele/">Valerica Steele</a></p>
-    <p><a href="/rpnw222/violet-myers/">Violet Myers</a></p>
+    <div class="container">
+        <a href="/rpnw222/adriana-chechik/">
+            <div>
+                <img src="https://i-nachos.bunkr.ru/adriana-chechik-IK5ifIyk.jpg" alt="Adriana Chechik">
+                Adriana Chechik
+            </div>
+        </a>
+        <a href="/rpnw222/alina-lopez/">
+            <div>
+                <img src="https://i-nachos.bunkr.ru/alina-lopez-0XuicqgL.jpg" alt="Alina Lopez">
+                Alina Lopez
+            </div>
+        </a>
+
+        <a href="/rpnw222/anissa-kate/">
+            <div>
+                <img src="https://i-nachos.bunkr.ru/anissa-kate-kPc1X9qB.jpg" alt="Anissa Kate">
+                Anissa Kate
+            </div>
+        </a>
+
+        <a href="/rpnw222/backroomcastingcouch/">
+            <div>
+                <img src="https://i-nachos.bunkr.ru/backroomcastingcouch-VqMF7JAS.jpg" alt="BackroomCastingCouch">
+                BackroomCastingCouch
+            </div>
+        </a>
+
+        <a href="/rpnw222/brenda-trindade/">
+            <div>
+                <img src="https://i-nachos.bunkr.ru/brenda-trindade-bDfIOyKb.jpg" alt="Brenda Trindade">
+                Brenda Trindade
+            </div>
+        </a>
+
+        <a href="/rpnw222/emily-willis/">
+            <div>
+                <img src="https://i-nachos.bunkr.ru/emily-willis-mdNVfofI.jpg" alt="Emily Willis">
+                Emily Willis
+            </div>
+        </a>
+
+        <a href="/rpnw222/eva-lovia/">
+            <div>
+                <img src="https://i-nachos.bunkr.ru/eva-lovia-e8z1ZbWn.jpg" alt="Eva Lovia">
+                Eva Lovia
+            </div>
+        </a>
+
+        <a href="/rpnw222/jessica-starling/">
+            <div>
+                <img src="https://i-nachos.bunkr.ru/jessica-starling-vMXIjokI.jpg" alt="Jessica Starling">
+                Jessica Starling
+            </div>
+        </a>
+
+        <a href="/rpnw222/jessie-rogers/">
+            <div>
+                <img src="https://i-nachos.bunkr.ru/jessie-rogers-tjbux8fP.jpg" alt="Jessie Rogers">
+                Jessie Rogers
+            </div>
+        </a>
+
+        <a href="/rpnw222/jewelz-blu/">
+            <div>
+                <img src="https://i-nachos.bunkr.ru/jewelz-blu-i04g4m1O.jpg" alt="Jewelz Blu">
+                Jewelz Blu
+            </div>
+        </a>
+
+        <a href="/rpnw222/lana-rhoades/">
+            <div>
+                <img src="https://i-nachos.bunkr.ru/lana-rhoades-9AWQ6vpF.jpg" alt="Lana Rhoades">
+                Lana Rhoades
+            </div>
+        </a>
+
+        <a href="/rpnw222/octokuro/">
+            <div>
+                <img src="https://i-nachos.bunkr.ru/octokuro-NGyRWddf.jpg" alt="Octokuro">
+                Octokuro
+            </div>
+        </a>
+
+        <a href="/rpnw222/payton-preslee/">
+            <div>
+                <img src="https://i-nachos.bunkr.ru/payton-preslee-C9QX2mDi.jpg" alt="Payton Preslee">
+                Payton Preslee
+            </div>
+        </a>
+
+        <a href="/rpnw222/riley-reid/">
+            <div>
+                <img src="https://i-nachos.bunkr.ru/riley-reid-j8jp0317.jpg" alt="Riley Reid">
+                Riley Reid
+            </div>
+        </a>
+
+        <a href="/rpnw222/tru-kait/">
+            <div>
+                <img src="https://i-nachos.bunkr.ru/tru-kait-zdxlrD1J.jpg" alt="Tru Kait">
+                Tru Kait
+            </div>
+        </a>
+
+        <a href="/rpnw222/valerica-steele/">
+            <div>
+                <img src="https://i-nachos.bunkr.ru/valerica-steele-9ckhbmpc.jpg" alt="Valerica Steele">
+                Valerica Steele
+            </div>
+        </a>
+
+        <a href="/rpnw222/violet-myers/">
+            <div>
+                <img src="https://i-nachos.bunkr.ru/violet-myers-Frqde5Yy.jpg" alt="Violet Myers">
+                Violet Myers
+            </div>
+        </a>
+        <!-- Item fantasma -->
+        <div class="ghost"></div>
+    </div>
 </body>
 </html>

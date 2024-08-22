@@ -33,12 +33,14 @@
             text-decoration: none;
             font-size: 24px;
             color: #ff9000; /* Cor laranja, igual à página Octokuro */
-            flex: 1 1 calc(25% - 20px); /* 4 itens por linha */
+            flex: 1 1 calc(20% - 20px); /* 5 itens por linha */
             box-sizing: border-box;
-            max-width: calc(25% - 20px);
+            max-width: calc(20% - 20px);
+            transition: transform 0.3s ease; /* Transição suave para o hover */
         }
         .container a:hover {
             color: #e67e00; /* Cor de hover laranja mais escura, igual à página Octokuro */
+            transform: scale(1.05); /* Efeito de grow sutil no hover */
         }
         .container img {
             max-width: 100%;
@@ -52,8 +54,15 @@
         /* Item fantasma */
         .container .ghost {
             visibility: hidden; /* Torna o item invisível */
-            flex: 1 1 calc(25% - 20px);
-            max-width: calc(25% - 20px);
+            flex: 1 1 calc(20% - 20px);
+            max-width: calc(20% - 20px);
+        }
+
+        @media (max-width: 1024px) {
+            .container a, .container .ghost {
+                flex: 1 1 calc(33.33% - 20px); /* 3 itens por linha em telas menores */
+                max-width: calc(33.33% - 20px);
+            }
         }
 
         @media (max-width: 768px) {
@@ -205,32 +214,24 @@
 
         <a href="/rpnw222/riley-reid/">
             <div>
-                <img src="https://pbs.twimg.com/media/GViwa0jWQAAOvXH?format=jpg" alt="Riley Reid">
+                <img src="https://pbs.twimg.com/media/GViwcAMXcAAFCir?format=jpg" alt="Riley Reid">
                 Riley Reid
             </div>
         </a>
 
-        <a href="/rpnw222/tru-kait/">
+        <a href="/rpnw222/rip222/">
             <div>
-                <img src="https://pbs.twimg.com/media/GViwfOtXsAAGXnB?format=jpg" alt="Tru Kait">
-                Tru Kait
+                <img src="https://pbs.twimg.com/media/GViwfqjXMAA40HO?format=jpg" alt="RIPNSFW">
+                RIPNSFW
             </div>
         </a>
 
-        <a href="/rpnw222/valerica-steele/">
-            <div>
-                <img src="https://pbs.twimg.com/media/GViwjoBWgAAQRnd?format=jpg" alt="Valerica Steele">
-                Valerica Steele
-            </div>
-        </a>
+        <!-- Adicione mais links conforme necessário -->
 
-        <a href="/rpnw222/violet-myers/">
-            <div>
-                <img src="https://pbs.twimg.com/media/GViwoaaXcAAemeW?format=jpg" alt="Violet Myers">
-                Violet Myers
-            </div>
-        </a>
-        <!-- Item fantasma -->
+        <!-- Elemento fantasma para alinhar corretamente a última linha -->
+        <div class="ghost"></div>
+        <div class="ghost"></div>
+        <div class="ghost"></div>
         <div class="ghost"></div>
     </div>
 </body>

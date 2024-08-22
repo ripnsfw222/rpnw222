@@ -1,0 +1,210 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amouranth</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000; /* Fundo preto */
+            color: #fff; /* Texto branco */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            font-size: 2.5em;
+            margin: 20px 0;
+            color: #ff9000; /* T�tulo laranja */
+        }
+        .video-counter {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            color: #ff9000; /* Cor do contador de v�deos */
+        }
+        .video-container {
+            display: none;
+            width: 90%;
+            max-width: 1920px;
+            height: 640px;
+            margin: 20px auto;
+            border: none;
+            border-radius: 10px; /* Bordas arredondadas */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Sombra */
+        }
+        .video-container.active {
+            display: block;
+        }
+        .load-more {
+            font-size: 1.2em;
+            color: #000; /* Texto preto */
+            background-color: #ff9000; /* Bot�o laranja */
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 20px 0;
+            transition: background-color 0.3s ease;
+        }
+        .load-more:hover {
+            background-color: #e67e00; /* Efeito de hover */
+        }
+        a {
+            text-decoration: none;
+            color: #ff9000; /* Links laranja */
+            font-size: 1.2em;
+            margin-top: 20px;
+            transition: color 0.3s ease;
+        }
+        a:hover {
+            color: #fff; /* Efeito de hover */
+        }
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8em;
+            }
+            .video-container {
+                height: 200px;
+            }
+            .load-more {
+                font-size: 1em;
+            }
+            a {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <p><a href="../">Return to Models Page</a></p>
+
+    <div class="video-counter">Videos: <span id="total-videos">0</span></div>
+    
+    <!-- V�deos -->
+    <iframe class="video-container" data-src="https://dood.li/e/5sxggnkwihbl" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/jnslmp8p7v94" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/ka24bdji6kbv" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    
+    <iframe class="video-container" data-src="https://dood.li/e/6f7utfnjfo58" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/0m6i1cuv7ghb" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/vjczpvblc1hq" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    
+    <iframe class="video-container" data-src="https://dood.li/e/7ru7tyglmo83" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/lq7teq44s2q7" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/x2x4uhzzuz8k" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    
+    <iframe class="video-container" data-src="https://dood.li/e/etxgzv7995d6" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/rr9vjxr5styl" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/82hw5q1nb549" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    
+    <iframe class="video-container" data-src="https://dood.li/e/rlib6glhxm3h" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/eihuppfrch97" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/5lrar360wl9m" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    
+    <iframe class="video-container" data-src="https://dood.li/e/hk9now4tfnfl" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/1zk5mz5c6rs3" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/dsga3yj5y6ho" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    
+    <iframe class="video-container" data-src="https://dood.li/e/xa2p04h2fxdo" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/ic8i3suesb6o" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/jgv61rdlf0kh" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    
+    <iframe class="video-container" data-src="https://dood.li/e/2slxkv77nk2k" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/61xbw5u4rlak" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/2kw8rec7nde0" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    
+    <iframe class="video-container" data-src="https://dood.li/e/s4f0d90ma0k8" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/e2zop7iymul4" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/eplu2kb4owvs" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    
+    <iframe class="video-container" data-src="https://dood.li/e/se7egw509dch" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/zegzfwah0zf0" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/cxucqe2qsax2" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    
+    <iframe class="video-container" data-src="https://dood.li/e/khp46xy3qtvh" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/43ppptc1qynh" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/a1orkiejqif2" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    
+    <iframe class="video-container" data-src="https://dood.li/e/dfu35gemeb05" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/sc12j6pxc5ms" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/a6k8nu2n737i" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    
+    <iframe class="video-container" data-src="https://dood.li/e/oqxvigsznv1p" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/szlx4h3x950y" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/6v9oc42d0mgu" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    
+    <iframe class="video-container" data-src="https://dood.li/e/ouu8wyjm17qa" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/04zsm0erzkge" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/es52qq2jweek" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    
+    <iframe class="video-container" data-src="https://dood.li/e/fr1382pdmuik" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/wtlc47gxd073" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/4d4zrndc4hnr" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    
+    <iframe class="video-container" data-src="https://dood.li/e/amdy8jv9id90" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/i01ihh8btggq" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/ll29x95q5hns" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    
+    <iframe class="video-container" data-src="https://dood.li/e/wz35hj5j1vww" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/0vtf5o7vfe6g" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/gj05jiueaaiz" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    
+    <iframe class="video-container" data-src="https://dood.li/e/tththstu7l3w" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/o29345oevoj5" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/y8brrgmj4lu3" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    
+    <iframe class="video-container" data-src="https://dood.li/e/4eu9fynlduam" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/yjgrkczvw5uw" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/p1hx10mgutld" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    
+    <iframe class="video-container" data-src="https://dood.li/e/5jh9gvqfuejr" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/ajzc9l28z8w1" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/q3fwwpo5b9s8" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    
+    <iframe class="video-container" data-src="https://dood.li/e/inlr6f80czpp" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/ge4f9jazmyto" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/d6m15bc9nob8" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    
+    <iframe class="video-container" data-src="https://dood.li/e/to27o20qaklu" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/07eeg1tjteqq" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/8bew6cnnecx0" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    
+    <iframe class="video-container" data-src="https://dood.li/e/041xxfh0clyc" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/bcmtnl3qul07" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/lnyzen13lvxa" scrolling="no" frameborder="0" allowfullscreen></iframe>
+
+
+    
+    <button class="load-more" onclick="loadMore()">Load more</button>
+
+    <p><a href="../">Return to Models Page</a></p>
+    
+        <script>
+            let videosShown = 0;
+            const videos = document.querySelectorAll('.video-container');
+            const totalVideos = videos.length;
+            document.getElementById('total-videos').textContent = totalVideos;
+    
+            function loadMore() {
+                for (let i = videosShown; i < videosShown + 3 && i < videos.length; i++) {
+                    videos[i].src = videos[i].getAttribute('data-src');
+                    videos[i].classList.add('active');
+                }
+                videosShown += 3;
+    
+                // Se todos os v�deos estiverem vis�veis, esconda o bot�o
+                if (videosShown >= videos.length) {
+                    document.querySelector('.load-more').style.display = 'none';
+                }
+            }
+    
+            // Carregar os primeiros 3 v�deos na inicializa��o
+            loadMore();
+        </script>
+</body>
+</html>
+    

@@ -1,0 +1,144 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lucy Mochi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000; /* Fundo preto */
+            color: #fff; /* Texto branco */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            font-size: 2.5em;
+            margin: 20px 0;
+            color: #ff9000; /* T�tulo laranja */
+        }
+        .video-counter {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            color: #ff9000; /* Cor do contador de v�deos */
+        }
+        .video-container {
+            display: none;
+            width: 90%;
+            max-width: 1920px;
+            height: 640px;
+            margin: 20px auto;
+            border: none;
+            border-radius: 10px; /* Bordas arredondadas */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Sombra */
+        }
+        .video-container.active {
+            display: block;
+        }
+        .load-more {
+            font-size: 1.2em;
+            color: #000; /* Texto preto */
+            background-color: #ff9000; /* Bot�o laranja */
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 20px 0;
+            transition: background-color 0.3s ease;
+        }
+        .load-more:hover {
+            background-color: #e67e00; /* Efeito de hover */
+        }
+        a {
+            text-decoration: none;
+            color: #ff9000; /* Links laranja */
+            font-size: 1.2em;
+            margin-top: 20px;
+            transition: color 0.3s ease;
+        }
+        a:hover {
+            color: #fff; /* Efeito de hover */
+        }
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8em;
+            }
+            .video-container {
+                height: 200px;
+            }
+            .load-more {
+                font-size: 1em;
+            }
+            a {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <p><a href="../">Return to Models Page</a></p>
+
+    <div class="video-counter">Videos: <span id="total-videos">0</span></div>
+    
+    <!-- V�deos -->
+    <iframe class="video-container" data-src="https://dood.li/e/8r84p1hhkkrv" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/dc5jq91272vg" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/effmr58nwwdc" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    
+    <iframe class="video-container" data-src="https://dood.li/e/pzbgrwi13x0f" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/ywtjtzn2i7at" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/hlaf0xbgccv2" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    
+    <iframe class="video-container" data-src="https://dood.li/e/bjwr5y5p2zki" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/qgj0b3g7ccx6" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/ho906089bgk9" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    
+    <iframe class="video-container" data-src="https://dood.li/e/gsioskx3ilmi" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/1dtljwe6jda7" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/5ll9t1hh91nk" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    
+    <iframe class="video-container" data-src="https://dood.li/e/9fvjfikks7ix" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/kaqu2pizce5v" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/l2e9vakaj5ox" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    
+    <iframe class="video-container" data-src="https://dood.li/e/5oz9s1trp9j1" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/pljnmduowj2v" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/o2b8rimbpc7x" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    
+    <iframe class="video-container" data-src="https://dood.li/e/0t1cpxpse2mr" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/74np6ydepvwi" scrolling="no" frameborder="0" allowfullscreen></iframe>
+
+    
+    <button class="load-more" onclick="loadMore()">Load more</button>
+
+    <p><a href="../">Return to Models Page</a></p>
+    
+        <script>
+            let videosShown = 0;
+            const videos = document.querySelectorAll('.video-container');
+            const totalVideos = videos.length;
+            document.getElementById('total-videos').textContent = totalVideos;
+    
+            function loadMore() {
+                for (let i = videosShown; i < videosShown + 3 && i < videos.length; i++) {
+                    videos[i].src = videos[i].getAttribute('data-src');
+                    videos[i].classList.add('active');
+                }
+                videosShown += 3;
+    
+                // Se todos os v�deos estiverem vis�veis, esconda o bot�o
+                if (videosShown >= videos.length) {
+                    document.querySelector('.load-more').style.display = 'none';
+                }
+            }
+    
+            // Carregar os primeiros 3 v�deos na inicializa��o
+            loadMore();
+        </script>
+</body>
+</html>
+    

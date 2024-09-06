@@ -569,14 +569,14 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const models = document.querySelectorAll(".container a");
+            const models = Array.from(document.querySelectorAll(".container a"));
             const counter = document.getElementById("counter");
             const searchInput = document.getElementById("search");
-            const modelContainer = document.getElementById("modelContainer");
-
-            // Contador de modelos
-            counter.textContent = `Models: ${models.length}`;
-
+    
+            // Contador de modelos, excluindo os primeiros 4 modelos
+            const modelsToCount = models.slice(4);
+            counter.textContent = `Models: ${modelsToCount.length}`;
+    
             // Filtro de pesquisa em tempo real
             searchInput.addEventListener("input", function() {
                 const query = searchInput.value.toLowerCase();

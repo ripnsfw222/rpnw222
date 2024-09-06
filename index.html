@@ -58,6 +58,11 @@
             max-width: calc(20% - 20px);
         }
 
+        .container .time-since {
+            font-size: 14px;
+            color: #ccc;
+        }
+
         @media (max-width: 1024px) {
             .container a, .container .ghost {
                 flex: 1 1 calc(33.33% - 20px); /* 3 itens por linha em telas menores */
@@ -119,6 +124,7 @@
             <div>
                 <img src="https://pbs.twimg.com/media/GWLVTCEXwAELbsc?format=jpg" alt="Lena Paul">
                 Lena Paul
+                <div class="time-since" data-updated="2024-09-06T06:04:00"><span></span> ago</div>
             </div>
         </a>
 
@@ -140,13 +146,6 @@
             <div>
                 <img src="https://pbs.twimg.com/media/GWMGU8QXIAAyfbe?format=jpg" alt="Sky Bri">
                 Sky Bri
-            </div>
-        </a>
-
-        <a href="/rpnw222/amouranth/">
-            <div>
-                <img src="https://pbs.twimg.com/media/GVj7uwBXkAAIThg?format=jpg" alt="Amouranth">
-                Amouranth
             </div>
         </a>
     </div>
@@ -591,6 +590,39 @@
                 });
             });
         });
+    </script>
+
+    <script>
+        function timeSince(date) {
+            const seconds = Math.floor((new Date() - new Date(date)) / 1000);
+            const intervals = {
+                "year": 31536000,
+                "month": 2592000,
+                "day": 86400,
+                "hour": 3600,
+                "minute": 60
+            };
+            for (const interval in intervals) {
+                const count = Math.floor(seconds / intervals[interval]);
+                if (count >= 1) {
+                    return `${count} ${interval}${count > 1 ? 's' : ''}`;
+                }
+            }
+            return `less than a minute`;
+        }
+
+        function updateTimes() {
+            const timeElements = document.querySelectorAll('.time-since');
+            timeElements.forEach(el => {
+                const updatedTime = el.getAttribute('data-updated');
+                const timeSinceUpdate = timeSince(updatedTime);
+                el.querySelector('span').textContent = timeSinceUpdate;
+            });
+        }
+
+        // Atualiza os tempos desde a última atualização a cada minuto
+        updateTimes();
+        setInterval(updateTimes, 60000); // 1 minuto em milissegundos
     </script>
 </body>
 </html>

@@ -124,7 +124,7 @@
             <div>
                 <img src="https://pbs.twimg.com/media/GWLVTCEXwAELbsc?format=jpg" alt="Lena Paul">
                 Lena Paul
-                <div class="time-since" data-updated="2024-09-06T06:04:00"><span></span> ago</div>
+                <div class="time-since" data-updated="2024-09-06"><span></span></div>
             </div>
         </a>
 
@@ -594,35 +594,45 @@
 
     <script>
         function timeSince(date) {
-            const seconds = Math.floor((new Date() - new Date(date)) / 1000);
-            const intervals = {
-                "year": 31536000,
-                "month": 2592000,
-                "day": 86400,
-                "hour": 3600,
-                "minute": 60
-            };
-            for (const interval in intervals) {
-                const count = Math.floor(seconds / intervals[interval]);
-                if (count >= 1) {
-                    return `${count} ${interval}${count > 1 ? 's' : ''}`;
-                }
+            const now = new Date();
+            const updatedDate = new Date(date);
+            const seconds = Math.floor((now - updatedDate) / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+            const weeks = Math.floor(days / 7);
+            const months = Math.floor(days / 30);
+            const years = Math.floor(days / 365);
+
+            if (years > 0) {
+                return years === 1 ? '1 year ago' : `${years} years ago`;
+            } else if (months > 0) {
+                return months === 1 ? '1 month ago' : `${months} months ago`;
+            } else if (weeks > 0) {
+                return weeks === 1 ? '1 week ago' : `${weeks} weeks ago`;
+            } else if (days >= 7) {
+                return days === 7 ? '1 week ago' : `${days} days ago`;
+            } else if (days >= 1) {
+                return 'Today'; // Considers 1 day or less as "Today"
+            } else if (hours >= 1) {
+                return 'Today'; // Considers less than 24 hours as "Today"
+            } else {
+                return 'Today'; // Considers less than 1 hour as "Today"
             }
-            return `less than a minute`;
         }
 
         function updateTimes() {
             const timeElements = document.querySelectorAll('.time-since');
             timeElements.forEach(el => {
-                const updatedTime = el.getAttribute('data-updated');
-                const timeSinceUpdate = timeSince(updatedTime);
+                const updatedDate = el.getAttribute('data-updated');
+                const timeSinceUpdate = timeSince(updatedDate);
                 el.querySelector('span').textContent = timeSinceUpdate;
             });
         }
 
-        // Atualiza os tempos desde a última atualização a cada minuto
+        // Updates the time since last update every minute
         updateTimes();
-        setInterval(updateTimes, 60000); // 1 minuto em milissegundos
+        setInterval(updateTimes, 60000); // 1 minute in milliseconds
     </script>
 </body>
 </html>

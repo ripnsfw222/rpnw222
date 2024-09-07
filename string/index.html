@@ -1,10 +1,51 @@
-import string
-import random
-import pyperclip
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random String Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+        }
+        #output {
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+        }
+    </style>
+</head>
+<body>
+    <h1>Random Number Generator</h1>
+    <button onclick="generateString()">Generate Random String</button>
+    <div id="output"></div>
 
-number_of_strings = 1
-length_of_string = 8
-for x in range(number_of_strings):
-  pyperclip.copy(''.join(random.choice(string.digits) for _ in range(length_of_string)))
-  #pyperclip.copy(''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(length_of_string)))
-  spam = pyperclip.paste()
+    <script>
+        function generateString() {
+            const length_of_string = 8;
+            const characters = '0123456789';
+            let result = '';
+            for (let i = 0; i < length_of_string; i++) {
+                result += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+
+            document.getElementById('output').innerText = result;
+            copyToClipboard(result);
+        }
+
+        function copyToClipboard(text) {
+            const tempInput = document.createElement('input');
+            document.body.appendChild(tempInput);
+            tempInput.value = text;
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            alert('Copied to clipboard: ' + text);
+        }
+    </script>
+</body>
+</html>

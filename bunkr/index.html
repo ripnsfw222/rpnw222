@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        input, button {
+            padding: 10px;
+            font-size: 1em;
+            margin: 10px 0;
+        }
+        #output {
+            margin-top: 20px;
+            font-size: 1em;
+        }
+    </style>
+</head>
+<body>
+    <h1>URL Generator</h1>
+    <label for="url-input">Enter Original URL:</label>
+    <input type="text" id="url-input" placeholder="https://c.bunkr-cache.se/xxx/" size="50">
+    <button onclick="generateLinks()">Generate Links</button>
+
+    <div id="output"></div>
+
+    <script>
+        const palavras = ["nachos", "taquito", "burger", "pizza", "fries", "milkshake", "meatballs", "kebab", "ramen"];
+
+        function generateLinks() {
+            const originalUrl = document.getElementById('url-input').value;
+            const outputDiv = document.getElementById('output');
+            outputDiv.innerHTML = ''; // Clear previous output
+
+            if (!originalUrl) {
+                alert("Please enter a valid URL.");
+                return;
+            }
+
+            palavras.forEach(palavra => {
+                // Generate the new URL
+                const newUrl = originalUrl.replace(/https:\/\/c\.bunkr-cache\.se\/([^/]+)\//, `https://${palavra}.bunkr.ru/`);
+                
+                // Display the generated links
+                const linkElement = document.createElement('p');
+                linkElement.innerHTML = `<a href="${newUrl}" target="_blank">${newUrl}</a>`;
+                outputDiv.appendChild(linkElement);
+            });
+        }
+    </script>
+</body>
+</html>

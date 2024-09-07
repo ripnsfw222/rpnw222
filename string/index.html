@@ -3,48 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Random String Generator</title>
+    <title>URL Generator and Validator</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 50px;
+            margin: 20px;
+        }
+        input, button {
+            padding: 10px;
+            font-size: 1em;
+            margin: 10px 0;
         }
         #output {
-            font-size: 1.2em;
             margin-top: 20px;
-        }
-        button {
-            padding: 10px 20px;
             font-size: 1em;
+        }
+        .valid-link {
+            color: green;
+        }
+        .invalid-link {
+            color: red;
         }
     </style>
 </head>
 <body>
-    <h1>Random Number Generator</h1>
-    <button onclick="generateString()">Generate Random String</button>
+    <h1>URL Generator and Validator</h1>
+    <label for="url-input">Enter Original URL:</label>
+    <input type="text" id="url-input" placeholder="https://c.bunkr-cache.se/xxx/" size="50">
+    <button onclick="generateAndValidateLinks()">Generate Links</button>
+
     <div id="output"></div>
 
     <script>
-        function generateString() {
-            const length_of_string = 8;
-            const characters = '0123456789';
-            let result = '';
-            for (let i = 0; i < length_of_string; i++) {
-                result += characters.charAt(Math.floor(Math.random() * characters.length));
+        const palavras = ["nachos", "taquito", "burger", "pizza", "fries", "milkshake", "meatballs", "kebab", "ramen"];
+
+        function generateAndValidateLinks() {
+            const originalUrl = document.getElementById('url-input').value;
+            const outputDiv = document.getElementById('output');
+            outputDiv.innerHTML = ''; // Clear previous output
+
+            if (!originalUrl) {
+                alert("Please enter a valid URL.");
+                return;
             }
 
-            document.getElementById('output').innerText = result;
-            copyToClipboard(result);
+            const validLinks = [];
+
+            palavras.forEach(async (palavra) => {
+                // Generate the new URL
+                const newUrl = originalUrl.replace(/https:\/\/c\.bunkr-cache\.se\/([^/]+)\//, `https://${palavra}.bunkr.ru/`);
+
+                // Check if the link is valid
+                const isValid = await checkLink(newUrl);
+                
+                // Display the link with a valid or invalid class
+                const linkElement = document.createElement('p');
+                linkElement.innerHTML = `<a href="${newUrl}" target="_blank">${newUrl}</a>`;
+                linkElement.className = isValid ? 'valid-link' : 'invalid-link';
+                linkElement.textContent += isValid ? ' (Valid)' : ' (Invalid)';
+                
+                outputDiv.appendChild(linkElement);
+            });
         }
 
-        function copyToClipboard(text) {
-            const tempInput = document.createElement('input');
-            document.body.appendChild(tempInput);
-            tempInput.value = text;
-            tempInput.select();
-            document.execCommand('copy');
-            document.body.removeChild(tempInput);
-            alert('Copied to clipboard: ' + text);
+        // Function to verify if the link is valid using fetch
+        async function checkLink(link) {
+            try {
+                const response = await fetch(link, { method: 'HEAD' });
+                return response.ok;
+            } catch (error) {
+                return false;
+            }
         }
     </script>
 </body>

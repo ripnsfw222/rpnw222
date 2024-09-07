@@ -1,0 +1,10 @@
+import string
+import random
+import pyperclip
+
+number_of_strings = 1
+length_of_string = 8
+for x in range(number_of_strings):
+  pyperclip.copy(''.join(random.choice(string.digits) for _ in range(length_of_string)))
+  #pyperclip.copy(''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(length_of_string)))
+  spam = pyperclip.paste()

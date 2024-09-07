@@ -90,7 +90,7 @@
         }
 
         #counter {
-            margin-top: 40px; /* Espaçamento acima do contador */
+            margin-top: 0px; /* Espaçamento acima do contador */
             margin-bottom: 20px;
             font-size: 20px;
             color: #ff9000;
@@ -108,6 +108,20 @@
             color: #fff;
         }
 
+        #sort-container {
+            margin-top: 20px; /* Espaçamento acima do contador */
+            margin-bottom: 30px;
+        }
+
+        #sort-order {
+            padding: 10px;
+            font-size: 18px;
+            border: 2px solid #ff9000;
+            border-radius: 5px;
+            background-color: #111;
+            color: #fff;
+        }
+
         #titulo {
             margin-bottom: 20px;
             font-size: 20px;
@@ -116,41 +130,21 @@
 
     </style>
 </head>
-<body>
-    <div id="titulo">Last Updates</div>
-
-    <div class="container">
-        <a href="/rpnw222/elly-clutch/">
-            <div>
-                <img src="https://pbs.twimg.com/media/GV0IxiOXkAAegvq?format=jpg" alt="Elly Clutch">
-                Elly Clutch
-            </div>
-        </a>
-        
-        <a href="/rpnw222/violet-myers/">
-            <div>
-                <img src="https://pbs.twimg.com/media/GViwoaaXcAAemeW?format=jpg" alt="Violet Myers">
-                Violet Myers
-            </div>
-        </a>
-        
-        <a href="/rpnw222/angela-white/">
-            <div>
-                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/456480412_1473607050026209_4509153413982816094_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=9f807c&_nc_ohc=cFjMlsdoDJ4Q7kNvgHW-UIU&_nc_ht=scontent.fcwb2-3.fna&oh=03_Q7cD1QEj73TB7gaX51kD5B2UPEdyGQB6Swf1KbtjAqUm_vhDPQ&oe=66FC8C68" alt="Angela White">
-                Angela White
-            </div>
-        </a>
-        
-        <a href="/rpnw222/lena-paul/">
-            <div>
-                <img src="https://pbs.twimg.com/media/GWLVTCEXwAELbsc?format=jpg" alt="Lena Paul">
-                Lena Paul
-            </div>
-        </a>
-    </div>
-    
+<body>    
     <div id="counter"></div>
+    
     <input type="text" id="search" placeholder="Search model...">
+
+    <!-- Container de ordenação -->
+    <div id="sort-container">
+        <label for="sort-order" style="margin-right: 10px; color: #ff9000;">Filter by:</label>
+        <select id="sort-order">
+            <option value="newest">Newest</option>
+            <option value="oldest">Oldest</option>
+            <option value="az">A-Z</option>
+            <option value="za">Z-A</option>
+        </select>
+    </div>
     
     <div class="container">
         <a href="/rpnw222/adriana-chechik/">
@@ -578,13 +572,20 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
+            const container = document.querySelector('.container');
             const models = Array.from(document.querySelectorAll(".container a"));
             const counter = document.getElementById("counter");
             const searchInput = document.getElementById("search");
+            const sortOrderSelect = document.getElementById("sort-order");
     
-            // Contador de modelos, excluindo os primeiros 4 modelos
-            const modelsToCount = models.slice(4);
-            counter.textContent = `Models: ${modelsToCount.length}`;
+            // Função para atualizar o contador de modelos
+            function updateCounter() {
+                const visibleModels = models.filter(model => model.style.display !== "none");
+                counter.textContent = `All Models: ${visibleModels.length}`;
+            }
+
+            // Atualiza o contador inicialmente
+            updateCounter();
     
             // Filtro de pesquisa em tempo real
             searchInput.addEventListener("input", function() {
@@ -597,7 +598,55 @@
                         model.style.display = "none";
                     }
                 });
+                updateCounter();
             });
+
+            // Função para ordenar os modelos
+            function sortModels(order) {
+                // Converter NodeList para Array novamente para evitar inconsistências
+                let sortedModels = Array.from(models);
+            
+                sortedModels.sort((a, b) => {
+                    if (order === 'newest' || order === 'oldest') {
+                        const dateA = a.querySelector('.time-since') ? new Date(a.querySelector('.time-since').getAttribute('data-updated')) : new Date(0);
+                        const dateB = b.querySelector('.time-since') ? new Date(b.querySelector('.time-since').getAttribute('data-updated')) : new Date(0);
+            
+                        if (order === 'newest') {
+                            return dateB - dateA; // Mais novo primeiro
+                        } else {
+                            return dateA - dateB; // Mais antigo primeiro
+                        }
+                    } else if (order === 'az') {
+                        const nameA = a.textContent.toLowerCase();
+                        const nameB = b.textContent.toLowerCase();
+                        return nameA.localeCompare(nameB); // Ordem alfabética A-Z
+                    } else if (order === 'za') {
+                        const nameA = a.textContent.toLowerCase();
+                        const nameB = b.textContent.toLowerCase();
+                        return nameB.localeCompare(nameA); // Ordem alfabética Z-A
+                    }
+                });
+            
+                // Limpar o container e anexar os modelos ordenados
+                sortedModels.forEach(model => container.appendChild(model));
+            
+                // Manter os elementos fantasma no final
+                const ghosts = Array.from(container.querySelectorAll('.ghost'));
+                ghosts.forEach(ghost => container.appendChild(ghost));
+            }
+
+            // Evento de mudança no select de ordenação
+            sortOrderSelect.addEventListener("change", function() {
+                const selectedOrder = sortOrderSelect.value;
+                sortModels(selectedOrder);
+            });
+
+            // Ordenar inicialmente por mais novo para mais antigo
+            sortModels('newest');
+    
+            // Atualizar o contador quando a ordenação ou filtragem mudar
+            // Já está sendo chamado na função de filtro
+
         });
     </script>
 
@@ -622,11 +671,11 @@
             } else if (days > 0) {
                 return days === 1 ? '1 day ago' : `${days} days ago`;
             } else if (hours > 0) {
-                return 'Today'; // Treats any time within the current day as "Today"
+                return 'Today'; // Trata qualquer tempo dentro do dia atual como "Today"
             } else if (minutes > 0) {
-                return 'Today'; // Treats any time within the current hour as "Today"
+                return 'Today'; // Trata qualquer tempo dentro da hora atual como "Today"
             } else {
-                return 'Today'; // Treats any time within the current minute as "Today"
+                return 'Today'; // Trata qualquer tempo dentro do minuto atual como "Today"
             }
         }
     
@@ -639,9 +688,9 @@
             });
         }
     
-        // Update the time since last update every minute
+        // Atualiza o tempo desde a última atualização a cada minuto
         updateTimes();
-        setInterval(updateTimes, 60000); // 1 minute in milliseconds
+        setInterval(updateTimes, 60000); // 1 minuto em milissegundos
     </script>
 </body>
 </html>

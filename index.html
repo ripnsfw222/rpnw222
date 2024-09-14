@@ -50,6 +50,7 @@
         .container div {
             margin-top: 10px;
             text-align: center;
+            position: relative;
         }
         /* Item fantasma */
         .container .ghost {
@@ -60,7 +61,14 @@
 
         .container .time-since {
             font-size: 14px;
-            color: #ccc;
+            color: #fff;
+            background-color: rgba(0, 0, 0, 0.7); /* Fundo semitransparente */
+            padding: 5px 10px;
+            border-radius: 5px;
+            position: absolute;
+            top: 0px;
+            right: 10px;
+            z-index: 1;
         }
 
         @media (max-width: 1024px) {
@@ -839,19 +847,19 @@
             const years = Math.floor(days / 365);
     
             if (years > 0) {
-                return years === 1 ? '1 year ago' : `${years} years ago`;
+                return years === 1 ? '1 year' : `${years} years`;
             } else if (months > 0) {
-                return months === 1 ? '1 month ago' : `${months} months ago`;
+                return months === 1 ? '1 month' : `${months} months`;
             } else if (weeks > 0) {
-                return weeks === 1 ? '1 week ago' : `${weeks} weeks ago`;
+                return weeks === 1 ? '1 week' : `${weeks} weeks`;
             } else if (days > 0) {
-                return days === 1 ? '1 day ago' : `${days} days ago`;
+                return days === 1 ? '1 day' : `${days} days`;
             } else if (hours > 0) {
-                return 'Today'; // Trata qualquer tempo dentro do dia atual como "Today"
+                return 'New'; // Trata qualquer tempo dentro do dia atual como "New"
             } else if (minutes > 0) {
-                return 'Today'; // Trata qualquer tempo dentro da hora atual como "Today"
+                return 'New'; // Trata qualquer tempo dentro da hora atual como "New"
             } else {
-                return 'Today'; // Trata qualquer tempo dentro do minuto atual como "Today"
+                return 'New'; // Trata qualquer tempo dentro do minuto atual como "New"
             }
         }
     

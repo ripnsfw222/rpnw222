@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emma Magnolia</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000; /* Fundo preto */
+            color: #fff; /* Texto branco */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            font-size: 2.5em;
+            margin: 20px 0;
+            color: #ff9000; /* T�tulo laranja */
+        }
+        .video-counter {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            color: #ff9000; /* Cor do contador de v�deos */
+        }
+        .video-container {
+            display: none;
+            width: 90%;
+            max-width: 1920px;
+            height: 640px;
+            margin: 20px auto;
+            border: none;
+            border-radius: 10px; /* Bordas arredondadas */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Sombra */
+        }
+        .video-container.active {
+            display: block;
+        }
+        .load-more {
+            font-size: 1.2em;
+            color: #000; /* Texto preto */
+            background-color: #ff9000; /* Bot�o laranja */
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 20px 0;
+            transition: background-color 0.3s ease;
+        }
+        .load-more:hover {
+            background-color: #e67e00; /* Efeito de hover */
+        }
+        a {
+            text-decoration: none;
+            color: #ff9000; /* Links laranja */
+            font-size: 1.2em;
+            margin-top: 20px;
+            transition: color 0.3s ease;
+        }
+        a:hover {
+            color: #fff; /* Efeito de hover */
+        }
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8em;
+            }
+            .video-container {
+                height: 200px;
+            }
+            .load-more {
+                font-size: 1em;
+            }
+            a {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <p><a href="../">Return to Models Page</a></p>
+
+    <div class="video-counter">Videos: <span id="total-videos">0</span></div>
+    
+    <!-- V�deos -->
+    <iframe class="video-container" data-src="https://dood.li/e/uxb7orcbr8zc" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/sedl0orwl7o4" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/ny8cxtdsd8ef" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    
+    <iframe class="video-container" data-src="https://dood.li/e/4sr740ctgnyl" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/kvl0khx46t2q" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/jhjmja4dqam0" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    
+    <iframe class="video-container" data-src="https://dood.li/e/eejhq8765ioy" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/wekfc73gxjv9" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/joq32b7i2z22" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    
+    <iframe class="video-container" data-src="https://dood.li/e/h2oz8mh0fd08" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/5y8vkli8m84h" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/t56qz5s8zl3l" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    
+    <iframe class="video-container" data-src="https://dood.li/e/88afh5krfy4r" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/440s65q67vr3" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/mo7loehk4zp9" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    
+    <iframe class="video-container" data-src="https://dood.li/e/9cqong0y5reu" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/zidi7rxkrfdx" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/g7rvvjphtgmr" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    
+    <iframe class="video-container" data-src="https://dood.li/e/sedgn3qpqgra" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/r87nxrco3u21" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <iframe class="video-container" data-src="https://dood.li/e/v4acd5s37nqa" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    
+    <iframe class="video-container" data-src="https://dood.li/e/040dbhpt1oo6" scrolling="no" frameborder="0" allowfullscreen></iframe>
+
+    <button class="load-more" onclick="loadMore()">Load more</button>
+
+    <p><a href="../">Return to Models Page</a></p>
+    
+        <script>
+            let videosShown = 0;
+            const videos = document.querySelectorAll('.video-container');
+            const totalVideos = videos.length;
+            document.getElementById('total-videos').textContent = totalVideos;
+    
+            function loadMore() {
+                for (let i = videosShown; i < videosShown + 3 && i < videos.length; i++) {
+                    videos[i].src = videos[i].getAttribute('data-src');
+                    videos[i].classList.add('active');
+                }
+                videosShown += 3;
+    
+                // Se todos os v�deos estiverem vis�veis, esconda o bot�o
+                if (videosShown >= videos.length) {
+                    document.querySelector('.load-more').style.display = 'none';
+                }
+            }
+    
+            // Carregar os primeiros 3 v�deos na inicializa��o
+            loadMore();
+        </script>
+</body>
+</html>

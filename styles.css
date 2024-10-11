@@ -85,6 +85,7 @@ h1 {
 }
 /* Bot�o fixo para voltar ao topo */
 .back-to-top {
+    display: none; /* Oculta o botão inicialmente */
     position: fixed;
     bottom: 20px;
     right: 20px;

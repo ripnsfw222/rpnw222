@@ -86,7 +86,30 @@
             cursor: pointer;
             z-index: 1001;
         }
-
+        .back-to-models {
+            margin: 20px 0;
+            color: #ff9000;
+            text-decoration: none;
+            font-size: 1.2em;
+        }
+        /* Bot�o fixo para voltar ao topo */
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #ff9000;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 1em;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+        .back-to-top:hover {
+            background-color: #e07b00;
+        }
         /* Consultas de m�dia para dispositivos m�veis */
         @media (max-width: 768px) {
             .modal-content iframe {
@@ -105,6 +128,7 @@
     </style>
 </head>
 <body>
+    <p><a class="back-to-models" href="../">Return to models page</a></p>
     <h1>Anna Claire Clouds</h1>
     <div class="video-counter">Videos: <span id="total-videos">8</span></div>
 
@@ -139,6 +163,9 @@
             <button id="downloadBtn" class="download-btn">Download</button>
         </div>
     </div>
+
+    <a class="back-to-models" href="../">Return to models page</a>
+    <button class="back-to-top" onclick="window.scrollTo(0, 0)">Top</button>
 
     <script>
         const totalVideos = 8; // Atualize o total de v�deos

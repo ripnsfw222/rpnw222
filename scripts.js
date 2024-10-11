@@ -20,3 +20,20 @@ function closeModal() {
     modalVideo.src = '';
     modal.style.display = 'none';
 }
+
+// Seleciona o botão "Back to Top"
+const backToTopBtn = document.querySelector('.back-to-top');
+
+// Adiciona um evento de rolagem
+window.addEventListener('scroll', () => {
+    if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+        backToTopBtn.style.display = 'block'; // Mostra o botão quando a página for rolada para baixo
+    } else {
+        backToTopBtn.style.display = 'none'; // Esconde o botão quando a página estiver no topo
+    }
+});
+
+// Adiciona a funcionalidade de voltar ao topo
+backToTopBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' }); // Rolagem suave para o topo
+});

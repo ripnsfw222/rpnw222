@@ -1,0 +1,245 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <link rel="icon" href="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/462555106_1479674479385179_1208773154491782749_n.png?_nc_cat=111&ccb=1-7&_nc_sid=9f807c&_nc_ohc=XIJ7BwGfrOkQ7kNvgHZyZ4B&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AQGbMniTo09vDAKkDUQUkzL&oh=03_Q7cD1QERa6IlYD-y5Ns8r8zGR2P7MWixSALFYkX4eCAJ6Oc8Xg&oe=67309D81" type="image/png">
+    <script src="/analytics.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ivy Lebelle</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            font-size: 2.5em;
+            margin: 20px 0;
+            color: #ff9000;
+        }
+        .video-counter {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            color: #ff9000;
+        }
+        .thumbnail {
+            max-height: 700px;  /* Defina uma altura fixa */
+            object-fit: cover;  /* Faz com que a imagem seja cortada para preencher o cont�iner */
+            margin: 20px auto;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            position: relative;
+            width: 85%;
+            max-width: 1200px;
+            background-color: #222;
+            border-radius: 10px;
+            padding: 10px;
+        }
+        .modal-content iframe {
+            width: 100%;
+            height: 600px;  /* Altura padr�o para desktop */
+            border: none;
+        }
+        .download-btn {
+            display: block;
+            width: 100%;
+            max-width: 200px;
+            margin: 20px auto;
+            padding: 10px;
+            text-align: center;
+            background-color: #ff9000;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        .download-btn:hover {
+            background-color: #e07b00;
+        }
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        .back-to-models {
+            margin: 20px 0;
+            color: #ff9000;
+            text-decoration: none;
+            font-size: 1.2em;
+        }
+        /* Bot�o fixo para voltar ao topo */
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #ff9000;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 1em;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: none; /* Inicialmente escondido */
+        }
+        .back-to-top:hover {
+            background-color: #e07b00;
+        }
+        /* Consultas de m�dia para dispositivos m�veis */
+        @media (max-width: 768px) {
+            .modal-content iframe {
+                height: 400px;  /* Ajuste a altura para dispositivos m�veis */
+            }
+            h1 {
+                font-size: 2em;  /* Reduzir o tamanho da fonte para o t�tulo */
+            }
+            .video-counter {
+                font-size: 1em;  /* Ajustar o tamanho da fonte do contador */
+            }
+            .thumbnail {
+                max-width: 100%;  /* Thumbnail ocupa 100% da largura em dispositivos m�veis */
+            }
+        }
+    </style>
+</head>
+<body>
+    <p><a class="back-to-models" href="../">Return to models page</a></p>
+    <h1>Ivy Lebelle</h1>
+    <div class="video-counter">Videos: <span id="total-videos">20</span></div>
+
+    <img class="thumbnail" data-src="https://dood.li/e/ve0stw99bix9" data-download="https://dood.li/d/ve0stw99bix9" src="https://img.doodcdn.co/splash/ywsodwkpxxx4wyq9.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/xe0peim8il74" data-download="https://dood.li/d/xe0peim8il74" src="https://img.doodcdn.co/splash/ukukdwbmicyqsjm2.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/b3zvw0frwww6" data-download="https://dood.li/d/b3zvw0frwww6" src="https://img.doodcdn.co/splash/6fnqfe4ywsyw6uzl.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/hf5fn99smtta" data-download="https://dood.li/d/hf5fn99smtta" src="https://img.doodcdn.co/splash/mxos28xv2b506bw9.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/2pqpebcehlwx" data-download="https://dood.li/d/2pqpebcehlwx" src="https://img.doodcdn.co/splash/by18pcm98ncen4eu.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/ewhux0otjpxx" data-download="https://dood.li/d/ewhux0otjpxx" src="https://img.doodcdn.co/splash/bz4ythhc3bf2t8qh.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/3zhobllire91" data-download="https://dood.li/d/3zhobllire91" src="https://img.doodcdn.co/splash/gii5w2vwgit2k8y1.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/w47yrxe0qkrv" data-download="https://dood.li/d/w47yrxe0qkrv" src="https://img.doodcdn.co/splash/f9jftz9wntkvnq4s.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/vaz7f3sp8a4c" data-download="https://dood.li/d/vaz7f3sp8a4c" src="https://img.doodcdn.co/splash/uun3259hp4q9s1ro.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/vqdwtytrt65c" data-download="https://dood.li/d/vqdwtytrt65c" src="https://img.doodcdn.co/splash/ttlxf8hcgfty3oq8.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/e38e1m78xt3g" data-download="https://dood.li/d/e38e1m78xt3g" src="https://img.doodcdn.co/splash/1pma0uam590jm419.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/91f5u401anvm" data-download="https://dood.li/d/91f5u401anvm" src="https://img.doodcdn.co/splash/dxs1vsl93f3h9ptn.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/yu2cpbsq1505" data-download="https://dood.li/d/yu2cpbsq1505" src="https://img.doodcdn.co/splash/6hk2d66g03o73tgf.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/zjyz0wdh8w36" data-download="https://dood.li/d/zjyz0wdh8w36" src="https://img.doodcdn.co/splash/j87xnvzyluhv2ji9.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/wff64udrk1k4" data-download="https://dood.li/d/wff64udrk1k4" src="https://img.doodcdn.co/splash/rapqjtq7jqkjhno6.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/ahuy7htmk69t" data-download="https://dood.li/d/ahuy7htmk69t" src="https://img.doodcdn.co/splash/tygrg0o4qv97aibh.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/5h79cz90ut9r" data-download="https://dood.li/d/5h79cz90ut9r" src="https://img.doodcdn.co/splash/jipii4upucy0h466.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/f11cj75oh9en" data-download="https://dood.li/d/f11cj75oh9en" src="https://img.doodcdn.co/splash/vzuj8otvv7yxf7m9.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/bsop47xm78f0" data-download="https://dood.li/d/bsop47xm78f0" src="https://img.doodcdn.co/splash/awgwn2cpe68duzws.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/303t3g0j8zhg" data-download="https://dood.li/d/303t3g0j8zhg" src="https://img.doodcdn.co/splash/alv4ozzqnshgjn82.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <div class="modal" id="videoModal">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <div class="modal-content">
+            <iframe id="modalVideo" allowfullscreen></iframe>
+            <button id="downloadBtn" class="download-btn">Download</button>
+        </div>
+    </div>
+
+    <a class="back-to-models" href="../">Return to models page</a>
+    <button class="back-to-top" id="backToTop" onclick="window.scrollTo(0, 0)">
+        &#8593; <!-- �cone de seta para cima -->
+    </button>
+
+    <script>
+        const totalVideos = 20; // Atualize o total de v�deos
+        document.getElementById('total-videos').textContent = totalVideos;
+
+        // Exibir o bot�o "Voltar ao Topo" quando rolar para baixo
+        window.onscroll = function() {
+            const backToTopBtn = document.getElementById('backToTop');
+            if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+                backToTopBtn.style.display = 'block';
+            } else {
+                backToTopBtn.style.display = 'none';
+            }
+        };
+
+        function openModal(thumbnail) {
+            const videoSrc = thumbnail.getAttribute('data-src');
+            const downloadLink = thumbnail.getAttribute('data-download');
+            const modal = document.getElementById('videoModal');
+            const modalVideo = document.getElementById('modalVideo');
+            const downloadBtn = document.getElementById('downloadBtn');
+            
+            modalVideo.src = videoSrc;
+            downloadBtn.onclick = () => window.open(downloadLink, '_blank');
+            
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('videoModal');
+            const modalVideo = document.getElementById('modalVideo');
+            modalVideo.src = '';
+            modal.style.display = 'none';
+        }
+    </script>
+</body>
+</html>

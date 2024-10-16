@@ -1,0 +1,293 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <link rel="icon" href="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/462555106_1479674479385179_1208773154491782749_n.png?_nc_cat=111&ccb=1-7&_nc_sid=9f807c&_nc_ohc=XIJ7BwGfrOkQ7kNvgHZyZ4B&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AQGbMniTo09vDAKkDUQUkzL&oh=03_Q7cD1QERa6IlYD-y5Ns8r8zGR2P7MWixSALFYkX4eCAJ6Oc8Xg&oe=67309D81" type="image/png">
+    <script src="/analytics.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kazumi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            font-size: 2.5em;
+            margin: 20px 0;
+            color: #ff9000;
+        }
+        .video-counter {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            color: #ff9000;
+        }
+        .thumbnail {
+            max-height: 700px;  /* Defina uma altura fixa */
+            object-fit: cover;  /* Faz com que a imagem seja cortada para preencher o cont�iner */
+            margin: 20px auto;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            position: relative;
+            width: 85%;
+            max-width: 1200px;
+            background-color: #222;
+            border-radius: 10px;
+            padding: 10px;
+        }
+        .modal-content iframe {
+            width: 100%;
+            height: 600px;  /* Altura padr�o para desktop */
+            border: none;
+        }
+        .download-btn {
+            display: block;
+            width: 100%;
+            max-width: 200px;
+            margin: 20px auto;
+            padding: 10px;
+            text-align: center;
+            background-color: #ff9000;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        .download-btn:hover {
+            background-color: #e07b00;
+        }
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        .back-to-models {
+            margin: 20px 0;
+            color: #ff9000;
+            text-decoration: none;
+            font-size: 1.2em;
+        }
+        /* Bot�o fixo para voltar ao topo */
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #ff9000;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 1em;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: none; /* Inicialmente escondido */
+        }
+        .back-to-top:hover {
+            background-color: #e07b00;
+        }
+        /* Consultas de m�dia para dispositivos m�veis */
+        @media (max-width: 768px) {
+            .modal-content iframe {
+                height: 400px;  /* Ajuste a altura para dispositivos m�veis */
+            }
+            h1 {
+                font-size: 2em;  /* Reduzir o tamanho da fonte para o t�tulo */
+            }
+            .video-counter {
+                font-size: 1em;  /* Ajustar o tamanho da fonte do contador */
+            }
+            .thumbnail {
+                max-width: 100%;  /* Thumbnail ocupa 100% da largura em dispositivos m�veis */
+            }
+        }
+    </style>
+</head>
+<body>
+    <p><a class="back-to-models" href="../">Return to models page</a></p>
+    <h1>Kazumi</h1>
+    <div class="video-counter">Videos: <span id="total-videos">36</span></div>
+
+    <img class="thumbnail" data-src="https://dood.li/e/pefzg7tzv96m" data-download="https://dood.li/d/pefzg7tzv96m" src="https://img.doodcdn.co/splash/bi12u6v3y4m96mbs.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/ifzhfvjv9j4b" data-download="https://dood.li/d/ifzhfvjv9j4b" src="https://img.doodcdn.co/splash/qf5nfzocufhoz43j.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/z6egtwpb3qk3" data-download="https://dood.li/d/z6egtwpb3qk3" src="https://img.doodcdn.co/splash/jj4plqo6t1obtmut.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/5o3u1whpv9z0" data-download="https://dood.li/d/5o3u1whpv9z0" src="https://img.doodcdn.co/splash/tr8iitseljirsilo.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/ru9tnlagazo3" data-download="https://dood.li/d/ru9tnlagazo3" src="https://img.doodcdn.co/splash/6v7pfp7cy3gdx9cx.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/sxt5owvrgrox" data-download="https://dood.li/d/sxt5owvrgrox" src="https://img.doodcdn.co/splash/ljg5ezya1sdo7347.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/zyctqnepabjs" data-download="https://dood.li/d/zyctqnepabjs" src="https://img.doodcdn.co/splash/9ls21wef85xl7khx.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/jwutcp5bwu38" data-download="https://dood.li/d/jwutcp5bwu38" src="https://img.doodcdn.co/splash/i4bwjkbj0kwz4p8x.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/9l5swyxdbfb6" data-download="https://dood.li/d/9l5swyxdbfb6" src="https://img.doodcdn.co/splash/1y3u840v1e0av2pf.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/ar9my7itczb2" data-download="https://dood.li/d/ar9my7itczb2" src="https://img.doodcdn.co/splash/7cuzayye25rzkirb.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/hscm2fgzfnv2" data-download="https://dood.li/d/hscm2fgzfnv2" src="https://img.doodcdn.co/splash/rh77oxy2gjxroeas.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/pv4cq25drafp" data-download="https://dood.li/d/pv4cq25drafp" src="https://img.doodcdn.co/splash/ynbc4521c0j258ew.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/8w72n4zt8zxm" data-download="https://dood.li/d/8w72n4zt8zxm" src="https://img.doodcdn.co/splash/ynekai9i2v33910y.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/dryo5a4h2mdp" data-download="https://dood.li/d/dryo5a4h2mdp" src="https://img.doodcdn.co/splash/4e621jerplstv9v5.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/q16gtf8g5rsa" data-download="https://dood.li/d/q16gtf8g5rsa" src="https://img.doodcdn.co/splash/el3cuheoer4cao6f.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/i405weaq0p3d" data-download="https://dood.li/d/i405weaq0p3d" src="https://img.doodcdn.co/splash/7n38wj13q8p97bci.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/ttxvs4ac0acs" data-download="https://dood.li/d/ttxvs4ac0acs" src="https://img.doodcdn.co/splash/ywcwrmcvgulh47rk.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/x8uqbwq7ifji" data-download="https://dood.li/d/x8uqbwq7ifji" src="https://img.doodcdn.co/splash/nfdq21uks35xfaiv.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/qwjawzpoh15q" data-download="https://dood.li/d/qwjawzpoh15q" src="https://img.doodcdn.co/splash/cv3qhbg0grvlgqqu.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/6vtoz8qpxv5p" data-download="https://dood.li/d/6vtoz8qpxv5p" src="https://img.doodcdn.co/splash/c50c0hwurvylgks8.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/ooyn88w3exec" data-download="https://dood.li/d/ooyn88w3exec" src="https://img.doodcdn.co/splash/ud14wgmtgtevwvg3.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/s0nrxyskrpwv" data-download="https://dood.li/d/s0nrxyskrpwv" src="https://img.doodcdn.co/splash/fir56drpvve388bd.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/wb2bpez4wic2" data-download="https://dood.li/d/wb2bpez4wic2" src="https://img.doodcdn.co/splash/zdwv5viabybcn3li.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/rqhn0ce1fm8q" data-download="https://dood.li/d/rqhn0ce1fm8q" src="https://img.doodcdn.co/splash/0aa0064zvucmoi09.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/zfhll0gdeeic" data-download="https://dood.li/d/zfhll0gdeeic" src="https://img.doodcdn.co/splash/o5pptkzs64gva65f.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/utmrvl0bdpe0" data-download="https://dood.li/d/utmrvl0bdpe0" src="https://img.doodcdn.co/splash/f2f87i76k1y3y6mw.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/jtx5wovx7eaa" data-download="https://dood.li/d/jtx5wovx7eaa" src="https://img.doodcdn.co/splash/5v367xvlp8vulj6j.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/rduaax2sck7u" data-download="https://dood.li/d/rduaax2sck7u" src="https://img.doodcdn.co/splash/zlt6p1mrhusddyo1.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/xiuulfp5g1if" data-download="https://dood.li/d/xiuulfp5g1if" src="https://img.doodcdn.co/splash/v8hfhr27uwnl59ap.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/sfrhyhpql59m" data-download="https://dood.li/d/sfrhyhpql59m" src="https://img.doodcdn.co/splash/6bas1gd3j8l8ynd4.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/625cnm0xhisf" data-download="https://dood.li/d/625cnm0xhisf" src="https://img.doodcdn.co/splash/uqrovkjv68uxqwq4.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/9lvd7whdews3" data-download="https://dood.li/d/9lvd7whdews3" src="https://img.doodcdn.co/splash/5incl7zjtw0lkril.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/80jezw4pfhn8" data-download="https://dood.li/d/80jezw4pfhn8" src="https://img.doodcdn.co/splash/ds11s44i35vnw35u.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/kn2jin4yi6ux" data-download="https://dood.li/d/kn2jin4yi6ux" src="https://img.doodcdn.co/splash/gng06njj5ny0wwjd.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/awvkm1wlob8g" data-download="https://dood.li/d/awvkm1wlob8g" src="https://img.doodcdn.co/splash/i4yxl1ecc9pu8q1m.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/040dbhpt1oo6" data-download="https://dood.li/d/040dbhpt1oo6" src="https://img.doodcdn.co/splash/n4bgfojqnghh096i.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <div class="modal" id="videoModal">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <div class="modal-content">
+            <iframe id="modalVideo" allowfullscreen></iframe>
+            <button id="downloadBtn" class="download-btn">Download</button>
+        </div>
+    </div>
+
+    <a class="back-to-models" href="../">Return to models page</a>
+    <button class="back-to-top" id="backToTop" onclick="window.scrollTo(0, 0)">
+        &#8593; <!-- �cone de seta para cima -->
+    </button>
+
+    <script>
+        const totalVideos = 36; // Atualize o total de v�deos
+        document.getElementById('total-videos').textContent = totalVideos;
+
+        // Exibir o bot�o "Voltar ao Topo" quando rolar para baixo
+        window.onscroll = function() {
+            const backToTopBtn = document.getElementById('backToTop');
+            if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+                backToTopBtn.style.display = 'block';
+            } else {
+                backToTopBtn.style.display = 'none';
+            }
+        };
+
+        function openModal(thumbnail) {
+            const videoSrc = thumbnail.getAttribute('data-src');
+            const downloadLink = thumbnail.getAttribute('data-download');
+            const modal = document.getElementById('videoModal');
+            const modalVideo = document.getElementById('modalVideo');
+            const downloadBtn = document.getElementById('downloadBtn');
+            
+            modalVideo.src = videoSrc;
+            downloadBtn.onclick = () => window.open(downloadLink, '_blank');
+            
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('videoModal');
+            const modalVideo = document.getElementById('modalVideo');
+            modalVideo.src = '';
+            modal.style.display = 'none';
+        }
+    </script>
+</body>
+</html>

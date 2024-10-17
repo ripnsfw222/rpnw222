@@ -1,0 +1,248 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <link rel="icon" href="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/462555106_1479674479385179_1208773154491782749_n.png?_nc_cat=111&ccb=1-7&_nc_sid=9f807c&_nc_ohc=XIJ7BwGfrOkQ7kNvgHZyZ4B&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AQGbMniTo09vDAKkDUQUkzL&oh=03_Q7cD1QERa6IlYD-y5Ns8r8zGR2P7MWixSALFYkX4eCAJ6Oc8Xg&oe=67309D81" type="image/png">
+    <script src="/analytics.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arabelle Raphael</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            font-size: 2.5em;
+            margin: 20px 0;
+            color: #ff9000;
+        }
+        .video-counter {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            color: #ff9000;
+        }
+        .thumbnail {
+            max-height: 700px;  /* Defina uma altura fixa */
+            object-fit: cover;  /* Faz com que a imagem seja cortada para preencher o cont�iner */
+            margin: 20px auto;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            position: relative;
+            width: 85%;
+            max-width: 1200px;
+            background-color: #222;
+            border-radius: 10px;
+            padding: 10px;
+        }
+        .modal-content iframe {
+            width: 100%;
+            height: 600px;  /* Altura padr�o para desktop */
+            border: none;
+        }
+        .download-btn {
+            display: block;
+            width: 100%;
+            max-width: 200px;
+            margin: 20px auto;
+            padding: 10px;
+            text-align: center;
+            background-color: #ff9000;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        .download-btn:hover {
+            background-color: #e07b00;
+        }
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        .back-to-models {
+            margin: 20px 0;
+            color: #ff9000;
+            text-decoration: none;
+            font-size: 1.2em;
+        }
+        /* Bot�o fixo para voltar ao topo */
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #ff9000;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 1em;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: none; /* Inicialmente escondido */
+        }
+        .back-to-top:hover {
+            background-color: #e07b00;
+        }
+        /* Consultas de m�dia para dispositivos m�veis */
+        @media (max-width: 768px) {
+            .modal-content iframe {
+                height: 400px;  /* Ajuste a altura para dispositivos m�veis */
+            }
+            h1 {
+                font-size: 2em;  /* Reduzir o tamanho da fonte para o t�tulo */
+            }
+            .video-counter {
+                font-size: 1em;  /* Ajustar o tamanho da fonte do contador */
+            }
+            .thumbnail {
+                max-width: 100%;  /* Thumbnail ocupa 100% da largura em dispositivos m�veis */
+            }
+        }
+    </style>
+</head>
+<body>
+    <p><a class="back-to-models" href="../">Return to models page</a></p>
+    <h1>Arabelle Raphael</h1>
+    <div class="video-counter">Videos: <span id="total-videos">21</span></div>
+
+    <img class="thumbnail" data-src="https://dood.li/e/g9finjjkqrz7" data-download="https://dood.li/d/g9finjjkqrz7" src="https://img.doodcdn.co/splash/woais7osvgeuc2mm.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/ea3clxpr1h01" data-download="https://dood.li/d/ea3clxpr1h01" src="https://img.doodcdn.co/splash/kcixhty0rofihueh.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/n6xzn8981hhr" data-download="https://dood.li/d/n6xzn8981hhr" src="https://img.doodcdn.co/splash/e6mcpg5t812u1xru.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/zwib2d8kll4m" data-download="https://dood.li/d/zwib2d8kll4m" src="https://img.doodcdn.co/splash/nwiymuorsctgodkv.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/53n8q0bgmjpe" data-download="https://dood.li/d/53n8q0bgmjpe" src="https://img.doodcdn.co/splash/mh7ggn3zfc20odfd.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/lb7z3bx3wrhg" data-download="https://dood.li/d/lb7z3bx3wrhg" src="https://img.doodcdn.co/splash/8sjpgfjoon86mlxp.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/x6kct9azdkxn" data-download="https://dood.li/d/x6kct9azdkxn" src="https://img.doodcdn.co/splash/esj3zqdpry4kidnh.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/nbte2adkdwh0" data-download="https://dood.li/d/nbte2adkdwh0" src="https://img.doodcdn.co/splash/00hygakkhl7wxyfj.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/94n1u7i484mg" data-download="https://dood.li/d/94n1u7i484mg" src="https://img.doodcdn.co/splash/8try7o0n65w7e08z.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/s9k8mpiix3f3" data-download="https://dood.li/d/s9k8mpiix3f3" src="https://img.doodcdn.co/splash/vo0ckd7av6edsoq6.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/nzmdmsfdkdmw" data-download="https://dood.li/d/nzmdmsfdkdmw" src="https://img.doodcdn.co/splash/0t4pr9p4sxx3un06.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/kul3eeyv8l1u" data-download="https://dood.li/d/kul3eeyv8l1u" src="https://img.doodcdn.co/splash/d0gqnjx762aca6au.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/rzz0vh9xzp7p" data-download="https://dood.li/d/rzz0vh9xzp7p" src="https://img.doodcdn.co/splash/t839h2x45cse4vvc.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/p1ma5aezuexp" data-download="https://dood.li/d/p1ma5aezuexp" src="https://img.doodcdn.co/splash/739z52k9ev3bn1vs.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/c3r8kpl2nz8c" data-download="https://dood.li/d/c3r8kpl2nz8c" src="https://img.doodcdn.co/splash/51f3zl4dplvimq64.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/859z2adese8j" data-download="https://dood.li/d/859z2adese8j" src="https://img.doodcdn.co/splash/abt5lzwo6b317yi4.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/poyd37fssysm" data-download="https://dood.li/d/poyd37fssysm" src="https://img.doodcdn.co/splash/mqfnvuddbqokosbx.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/bvq7ck5vh9jm" data-download="https://dood.li/d/bvq7ck5vh9jm" src="https://img.doodcdn.co/splash/niyvoxnpyb8n6syr.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/5m3goeo14453" data-download="https://dood.li/d/5m3goeo14453" src="https://img.doodcdn.co/splash/7c7dtes269u6jonv.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/u22svemqp0hr" data-download="https://dood.li/d/u22svemqp0hr" src="https://img.doodcdn.co/splash/z6jnsdvpe3xrzuky.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/5qbwad4369vi" data-download="https://dood.li/d/5qbwad4369vi" src="https://img.doodcdn.co/splash/2vhy2sg2tqdssuh4.jpg" onclick="openModal(this)" />
+    <br>
+    
+    <div class="modal" id="videoModal">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <div class="modal-content">
+            <iframe id="modalVideo" allowfullscreen></iframe>
+            <button id="downloadBtn" class="download-btn">Download</button>
+        </div>
+    </div>
+
+    <a class="back-to-models" href="../">Return to models page</a>
+    <button class="back-to-top" id="backToTop" onclick="window.scrollTo(0, 0)">
+        &#8593; <!-- �cone de seta para cima -->
+    </button>
+
+    <script>
+        const totalVideos = 21; // Atualize o total de v�deos
+        document.getElementById('total-videos').textContent = totalVideos;
+
+        // Exibir o bot�o "Voltar ao Topo" quando rolar para baixo
+        window.onscroll = function() {
+            const backToTopBtn = document.getElementById('backToTop');
+            if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+                backToTopBtn.style.display = 'block';
+            } else {
+                backToTopBtn.style.display = 'none';
+            }
+        };
+
+        function openModal(thumbnail) {
+            const videoSrc = thumbnail.getAttribute('data-src');
+            const downloadLink = thumbnail.getAttribute('data-download');
+            const modal = document.getElementById('videoModal');
+            const modalVideo = document.getElementById('modalVideo');
+            const downloadBtn = document.getElementById('downloadBtn');
+            
+            modalVideo.src = videoSrc;
+            downloadBtn.onclick = () => window.open(downloadLink, '_blank');
+            
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('videoModal');
+            const modalVideo = document.getElementById('modalVideo');
+            modalVideo.src = '';
+            modal.style.display = 'none';
+        }
+    </script>
+</body>
+</html>

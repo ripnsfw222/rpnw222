@@ -1,405 +1,1108 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <link rel="icon" href="/imgs/ripnsfw222.com.png" type="image/png">
-    <script src="/analytics.js"></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-4Q5W50413V"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'G-4Q5W50413V');
+    </script>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Riley Reid</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>RIPNSFW222</title>
+    
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #000;
-            color: #fff;
+            text-align: center;
+            background-color: #000; /* Fundo preto, igual à página Octokuro */
+            color: #fff; /* Texto branco */
+            padding-top: 50px;
             margin: 0;
-            padding: 0;
+        }
+        .container {
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px; /* Espaçamento entre os itens */
         }
-        h1 {
-            font-size: 2.5em;
-            margin: 20px 0;
-            color: #ff9000;
+        .container a {
+            text-decoration: none;
+            font-size: 24px;
+            color: #ff9000; /* Cor laranja, igual à página Octokuro */
+            flex: 1 1 calc(20% - 20px); /* 5 itens por linha */
+            box-sizing: border-box;
+            max-width: calc(20% - 20px);
+            transition: transform 0.3s ease; /* Transição suave para o hover */
         }
-        .video-counter {
-            font-size: 1.2em;
-            margin-bottom: 20px;
-            color: #ff9000;
+        .container a:hover {
+            color: #e67e00; /* Cor de hover laranja mais escura, igual à página Octokuro */
+            transform: scale(1.05); /* Efeito de grow sutil no hover */
         }
-        .thumbnail {
-            max-height: 700px;  /* Defina uma altura fixa */
-            object-fit: cover;  /* Faz com que a imagem seja cortada para preencher o cont�iner */
-            margin: 20px auto;
+        .container img {
+            max-width: 100%;
+            height: auto;
             border-radius: 10px;
-            cursor: pointer;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
         }
-        .thumbnail:hover {
+        .container img:hover {
             box-shadow: 0 0 20px 5px rgba(255, 165, 0, 0.7); /* Sombra laranja */
         }
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-content {
-            position: relative;
-            width: 85%;
-            max-width: 1200px;
-            background-color: #222;
-            border-radius: 10px;
-            padding: 10px;
-        }
-        .modal-content iframe {
-            width: 100%;
-            height: 600px;  /* Altura padr�o para desktop */
-            border: none;
-        }
-        .download-btn {
-            display: block;
-            width: 100%;
-            max-width: 200px;
-            margin: 20px auto;
-            padding: 10px;
+        .container div {
+            margin-top: 10px;
             text-align: center;
-            background-color: #ff9000;
+            position: relative;
+        }
+        /* Item fantasma */
+        .container .ghost {
+            visibility: hidden; /* Torna o item invisível */
+            flex: 1 1 calc(20% - 20px);
+            max-width: calc(20% - 20px);
+        }
+
+        .container .time-since {
+            font-size: 14px;
             color: #fff;
-            border: none;
+            background-color: rgba(0, 0, 0, 0.7); /* Fundo semitransparente */
+            padding: 5px 10px;
             border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-        }
-        .download-btn:hover {
-            background-color: #e07b00;
-        }
-        .close {
             position: absolute;
-            top: 10px;
-            right: 15px;
-            color: white;
-            font-size: 30px;
-            cursor: pointer;
-            z-index: 1001;
+            bottom: 40px;
+            right: 10px;
+            z-index: 1;
         }
-        .back-to-models {
-            margin: 20px 0;
+
+        @media (max-width: 1024px) {
+            .container a, .container .ghost {
+                flex: 1 1 calc(33.33% - 20px); /* 3 itens por linha em telas menores */
+                max-width: calc(33.33% - 20px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container a, .container .ghost {
+                flex: 1 1 calc(50% - 20px); /* 2 itens por linha em telas menores */
+                max-width: calc(50% - 20px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container a, .container .ghost {
+                flex: 1 1 calc(50% - 20px); /* 2 itens por linha em telas muito pequenas */
+                max-width: calc(50% - 20px);
+            }
+
+            /* Ajuste do tamanho da fonte para dispositivos móveis */
+            .container a {
+                font-size: 18px; /* Tamanho da fonte menor para telas pequenas */
+            }
+        }
+
+        #counter {
+            margin-top: 0px; /* Espaçamento acima do contador */
+            margin-bottom: 20px;
+            font-size: 20px;
             color: #ff9000;
-            text-decoration: none;
-            font-size: 1.2em;
         }
-        /* Bot�o fixo para voltar ao topo */
-        .back-to-top {
+
+        #search {
+            margin-bottom: 20px;
+            padding: 10px;
+            font-size: 18px;
+            width: 80%;
+            max-width: 400px;
+            border: 2px solid #ff9000;
+            border-radius: 5px;
+            background-color: #111;
+            color: #fff;
+        }
+
+        #sort-container {
+            margin-top: 20px; /* Espaçamento acima do contador */
+            margin-bottom: 30px;
+        }
+
+        #sort-order {
+            padding: 10px;
+            font-size: 18px;
+            border: 2px solid #ff9000;
+            border-radius: 5px;
+            background-color: #111;
+            color: #fff;
+        }
+
+        #titulo {
+            margin-bottom: 20px;
+            font-size: 20px;
+            color: #ff9000; /* Mesma cor do contador */
+        }
+
+        #scrollToTop {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background-color: #ff9000;
-            color: #fff;
+            display: none; /* Começa escondido */
+            background-color: orange;
             border: none;
+            padding: 10px;
             border-radius: 5px;
-            padding: 10px 15px;
             cursor: pointer;
-            font-size: 1em;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            display: none; /* Inicialmente escondido */
         }
-        .back-to-top:hover {
-            background-color: #e07b00;
-        }
-        /* Consultas de m�dia para dispositivos m�veis */
-        @media (max-width: 768px) {
-            .modal-content iframe {
-                height: 400px;  /* Ajuste a altura para dispositivos m�veis */
-            }
-            h1 {
-                font-size: 2em;  /* Reduzir o tamanho da fonte para o t�tulo */
-            }
-            .video-counter {
-                font-size: 1em;  /* Ajustar o tamanho da fonte do contador */
-            }
-            .thumbnail {
-                max-width: 100%;  /* Thumbnail ocupa 100% da largura em dispositivos m�veis */
-            }
-        }
+
     </style>
 </head>
-<body>
-    <p><a class="back-to-models" href="../">Return to models page</a></p>
-    <h1>Riley Reid</h1>
-    <div class="video-counter">Videos: <span id="total-videos">70</span></div>
+<body>    
+    <div id="counter"></div>
+    
+    <input type="text" id="search" placeholder="Search model...">
 
-    <img class="thumbnail" data-src="https://dood.li/e/w2lfduu9iwo7" data-download="https://dood.li/d/w2lfduu9iwo7" src="https://img.doodcdn.co/splash/jag8fzq4bxeux6be.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/8yoak10ls4mz" data-download="https://dood.li/d/8yoak10ls4mz" src="https://img.doodcdn.co/splash/w89zav4qsv9g15zz.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/x7qvvjosgt13" data-download="https://dood.li/d/x7qvvjosgt13" src="https://img.doodcdn.co/splash/hg4rvu5ljgrqr6lm.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/krmokb0q05n0" data-download="https://dood.li/d/krmokb0q05n0" src="https://img.doodcdn.co/splash/b7kb24e8zbftndnb.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/ehk1iwe98fxj" data-download="https://dood.li/d/ehk1iwe98fxj" src="https://img.doodcdn.co/splash/xd9m3r7ehtsshjms.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/n2pf3cnm9vis" data-download="https://dood.li/d/n2pf3cnm9vis" src="https://img.doodcdn.co/splash/9l4s0w9uxtab3klj.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/jzpi87s9s7jl" data-download="https://dood.li/d/jzpi87s9s7jl" src="https://img.doodcdn.co/splash/imc3qs5ge9ld74rj.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/7bqpu5etvzmq" data-download="https://dood.li/d/7bqpu5etvzmq" src="https://img.doodcdn.co/splash/aekvkh4wigu1cgi5.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/btg3oyk0imwa" data-download="https://dood.li/d/btg3oyk0imwa" src="https://img.doodcdn.co/splash/33cjwczir6qhgelq.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/1nkdkyl8uymr" data-download="https://dood.li/d/1nkdkyl8uymr" src="https://img.doodcdn.co/splash/o935rqso8kuv1j3j.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/95lcp7hvszp6" data-download="https://dood.li/d/95lcp7hvszp6" src="https://img.doodcdn.co/splash/x22uh3c54f1phkcs.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/m55vb1as8a36" data-download="https://dood.li/d/m55vb1as8a36" src="https://img.doodcdn.co/splash/isiymfizrcc99xfd.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/1gyyfzh1z3mi" data-download="https://dood.li/d/1gyyfzh1z3mi" src="https://img.doodcdn.co/splash/qcc0dqjxf5mtm1j8.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/md4usqcjoj21" data-download="https://dood.li/d/md4usqcjoj21" src="https://img.doodcdn.co/splash/ktrn2k6fxjpapdux.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/yicanntf4bjd" data-download="https://dood.li/d/yicanntf4bjd" src="https://img.doodcdn.co/splash/m4u8ztjvkzdm30qd.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/0ywik8oi6oc1" data-download="https://dood.li/d/0ywik8oi6oc1" src="https://img.doodcdn.co/splash/sn2ykyci85xgxzoo.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/b5icaj5pzarw" data-download="https://dood.li/d/b5icaj5pzarw" src="https://img.doodcdn.co/splash/bik65ogcjxtpes9x.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/n4etwbo33ahm" data-download="https://dood.li/d/n4etwbo33ahm" src="https://img.doodcdn.co/splash/7xca6z0bu37tudgw.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/4ai896fglx45" data-download="https://dood.li/d/4ai896fglx45" src="https://img.doodcdn.co/splash/wch2fltyo8g2sn66.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/wklvr32k5x32" data-download="https://dood.li/d/wklvr32k5x32" src="https://img.doodcdn.co/splash/w1g072s4zs5euei9.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/45wc7e3tqn6l" data-download="https://dood.li/d/45wc7e3tqn6l" src="https://img.doodcdn.co/splash/gjejy0fftjfvcp06.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/sk49m19m5gf2" data-download="https://dood.li/d/sk49m19m5gf2" src="https://img.doodcdn.co/splash/tkg45ni65bqd2i0n.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/hwyfly392ucu" data-download="https://dood.li/d/hwyfly392ucu" src="https://img.doodcdn.co/splash/g93eykr9j46z4o77.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/aswf4g3tpqky" data-download="https://dood.li/d/aswf4g3tpqky" src="https://img.doodcdn.co/splash/426rv38kuu3rabnx.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/glydszjwdbck" data-download="https://dood.li/d/glydszjwdbck" src="https://img.doodcdn.co/splash/wudvop99comd71q9.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/fma1c3tyk8bq" data-download="https://dood.li/d/fma1c3tyk8bq" src="https://img.doodcdn.co/splash/t06f668wbjtgzbyy.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/ruhbje7c1726" data-download="https://dood.li/d/ruhbje7c1726" src="https://img.doodcdn.co/splash/xh98q2a2m0mcaas6.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/73jxr0sjbumj" data-download="https://dood.li/d/73jxr0sjbumj" src="https://img.doodcdn.co/splash/rtxskyjtbl7d27rl.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/6kuxub1s2pt4" data-download="https://dood.li/d/6kuxub1s2pt4" src="https://img.doodcdn.co/splash/45sx0emfaj5pehs6.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/2361bttziimp" data-download="https://dood.li/d/2361bttziimp" src="https://img.doodcdn.co/splash/0h9a1rxbychiy9qo.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/8bkchplzoww2" data-download="https://dood.li/d/8bkchplzoww2" src="https://img.doodcdn.co/splash/xn6cjl0mm4ald7b0.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/49cg2t287wd0" data-download="https://dood.li/d/49cg2t287wd0" src="https://img.doodcdn.co/splash/pdtf2wsmzaxv0f7a.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/fxcw9hxf0b4p" data-download="https://dood.li/d/fxcw9hxf0b4p" src="https://img.doodcdn.co/splash/lsuiriwb7ueeh5gz.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/20ogfkae5zeh" data-download="https://dood.li/d/20ogfkae5zeh" src="https://img.doodcdn.co/splash/8z5e8cxzu9oqdmy5.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/eluhu9ekb110" data-download="https://dood.li/d/eluhu9ekb110" src="https://img.doodcdn.co/splash/ds54a6mrmyilpirw.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/eus66qtt3yps" data-download="https://dood.li/d/eus66qtt3yps" src="https://img.doodcdn.co/splash/fjrbpvp1kz1mpksr.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/mhlty6wtl98j" data-download="https://dood.li/d/mhlty6wtl98j" src="https://img.doodcdn.co/splash/nvxoonfbrxurk7hf.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/kd1f4uhixwep" data-download="https://dood.li/d/kd1f4uhixwep" src="https://img.doodcdn.co/splash/s8v1gr1a0sx3h5ud.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/v4yhmptqsngp" data-download="https://dood.li/d/v4yhmptqsngp" src="https://img.doodcdn.co/splash/4p720wn3au90s19w.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/g0x9gsg8178r" data-download="https://dood.li/d/g0x9gsg8178r" src="https://img.doodcdn.co/splash/x8iles0dhjlxmjay.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/id67v2kenylk" data-download="https://dood.li/d/id67v2kenylk" src="https://img.doodcdn.co/splash/zeut3rokxmpejr7r.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/lv6uu3d160xb" data-download="https://dood.li/d/lv6uu3d160xb" src="https://img.doodcdn.co/splash/wb7s5iyqvb8mc2wa.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/gs6w9rhrnvjx" data-download="https://dood.li/d/gs6w9rhrnvjx" src="https://img.doodcdn.co/splash/rc644b9icf44izeh.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/k96rgvadnueb" data-download="https://dood.li/d/k96rgvadnueb" src="https://img.doodcdn.co/splash/lccptlmtk29vn8uz.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/cqnk71n99h19" data-download="https://dood.li/d/cqnk71n99h19" src="https://img.doodcdn.co/splash/v4hoc946mrhdev4s.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/x4gedx9et3vo" data-download="https://dood.li/d/x4gedx9et3vo" src="https://img.doodcdn.co/splash/214fdag1n1rqx4cg.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/db2mahzn5p4g" data-download="https://dood.li/d/db2mahzn5p4g" src="https://img.doodcdn.co/splash/iu655nnep6yra21a.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/lhknwzp6hzks" data-download="https://dood.li/d/lhknwzp6hzks" src="https://img.doodcdn.co/splash/v2dunox7rfxertz0.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/80jezw4pfhn8" data-download="https://dood.li/d/80jezw4pfhn8" src="https://img.doodcdn.co/splash/ds11s44i35vnw35u.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/8p8je7i15wcs" data-download="https://dood.li/d/8p8je7i15wcs" src="https://img.doodcdn.co/splash/55fc84vr09f2jpgx.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/3fe861fd4gd0" data-download="https://dood.li/d/3fe861fd4gd0" src="https://img.doodcdn.co/splash/kp55vgew0w0d2b44.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/jbh35f0iljyh" data-download="https://dood.li/d/jbh35f0iljyh" src="https://img.doodcdn.co/splash/atayqgrvozf1s98b.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/6emqz2cuiqb2" data-download="https://dood.li/d/6emqz2cuiqb2" src="https://img.doodcdn.co/splash/os3yszbluamdugk2.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/4gaojorndk0o" data-download="https://dood.li/d/4gaojorndk0o" src="https://img.doodcdn.co/splash/3kzj476dylefwkhh.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/875kzslz9wsn" data-download="https://dood.li/d/875kzslz9wsn" src="https://img.doodcdn.co/splash/465bk8itvhonb06d.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/c4hactvcyxla" data-download="https://dood.li/d/c4hactvcyxla" src="https://img.doodcdn.co/splash/yqhxxzinlaw5qrlv.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/bijogs2q98zh" data-download="https://dood.li/d/bijogs2q98zh" src="https://img.doodcdn.co/splash/m5v57gkkw8ul18rs.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/esd6xajm4g1a" data-download="https://dood.li/d/esd6xajm4g1a" src="https://img.doodcdn.co/splash/npitwzbg8vnz0vaw.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/v8bmrxfgxnas" data-download="https://dood.li/d/v8bmrxfgxnas" src="https://img.doodcdn.co/splash/atzqrvxcoz13e6kr.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/yo5e2khw57sg" data-download="https://dood.li/d/yo5e2khw57sg" src="https://img.doodcdn.co/splash/mkr7yl7xpu827opa.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/n4qkr7iieoie" data-download="https://dood.li/d/n4qkr7iieoie" src="https://img.doodcdn.co/splash/y582z7uf8y61vpvp.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/omiryzpocf6f" data-download="https://dood.li/d/omiryzpocf6f" src="https://img.doodcdn.co/splash/d8373y3w0fm8aaim.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/x4m42usn9h26" data-download="https://dood.li/d/x4m42usn9h26" src="https://img.doodcdn.co/splash/3vyv4nfjrfzrvvpb.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/kixuhdy6tucf" data-download="https://dood.li/d/kixuhdy6tucf" src="https://img.doodcdn.co/splash/jmjezxvgz5k7j7c8.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/bvjammzdzdcf" data-download="https://dood.li/d/bvjammzdzdcf" src="https://img.doodcdn.co/splash/bhw77q8ms5t356ak.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/in65ylzif421" data-download="https://dood.li/d/in65ylzif421" src="https://img.doodcdn.co/splash/nynyys878zvlxzxv.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/epjk4027kb6n" data-download="https://dood.li/d/epjk4027kb6n" src="https://img.doodcdn.co/splash/octtkjcuo8ztdwnp.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/b614nkblk1x1" data-download="https://dood.li/d/b614nkblk1x1" src="https://img.doodcdn.co/splash/xfn50f5qwh7orxy6.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/rqfmmemjk8xa" data-download="https://dood.li/d/rqfmmemjk8xa" src="https://img.doodcdn.co/splash/54eys4b1gl3hx71x.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/naemwrgmi383" data-download="https://dood.li/d/naemwrgmi383" src="https://img.doodcdn.co/splash/oinzh8d2nenb6o03.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <div class="modal" id="videoModal">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <div class="modal-content">
-            <iframe id="modalVideo" allowfullscreen></iframe>
-            <button id="downloadBtn" class="download-btn">Download</button>
-        </div>
+    <!-- Container de ordenação -->
+    <div id="sort-container">
+        <label for="sort-order" style="margin-right: 10px; color: #ff9000;">Filter by:</label>
+        <select id="sort-order">
+            <option value="newest">Newest</option>
+            <option value="oldest">Oldest</option>
+            <option value="az">A-Z</option>
+            <option value="za">Z-A</option>
+        </select>
+    </div>
+    
+    <div class="container">
+        <a href="/addison-vodka/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/459446214_819992480209624_803823747897462965_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=9f807c&_nc_ohc=vk6Ejdf3PaYQ7kNvgF0tz5f&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AWhLNjP4HaoML7yiVYA6tZD&oh=03_Q7cD1QEYWFA-ciNXTdoBpZWepJvUvRinRYahRvBVzINqaWyCLg&oe=671883F7" alt="Addison Vodka">
+                Addison Vodka
+                <div class="time-since" data-updated="2024-09-23T12:05:00"><span></span></div>
+            </div>
+        </a>
+        
+        <a href="/adriana-chechik/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/462551233_467886245595845_5484375849323622772_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=9f807c&_nc_ohc=mwMOpcQ1qggQ7kNvgHesgJI&_nc_zt=23&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AXOHqXINTbCmIiiHThgWD2k&oh=03_Q7cD1QHIBRxldjGhtziT8Vxo3AbWNFFFdbh2-zNeWqQn6UbQIg&oe=67366F77" alt="Adriana Chechik">
+                Adriana Chechik
+                <div class="time-since" data-updated="2024-10-16T12:15:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/alexis-texas/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/461482084_509404608636186_4065417813280432770_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=9f807c&_nc_ohc=STUDrWdEuwUQ7kNvgExxWu8&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AuRRqpH9o2gj_EJRN7B_gSF&oh=03_Q7cD1QGifd6MX7_AgozKmeeY6oJxgbhmC6Yqcz28SlZ-yWMpMA&oe=672A9E29" alt="Alexis Texas">
+                Alexis Texas
+                <div class="time-since" data-updated="2024-10-09T12:45:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/alina-lopez/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/458285948_8170803569681937_9074504721682275450_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=9f807c&_nc_ohc=Wnn1MbElceMQ7kNvgF5e7fx&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=A21MRC-MUSc_qe5SuDale2X&oh=03_Q7cD1QHP0AerWqXyGmzdmQ2bx-2e7WoHDO7HpJ99sCSJXPYi7A&oe=671501F1" alt="Alina Lopez">
+                Alina Lopez
+                <div class="time-since" data-updated="2024-09-27T12:10:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/amouranth/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/461720166_421740063918407_5170934568576977820_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=9f807c&_nc_ohc=39-lmguUynMQ7kNvgFzUxHS&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=A1ouotWK5yGFEVLWkQOpWPB&oh=03_Q7cD1QHOm4tkRX0YIeFXDzxBscWAETr8dWBfW8SjDB7ifzKBiA&oe=672A99F9" alt="Amouranth">
+                Amouranth
+                <div class="time-since" data-updated="2024-09-05"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/amy-rose/">
+            <div>
+                <img src="/imgs/amy-rose.jpg" alt="Amy Rose">
+                Amy Rose
+                <div class="time-since" data-updated="2024-10-18T12:40:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/angel-youngs/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/462562553_868452498721673_7511315276805243955_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=9f807c&_nc_ohc=37f9cY9vpSYQ7kNvgHCuwlD&_nc_zt=23&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AbDJCYb2hpD7xYP1_LWs7Lz&oh=03_Q7cD1QFtAE76GvMSuHcz3hlyzBhMrTk412gOcZPRw3lRmKLe8Q&oe=67375C54" alt="Angel Youngs">
+                Angel Youngs
+                <div class="time-since" data-updated="2024-10-17T12:05:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/angela-white/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/462557746_932825078668889_1658183071709302675_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=9f807c&_nc_ohc=_6bG5dJ_lmgQ7kNvgG8Me34&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AO_jHvp4iaHZKGnOopDous3&oh=03_Q7cD1QGwId9GzI5lear0iLVpOpU33ikQ1v1HFJCDnodhA9kmXw&oe=672EC225" alt="Angela White">
+                Angela White
+                <div class="time-since" data-updated="2024-10-11T12:10:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/angie-faith/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/459174560_428406256389083_1168378949637141198_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=9f807c&_nc_ohc=vdDS9HHV8RIQ7kNvgGFAAcL&_nc_zt=23&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=A4SV8JlPYBVqLfrq0mhJyJy&oh=03_Q7cD1QHiiGsuuF9aa7UKKAxm1HaEgHOb1Vuhj5ynpyOAkxEEfQ&oe=67343A05" alt="Angie Faith">
+                Angie Faith
+                <div class="time-since" data-updated="2024-10-08T12:05:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/anissa-kate/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/461876927_539697908542433_2340610633480672979_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=9f807c&_nc_ohc=wgROduPrpLYQ7kNvgHQU_WP&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AKjOmes_tQu3pSJPkReJZIZ&oh=03_Q7cD1QGBBUntFokcglbMv_Nxa9XVCFBDKuv0meqw5eNr7GrzQg&oe=672A951D" alt="Anissa Kate">
+                Anissa Kate
+                <div class="time-since" data-updated="2024-08-21"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/anna-claire-clouds/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/462562118_895204595417898_1349745524385045848_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=9f807c&_nc_ohc=esbyoK5UfIwQ7kNvgGkVzyB&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=A15kLZH6MufQ7Xb0fOXqFip&oh=03_Q7cD1QEsAKEr4e9SMhsFCfzfSu6lPXggJniiiTfFPTzm5uexNw&oe=673034D7" alt="Anna Claire Clouds">
+                Anna Claire Clouds
+                <div class="time-since" data-updated="2024-10-11T12:20:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/arabelle-raphael/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/462554165_1511752876122184_8353236855358328116_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=9f807c&_nc_ohc=FDwbKWeEoKwQ7kNvgElBEHj&_nc_zt=23&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=A6U8pt3xQaMdGWIRhBT8b6z&oh=03_Q7cD1QGCt9rMdCptK23qZDihJrz4V19hnu-LdYo-N0mjFRgC-w&oe=67382858" alt="Arabelle Raphael">
+                Arabelle Raphael
+                <div class="time-since" data-updated="2024-10-18T12:15:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/autumn-falls/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/462546185_3101305446676491_416918468331144429_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=9f807c&_nc_ohc=o02u9Eq9qnYQ7kNvgFfIWoO&_nc_zt=23&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AqaiXEJUY6B1tsZHCCsz893&oh=03_Q7cD1QGNG_a-b5-WkwzLF3_568vd5Fq_Lw6B9K-yv7o1kT8u_w&oe=67374438" alt="Autumn Falls">
+                Autumn Falls
+                <div class="time-since" data-updated="2024-10-18T12:20:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/backroomcastingcouch/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/462546544_8576456992468718_5246184976176526455_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=9f807c&_nc_ohc=OM3kud9LTHEQ7kNvgGp_447&_nc_zt=23&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=A41T4cNK-2RIZhMe5Sxq9QW&oh=03_Q7cD1QFIaBY5FQtmIWfHmQpIwxHhunfbghIez3-zPLHxIb-fFQ&oe=6736C720" alt="BackroomCastingCouch">
+                BRCC
+                <div class="time-since" data-updated="2024-10-16T12:30:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/blake-blossom/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/462554963_1192172411875166_8004086159641642681_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=9f807c&_nc_ohc=O1IVnowqvqUQ7kNvgGEp09m&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AMi6Njo1LhKCbRsS2aPKdvx&oh=03_Q7cD1QHyvsuFVrO__qsyP3UzPR6D34Ku4S3FxVWN2lE7TxkjJw&oe=672EB824" alt="Blake Blossom">
+                Blake Blossom
+                <div class="time-since" data-updated="2024-10-10T12:10:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/brandy-renee/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/457742801_1232638614717326_5655889645489000169_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=9f807c&_nc_ohc=BYipTf0jYhwQ7kNvgFzKiKJ&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AKmWpShP-hfPWQ3RMOOF72C&oh=03_Q7cD1QFbV5dinBrapFinnBdtpWYbeLGNus7gZCgjNQpfuV4P1A&oe=672D19CA" alt="Brandy Renee">
+                Brandy Renee
+                <div class="time-since" data-updated="2024-09-08T12:20:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/brenda-trindade/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/458966152_863239595775861_2935792477709279771_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=9f807c&_nc_ohc=lWsoFNOtNA0Q7kNvgHhVtEk&_nc_ht=scontent.fcwb2-3.fna&oh=03_Q7cD1QErNnDgzVAujZn3iloRecmwvOXlNzuL6HFl9ACNBU5_JA&oe=671801C5" alt="Brenda Trindade">
+                Brenda Trindade
+                <div class="time-since" data-updated="2024-09-24T12:10:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/cherie-deville/">
+            <div>
+                <img src="/imgs/cherie-deville.jpg" alt="Cherie Deville">
+                Cherie Deville
+                <div class="time-since" data-updated="2024-10-18T12:50:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/codi-vore/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/462542704_1056348239378231_4119577976592035638_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=9f807c&_nc_ohc=f8-Xa6QFOK8Q7kNvgFVDBoA&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=ApWh3j3JC8m7mcbomIO3U4l&oh=03_Q7cD1QGARAC262ekFQte8UnB0NRN4rpDbkTDu2TKh2vU3pUWbQ&oe=67314278" alt="Codi Vore">
+                Codi Vore
+                <div class="time-since" data-updated="2024-10-12T12:10:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/daintywilder/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/461186868_454561543657909_834929697564792117_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=9f807c&_nc_ohc=7uuov0MJtt4Q7kNvgHZceMk&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=ArXQckVYsSEguQBwNYf7NBj&oh=03_Q7cD1QGxpe4KjPYFZav5pFtGSDPDBbGmWQrmokcCjWqPX3u3Xg&oe=6727D912" alt="DaintyWilder">
+                DaintyWilder
+                <div class="time-since" data-updated="2024-10-19T12:00:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/dani-daniels/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/461876929_1296012228231322_948604814572831226_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=9f807c&_nc_ohc=dDLZfi1DkC4Q7kNvgHNA05_&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AKssqA1jEXDyT6X2Qbgytzb&oh=03_Q7cD1QEp75dZzjumVGlUjJFfVMJLJAoHr0GGXrwpadB1HCkhCw&oe=6725CAF6" alt="Dani Daniels">
+                Dani Daniels
+                <div class="time-since" data-updated="2024-10-01T12:00:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/diamond-franco/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/457751091_516038537677376_2879934394369028765_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=9f807c&_nc_ohc=LPpScNjzbw0Q7kNvgG0ItZA&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AJrnOO9IQAPtkX-OjHHlAOw&oh=03_Q7cD1QE3iiruI-TK0vbrrZf0zxJmZ2QbfLJvLf_2NFGB6sr5cQ&oe=67302422" alt="Diamond Franco">
+                Diamond Franco
+                <div class="time-since" data-updated="2024-09-19T12:20:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/effy/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/457550852_534819365742790_800675133916740719_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=9f807c&_nc_ohc=pRKZZIS5IhUQ7kNvgEgrMV3&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=A6nRQtOvbtzR0zeaJ8QgSSn&oh=03_Q7cD1QFIfYYxThI8V1tdi6gAjS48Ebd1fNizAmxTTpfcLFVX3g&oe=672D32E8" alt="Effy">
+                Effy
+                <div class="time-since" data-updated="2024-09-07T12:07:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/elle-brooke/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/462560536_906728200830774_5882745191427898885_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=9f807c&_nc_ohc=JjU_9XUWPxoQ7kNvgEGn2PM&_nc_zt=23&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=Aoi0_sJ8zF_S4_XJJkDGna7&oh=03_Q7cD1QFSdjKvmZXljXjBk5qwPKCjoGzWs8Y2pq7E5DmLXeAjYQ&oe=67367646" alt="Elle Brooke">
+                Elle Brooke
+                <div class="time-since" data-updated="2024-10-16T12:20:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/elly-clutch/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/459585511_1796439327555551_1033357369343406392_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=9f807c&_nc_ohc=-nO9HG6FDS8Q7kNvgF0t5JV&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AcCDk0Mkr969tKjSL29tvjr&oh=03_Q7cD1QELveDkkXsnftgipRjPDBS-x0xW7ArKjeOM_dsO8nEKKA&oe=671DD944" alt="Elly Clutch">
+                Elly Clutch
+                <div class="time-since" data-updated="2024-10-15T12:10:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/emily-willis/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/461796588_343388522133870_7867171558282065680_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=9f807c&_nc_ohc=AXstPjO3ODYQ7kNvgFh8UJt&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=A4XFhjl62GbsmCeG8GGJ2kH&oh=03_Q7cD1QFvOd7E938kNk60QIHla8WFltElANjYWY2V5LEBzyOP1w&oe=672A7640" alt="Emily Willis">
+                Emily Willis
+                <div class="time-since" data-updated="2024-08-21"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/emma-magnolia/">
+            <div>
+                <img src="/imgs/emma-magnolia.jpg" alt="Emma Magnolia">
+                Emma Magnolia
+                <div class="time-since" data-updated="2024-10-18T13:05:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/eva-lovia/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/459013664_430309412906786_8015979551336115831_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=9f807c&_nc_ohc=XeggWBbn0BwQ7kNvgGG6DVy&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AC5nQKrV4aHEP_D9tqF_UtQ&oh=03_Q7cD1QH03cvxo_bZO2L9WAsbo9MASH818iPx20AsHoCWtdGI9w&oe=6714F71E" alt="Eva Lovia">
+                Eva Lovia
+                <div class="time-since" data-updated="2024-09-03"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/frances-bentley/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/460365238_2348413812168724_4781622986124208679_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=9f807c&_nc_ohc=mTuOZVCEPy0Q7kNvgFhHi0x&_nc_ht=scontent.fcwb2-3.fna&oh=03_Q7cD1QH9W6tAczxYpMamvWD6Au18YTDWcr4aq7lshy5szKSNsw&oe=671F1945" alt="Frances Bentley">
+                Frances Bentley
+                <div class="time-since" data-updated="2024-09-28T12:30:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/gabbie-carter/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/461086228_1565348991007482_5382442753927192219_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=9f807c&_nc_ohc=uOzgPNOabNUQ7kNvgEALJ4c&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=Aa_UFocE-aaKDc5MnNhqmru&oh=03_Q7cD1QELTQoNiHm_z-0ZoNs3HS-4mr6XAS0B-WOslGA8xB_D6A&oe=6725BEC4" alt="Gabbie Carter">
+                Gabbie Carter
+                <div class="time-since" data-updated="2024-10-09T12:25:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/gigi-talamini/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/461611713_7030441750413707_1305802734208396158_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=9f807c&_nc_ohc=vQcY2BRxDNYQ7kNvgHdyFFU&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=Al9Cua5dIosA98hwaJzdSl8&oh=03_Q7cD1QFmFlBanWhp1tQh2-SkeESqNy_haDGz4pZq7kx6Mmyipw&oe=672A6A9A" alt="Gigi Talamini">
+                Gigi Talamini
+                <div class="time-since" data-updated="2024-09-01"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/gina-valentina/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/462401771_4003748936615292_8459504511119847831_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=9f807c&_nc_ohc=y3QwkR_9xd0Q7kNvgH15k4E&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=Axfp9UvofuFaeaJR0m2pYP5&oh=03_Q7cD1QGKcHci8M4QSYLzcPyM5HNCcv1u_BsVwR3jbaChdzv-eA&oe=67316CA3" alt="Gina Valentina">
+                Gina Valentina
+                <div class="time-since" data-updated="2024-10-14T12:10:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/hailey-rose/">
+            <div>
+                <img src="/imgs/hailey-rose.jpg" alt="Hailey Rose">
+                Hailey Rose
+                <div class="time-since" data-updated="2024-10-18T12:45:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/haley-spades/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/461599329_3422714471366230_4060231874647328081_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=9f807c&_nc_ohc=D1h0B4kM5E8Q7kNvgGCWrVe&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AKlyBbiXD8bXPbdzPTyKSNe&oh=03_Q7cD1QF-T_6-7Kk23nK2ENn1m4bTEDuVT9cT38ox8K9Mz3M3EA&oe=67259DCE" alt="Haley Spades">
+                Haley Spades
+                <div class="time-since" data-updated="2024-10-02T12:00:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/hayley-davies/">
+            <div>
+                <img src="/imgs/hayley-davies.jpg" alt="Hayley Davies">
+                Hayley Davies
+                <div class="time-since" data-updated="2024-10-18T12:55:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/indica-flower/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/461794098_886248216458968_317072941410630137_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=9f807c&_nc_ohc=Zc9Z2XEiXWUQ7kNvgFdnMe4&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AxSfjFOjJVcsp5i6EAJh7I4&oh=03_Q7cD1QEdqlcNmhrWOgJXbRtjHKcX7FyDEDXL4iLS-bXgqUKC_A&oe=672A780B" alt="Indica Flower">
+                Indica Flower
+                <div class="time-since" data-updated="2024-08-31"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/ivy-lebelle/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/462549272_1263138514865936_1096329122131352106_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=9f807c&_nc_ohc=Or3gQV6c9mwQ7kNvgFXzuHq&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=A1wyzNcxJuJ-8P4m3zp4-ki&oh=03_Q7cD1QHip5qpFwgjVmZSrzzlJWnn1OXURpeJtjrCw3ulWRyKkQ&oe=6731FBC7" alt="Ivy Lebelle">
+                Ivy Lebelle
+                <div class="time-since" data-updated="2024-10-18T12:10:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/jackandjill/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/461976875_1075701090570696_4424600603892367221_n.png?_nc_cat=101&ccb=1-7&_nc_sid=9f807c&_nc_ohc=_cLUq7eJSbUQ7kNvgF-pGVy&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AF2hMBpwMasgRnuB7iI1Yew&oh=03_Q7cD1QHp_fJXJeVvlTrXO3Xfm5bXSNKeP8bvwyv8-7dzUVMgjw&oe=672D23B6" alt="JackandJill">
+                JackandJill
+                <div class="time-since" data-updated="2024-10-13T12:00:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/jadeteen/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/462357304_1047959083318960_2324307863391853333_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=9f807c&_nc_ohc=dMunXNjDxfMQ7kNvgFahNLQ&_nc_zt=23&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=ABHWauyP7OgZdN2MlZVlULO&oh=03_Q7cD1QGVgG-aNfOjMXpGkMI7pCQlQ6iH5EbH1kdaAeTgnrZHfg&oe=6732340B" alt="JadeTeen">
+                JadeTeen
+                <div class="time-since" data-updated="2024-10-13T12:05:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/jane-wilde/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/458773053_8000469050078994_8138617683804680717_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=9f807c&_nc_ohc=UzISJDExZ5IQ7kNvgFBqBKp&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AsQg9aW1n-PO-ArSnL0tUpZ&oh=03_Q7cD1QFjjxkK5dGzUEUJPOS3OMqyQuCYDmUm3IK0P-NlbN1SUw&oe=672D2C28" alt="Jane Wilde">
+                Jane Wilde
+                <div class="time-since" data-updated="2024-09-14T12:35:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/jessica-starling/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/461707352_942398131031690_4904618417470613620_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=9f807c&_nc_ohc=C8_ncT6jqWQQ7kNvgGSmmwm&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=A03u-0pe1JD2sU9yzCi2X8T&oh=03_Q7cD1QF816O9ysytwJl5Gakx3HRviwFPjPtm9k3bpN8_Spw6LA&oe=672A9AAA" alt="Jessica Starling">
+                Jessica Starling
+                <div class="time-since" data-updated="2024-08-19"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/jessie-rogers/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/462556945_1750395835800127_8868375573083287676_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=9f807c&_nc_ohc=r6Py7XBQMJMQ7kNvgF-Xb_M&_nc_zt=23&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AeGmQVJ4-9mPjqYYHMj6p2l&oh=03_Q7cD1QGCkk-aTq-qttlsbQG35oPilWGFUdyUlujEdVpibcwBHg&oe=6735127D" alt="Jessie Rogers">
+                Jessie Rogers
+                <div class="time-since" data-updated="2024-10-16T12:10:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/jewelz-blu/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/461653664_1077864817211084_8101258982358471341_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=9f807c&_nc_ohc=sERlUCJE8ZMQ7kNvgHS8Bxn&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AN3Jee-GAjG0mjb1RWM55Xe&oh=03_Q7cD1QHt3h0WvyKcOCtxWg_Q9OK8cAkGcWnwHJXlopiGmxdn0g&oe=6725A5E7" alt="Jewelz Blu">
+                Jewelz Blu
+                <div class="time-since" data-updated="2024-10-14T12:15:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/jill-kassidy/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/462135462_1300381304705227_3720705364838734784_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=9f807c&_nc_ohc=CWyqWj2dW0IQ7kNvgHIT5Yy&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AWKRe85lSFCA5pk4h4aFVR-&oh=03_Q7cD1QESL7mR5WjB0jxye5_9duFBSpT5ynfMY-M8XnTSd2xrAA&oe=672A717D" alt="Jill Kassidy">
+                Jill Kassidy
+                <div class="time-since" data-updated="2024-08-21"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/kali-roses/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/457303282_448153618261301_4016944927786263375_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=9f807c&_nc_ohc=7A6B6zze1FoQ7kNvgEGhpBa&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=A8Qz8SSb0S0jF-h0_pFDZlm&oh=03_Q7cD1QFpOhia7kXAVvGkH5SmOjLWmS38diLfdkjGBSy-T07aag&oe=672D2116" alt="Kali Roses">
+                Kali Roses
+                <div class="time-since" data-updated="2024-09-11T12:00:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/karlee-grey/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/462541352_523069453809845_307017384589834313_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=9f807c&_nc_ohc=hFI44cxdNsAQ7kNvgFwrX-D&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=A8Xgf62NY-ttTRxaw2Jgnxj&oh=03_Q7cD1QHNDpVTmsJ7uFeNblD3km_h_1x-fBoo52RZ8j3bQXmFzw&oe=67316484" alt="Karlee Grey">
+                Karlee Grey
+                <div class="time-since" data-updated="2024-10-12T12:15:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/karmen-karma/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/462125426_2544822305908411_3173304897281334116_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=9f807c&_nc_ohc=ckFHoSEn1xUQ7kNvgG7QCy2&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AgtdcQGzOfzoaklXpBBz1S3&oh=03_Q7cD1QHO7FwHzCY4ZQN43oWA8HyhUVQ8-C_TcvssUvMz_ulmEg&oe=672A9B09" alt="Karmen Karma">
+                Karmen Karma
+                <div class="time-since" data-updated="2024-09-03"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/kate-kuray/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/462406034_3887354348214224_7072706545038107045_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=9f807c&_nc_ohc=9_YXVD4kvroQ7kNvgEBNWVp&_nc_zt=23&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AKWFAhtgSx1PpZsaBwFRPs5&oh=03_Q7cD1QHp5jiBQtLFVgQ6OrpXddLx0giiDPQ2Hg6_zjBZGGotjA&oe=6736C7EB" alt="Kate Kuray">
+                Kate Kuray
+                <div class="time-since" data-updated="2024-10-16T12:45:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/kay-lovely/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/461571347_1623165641595268_1734380538180023823_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=9f807c&_nc_ohc=LcV3Ehcy0n4Q7kNvgESLkyS&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AeKQ8Q1eXmSlptMnM79qRbE&oh=03_Q7cD1QH23tRNKxiBs3049kZZSPLQJ9hHw-PYW2sOau-ET6jo5g&oe=672A6DBD" alt="Kay Lovely">
+                Kay Lovely
+                <div class="time-since" data-updated="2024-09-01"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/kayley-gunner/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/461796598_1465863767441266_8438485555860522809_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=9f807c&_nc_ohc=H_8UNkMXy-AQ7kNvgFJh5h4&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=A0e-BLDEf4QeOO6R09h81M_&oh=03_Q7cD1QFkGSCXew4Co_jeIgmH2ELPHOxq78sMMU7MR0IN0VtFcQ&oe=672A8E24" alt="Kayley Gunner">
+                Kayley Gunner
+                <div class="time-since" data-updated="2024-09-07T12:03:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/kazumi/">
+            <div>
+                <img src="/imgs/kazumi.jpg" alt="Kazumi">
+                Kazumi
+                <div class="time-since" data-updated="2024-10-18T12:35:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/kendra-lust/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/461864675_518362550830572_3097458613838706682_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=9f807c&_nc_ohc=zsefhgDVb_oQ7kNvgFwQsiq&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=A1BFkX601eXRE3fDDu1EHAg&oh=03_Q7cD1QFosX0DXG5jAZEPQ4Xh8dCWScXb6oBeO7Bm6WB5xvAMZA&oe=672FC689" alt="Kendra Lust">
+                Kendra Lust
+                <div class="time-since" data-updated="2024-10-11T12:05:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/kendra-sunderland/">
+            <div>
+                <img src="/imgs/kendra-sunderland.jpg" alt="Kendra Sunderland">
+                Kendra Sunderland
+                <div class="time-since" data-updated="2024-10-18T13:10:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/lana-rhoades/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/462239101_1288319568838325_4634687546644105199_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=9f807c&_nc_ohc=sy20TJAzKrwQ7kNvgFhacDU&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=A2E19BCMSb2zpwfjHbfW-1f&oh=03_Q7cD1QEIp8eRLyL_ss6vqVcMJcRyO6JLKriw5J1HhJb3MVumhA&oe=672A81F3" alt="Lana Rhoades">
+                Lana Rhoades
+                <div class="time-since" data-updated="2024-08-27"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/lasirena69/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/462548296_503472039348469_2527250109640583407_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=9f807c&_nc_ohc=vXjB_zSQ1Z0Q7kNvgFjFNv8&_nc_zt=23&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AbiJdpYOYB66Vup0bbNNIpV&oh=03_Q7cD1QEmY0tqFQkKUPgBXeuyd1T75U_lnCHprGnsTNaTFLdSGA&oe=6736C2A6" alt="LaSirena69">
+                LaSirena69
+                <div class="time-since" data-updated="2024-10-16T12:35:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/lauren-phillips/">
+            <div>
+                <img src="/imgs/lauren-phillips.jpg" alt="Lauren Phillips">
+                Lauren Phillips
+                <div class="time-since" data-updated="2024-10-18T13:00:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/layla-roo/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/462562937_1315848719384342_7682240956171683870_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=9f807c&_nc_ohc=mmdLJShvRVYQ7kNvgHfmK3Y&_nc_zt=23&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=A7zDnW8Twmc94Jpfl9eXCWX&oh=03_Q7cD1QFzu_j4fK5e394MnElP0a_X3utKs6kbW228SvRYHD2fVg&oe=6732E520" alt="Layla Roo">
+                Layla Roo
+                <div class="time-since" data-updated="2024-10-13T12:20:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/lena-paul/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/461286070_912622694066785_7739068732801360161_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=9f807c&_nc_ohc=Q98mn7XkLtoQ7kNvgFy7tTr&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AXVBVi3BiMADR-IMW3e-JxT&oh=03_Q7cD1QFQ2VIm3TcdljGobKbp88IgPztvHM-ka7oleN0C3Pupzg&oe=6725C1A9" alt="Lena Paul">
+                Lena Paul
+                <div class="time-since" data-updated="2024-10-03T12:00:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/lena-polanski/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/461575566_839091895061232_4796736669650311996_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=9f807c&_nc_ohc=HKBI4SxI_V4Q7kNvgF7EAgm&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=A7z2OKZw2lZLEowoyBDgpBD&oh=03_Q7cD1QHReQj7qE_koOqkN3wOpkbls_Vz1dkRujtKskbDIpPVTg&oe=6729292A" alt="Lena Polanski">
+                Lena Polanski
+                <div class="time-since" data-updated="2024-10-07T12:10:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/lena-the-plug/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/462550656_1071322043994452_367130000286255948_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=9f807c&_nc_ohc=pIYLqqzkmrEQ7kNvgFsJ_Dd&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=Ay2v60HsHcMvPH3oZy-T3vc&oh=03_Q7cD1QF0nvfNYfpxAhAo17_TCBNCpNR7dd3ufamH43CeK1_wag&oe=67321E5B" alt="Lena the plug">
+                Lena the plug
+                <div class="time-since" data-updated="2024-10-18T12:00:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/lexi-belle/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/458434427_821464509823389_6198764692192850812_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=9f807c&_nc_ohc=InKXmYNp5JMQ7kNvgEWXs0u&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=APXFrPlVdn3BvrNYjUjm3c_&oh=03_Q7cD1QGL_gj_3SMLM2hbxbrfv4jUcLZUgje6Nmg8Z_rrPzSCWQ&oe=67322549" alt="Lexi Belle">
+                Lexi Belle
+                <div class="time-since" data-updated="2024-09-12T12:20:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/lily-kawaii/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/461989937_807899391554839_859900084168364000_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=9f807c&_nc_ohc=j_OKs4_mDIQQ7kNvgG1Ip1Z&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AMVEFVYwc8sUXairmJb5L-P&oh=03_Q7cD1QFCU2LOlCE4IRC3qQlIdhuOMDApICQZOcI47eaLWukV6A&oe=672A954B" alt="Lily Kawaii">
+                Lily Kawaii
+                <div class="time-since" data-updated="2024-08-23"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/lily-phillips/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/461874714_907505887922999_8512268695958939212_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=9f807c&_nc_ohc=pdQi6GE8II8Q7kNvgHHILjL&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AcoTtGAZtC4rAsaseRkg_vE&oh=03_Q7cD1QEjjam0VencyY6DSpbhl6FCiGzeJUFJKO49zM6SzMpGTg&oe=672A5591" alt="Lily Phillips">
+                Lily Phillips
+                <div class="time-since" data-updated="2024-10-12T12:05:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/little-caprice/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/462268001_566185822653490_4731520042294210868_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=9f807c&_nc_ohc=3ZK7SQGb1kcQ7kNvgHL-ILc&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AW1VfeDd6L81Gf_Ve245u4I&oh=03_Q7cD1QH6qsitpJXTj2MOmacIR9NBuFFGHTRMgX5vRTFrj9kj6w&oe=672A2FB4" alt="Little Caprice">
+                Little Caprice
+                <div class="time-since" data-updated="2024-10-06T12:10:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/lucy-mochi/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/462544325_1676917699521345_3862136018730168560_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=9f807c&_nc_ohc=p-HTicGNVb8Q7kNvgHVYUtZ&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=A2uEwnME5kEKYftXWgM_HLM&oh=03_Q7cD1QH-EdSRPk0LxuxBodaF1YAedqvdO74cEH_rGof3nhfalA&oe=672EBA80" alt="Lucy Mochi">
+                Lucy Mochi
+                <div class="time-since" data-updated="2024-10-16T12:05:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/madison-morgan/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/462567066_1110886320395538_207099498634807847_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=9f807c&_nc_ohc=FFomFCxNvu8Q7kNvgEV5BBJ&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=A0xKGcCRtUS8h90OcYyZzHb&oh=03_Q7cD1QGipH9t4HMrn6C6DGMQWNyY29iCBMM5LM_1DTqF4tJU4A&oe=672E8D68" alt="Madison Morgan">
+                Madison Morgan
+                <div class="time-since" data-updated="2024-10-10T12:00:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/melanie-marie/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/456486351_3630577307088267_1984889294962771788_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=9f807c&_nc_ohc=tiJGBTJuxbUQ7kNvgHXFeAV&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=Az-aZXjmVjEaCrTOJOaFEXV&oh=03_Q7cD1QG52FcLhdEMRnzP-GInM4ATjFaILLseopwh5Q2eJxzRUg&oe=672D2A65" alt="Melanie Marie">
+                Melanie Marie
+                <div class="time-since" data-updated="2024-09-08T12:15:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/melissa-stratton/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/462545946_841284094557398_4830461431686555314_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=9f807c&_nc_ohc=O6xHcWj6B2sQ7kNvgG5voeQ&_nc_zt=23&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=ALkyhEA9t5HdVYvfK9nOWdH&oh=03_Q7cD1QF9jC7YWpPjiwX2zInMMq5sMDImF6DnykkBpTNdZeu0xA&oe=673241C1" alt="Melissa Stratton">
+                Melissa Stratton
+                <div class="time-since" data-updated="2024-10-13T12:15:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/melody-marks/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/461714370_873108771561031_1290431981321438476_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=9f807c&_nc_ohc=kXIf2LsTPHgQ7kNvgE6teIH&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=ACpcIbk3giYAXOD3aLYEC2m&oh=03_Q7cD1QFYKHcl9QW5njRYER8dJwzf0w-JsIDG2VUNkWiRccLqqw&oe=672A9D38" alt="Melody Marks">
+                Melody Marks
+                <div class="time-since" data-updated="2024-09-02"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/mia-malkova/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/461568770_532624699745452_6248350618284616932_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=9f807c&_nc_ohc=FYAk9pz1B1sQ7kNvgHePwLF&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=A47mgEDkiG_AIs8WJzRUe_c&oh=03_Q7cD1QGpLAZtaSEci-QIZ1br32up60ofYfAP3B2vBtbKMH35Pg&oe=672A6E3E" alt="Mia Malkova">
+                Mia Malkova
+                <div class="time-since" data-updated="2024-08-27"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/mia-melano/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/461311698_1786862358514402_6690091768973186467_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=9f807c&_nc_ohc=-A-IcmLVr0kQ7kNvgGfnizt&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=Admq0W4QehtFo7zqKVnNl9M&oh=03_Q7cD1QEQmQWbUn-QDuih_gnRF3QxbRuXuiWggMJZBCObxvhwQQ&oe=672A9114" alt="Mia Melano">
+                Mia Melano
+                <div class="time-since" data-updated="2024-09-03"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/natasha-nice/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/458632162_1541813940106894_1977151125110089905_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=9f807c&_nc_ohc=li6GgbLKqOEQ7kNvgEJL6TY&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=A1F44mK6Yij0A0pGLc2-W4h&oh=03_Q7cD1QEoC2M8ID76uXoXEIAJyJf5v6ZBik54qAv_HUtIXFq-kw&oe=67320B67" alt="Natasha Nice">
+                Natasha Nice
+                <div class="time-since" data-updated="2024-09-12T12:25:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/netvideogirls/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/460148066_1084043883243629_5380138810408781473_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=9f807c&_nc_ohc=YY3CXEnvL4wQ7kNvgGBs_rP&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AFFST5Dk-hE-reAziDIm6fN&oh=03_Q7cD1QEbllkiFI-ekbuWfql_RaZz883j0bFSDBhfl-bP2cg06g&oe=6715D283" alt="NetVideoGirls">
+                NetVideoGirls
+                <div class="time-since" data-updated="2024-09-21T12:10:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/nicole-aniston/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/462550995_826186746100249_2475263779961271009_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=9f807c&_nc_ohc=AtaosF5zOVgQ7kNvgGisASa&_nc_zt=23&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=ADfbCz9WE4fX-MK6pwk7MRl&oh=03_Q7cD1QF2f95DTuosKgCeZEpYZbCeFqhxdxanEaL-5nJO64M3ow&oe=6736B706" alt="Nicole Aniston">
+                Nicole Aniston
+                <div class="time-since" data-updated="2024-10-16T12:50:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/nicole-doshi/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/459692321_476787955357289_7363721765102493699_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=9f807c&_nc_ohc=CA_BXeksx4gQ7kNvgFfIZ8s&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=A6Vl8P1ui0HUBh3Kp3mghGK&oh=03_Q7cD1QFbi8yYV9lVowKOEHLQtwwYr2Eyql8zZZa2-lzLHeconQ&oe=671DDB0A" alt="Nicole Doshi">
+                Nicole Doshi
+                <div class="time-since" data-updated="2024-09-27T12:05:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/octokuro/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/459043982_1257003012172635_5503183171583728302_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=9f807c&_nc_ohc=Bez8vyp3SkoQ7kNvgFQxHCZ&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AZsQ6BoD0PwdUbhyJpiFwor&oh=03_Q7cD1QFiFw-pM4JweS3zJjfiHMeeryA6OlWGodYLBQG9VHpO7w&oe=6714F5D6" alt="Octokuro">
+                Octokuro
+                <div class="time-since" data-updated="2024-10-15T12:05:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/payton-preslee/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/461801677_1522692688379886_1763591418170887019_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=9f807c&_nc_ohc=cHY1in68rqAQ7kNvgG3iO30&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AEbar1eesr6kDWfI-CYWdXF&oh=03_Q7cD1QHH-DUHbwLTXkuDH15WckEDpK78i_dp8nodNbPQVY-gPA&oe=6728F0C7" alt="Payton Preslee">
+                Payton Preslee
+                <div class="time-since" data-updated="2024-10-05T12:00:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/perfectgirlfriend/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/460337743_1980474885733476_4061230017847002497_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=9f807c&_nc_ohc=mig_tzD6190Q7kNvgHh0xBs&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=A5_xsI1WOlqLyyPg2X8w3_9&oh=03_Q7cD1QFLUdnvhRnz9EKOFFSNvK6hEvg7gM6DPd45Q_LY0qMLAg&oe=671EFC98" alt="PerfectGirlfriend">
+                PerfectGirlfriend
+                <div class="time-since" data-updated="2024-09-28T12:25:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/remy-lacroix/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/462242182_547140917836753_1842210529907582166_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=9f807c&_nc_ohc=8gEwQSqBjWoQ7kNvgEv-zOj&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AadE0hjosES8BIe-Lwjb8ZK&oh=03_Q7cD1QEJN1tQJikVQZpM49Ma9SbKl1IhUSbXjLK_MhF1799tyw&oe=672A7ED9" alt="Remy Lacroix">
+                Remy Lacroix
+                <div class="time-since" data-updated="2024-09-22T12:10:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/riley-reid/">
+            <div>
+                <img src="/imgs/riley-reid.jpg" alt="Riley Reid">
+                Riley Reid
+                <div class="time-since" data-updated="2024-10-19T12:05:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/roxie-sinner/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/462544211_916895703622399_8364672900934372507_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=9f807c&_nc_ohc=faMi0ko57i0Q7kNvgH0sB2i&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AHs-1OOctLHCYT-DnffaU05&oh=03_Q7cD1QE39T7gdwZUpNYtv2yWhXzULqqRYB8TLoo61DEW0bh8QQ&oe=672FEE8B" alt="Roxie Sinner">
+                Roxie Sinner
+                <div class="time-since" data-updated="2024-10-11T12:15:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/ryan-reid/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/459204303_788571263263817_8690035370911822125_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=9f807c&_nc_ohc=c9mlSY4kiA4Q7kNvgGhK_zU&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=A7mR9YBRpYERCuoDZNF0W_M&oh=03_Q7cD1QG29QcU77FL61yV33EOnevHf74bPrknsBL0kN2YicSB3g&oe=6715F72A" alt="Ryan Reid">
+                Ryan Reid
+                <div class="time-since" data-updated="2024-09-19T12:30:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/sarah-illustrates/">
+            <div>
+                <img src="/imgs/sarah-illustrates.jpg" alt="Sarah Illustrates">
+                Sarah Illustrates
+                <div class="time-since" data-updated="2024-10-18T12:25:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/savannah-bond/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/462097769_2819191614914516_509237331337225637_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=9f807c&_nc_ohc=opBgXPzkq3kQ7kNvgFg6X_e&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=ANbAextin8pjvnVJ7p-UGrI&oh=03_Q7cD1QEP3tMZt6pChnIwYtmASv5tcy4aek7b6GndBZ54nD7E2w&oe=672A7725" alt="Savannah Bond">
+                Savannah Bond
+                <div class="time-since" data-updated="2024-09-07T12:03:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/scarlettkissesxo/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/461869750_512253611660101_4800254158155975506_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=9f807c&_nc_ohc=9R4eF3B_Pz4Q7kNvgEbQKPM&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AdXhBFpS2gUv4yBe0n9jplc&oh=03_Q7cD1QGsG2Rxj141nSt3GTMmf26s66n7x7rk7qOUhYxrLyIwmA&oe=672A66D9" alt="Scarlettkissesxo">
+                Scarlettkissesxo
+                <div class="time-since" data-updated="2024-09-19T12:05:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/shrooms-q/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/461808423_547886104381634_6718712966090553200_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=9f807c&_nc_ohc=WWiuwLGVRKQQ7kNvgGX1qf6&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AEFuz1NNh_gidjGn_mxQSae&oh=03_Q7cD1QG33sD45Md7Sq56Pag4ZMe8GPOW1zUV7_E5oiAPqTM5XA&oe=6725A79E" alt="Shrooms Q">
+                Shrooms Q
+                <div class="time-since" data-updated="2024-10-01T12:10:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/sky-bri/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/461609381_3826879454258688_3073367825516006114_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=9f807c&_nc_ohc=UhPecuOoC-oQ7kNvgE7KcCM&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AqUt3pnQG3p3tEbHLYjPEAj&oh=03_Q7cD1QEN_raCaL1KexlcsYbHWxSDfxgWFjIRz4tQ15s72mYdHg&oe=672A7993" alt="Sky Bri">
+                Sky Bri
+                <div class="time-since" data-updated="2024-09-16T12:10:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/skylar-vox/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/462547051_473086972359048_4927623737885014350_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=9f807c&_nc_ohc=vVR38AzXVKkQ7kNvgFH9XNQ&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=A1U_223zS4iSx697pVTfCWj&oh=03_Q7cD1QGTUYGJuL5xbMcjudgZ3tgaf0dRK_pa7MaWfYIYEaB8_w&oe=672C106F" alt="Skylar Vox">
+                Skylar Vox
+                <div class="time-since" data-updated="2024-10-08T12:00:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/sophie-reade/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/458165601_1263564944810966_6898939716093423476_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=9f807c&_nc_ohc=_PhXNScqCMYQ7kNvgHbJd5x&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AnTnXfhr8lbSZZF7UTxP8cj&oh=03_Q7cD1QFVasGNQviGD4S1_JaqFXb8TYsPaXPT4SA_WiQpVVBIEg&oe=67144177" alt="Sophie Reade">
+                Sophie Reade
+                <div class="time-since" data-updated="2024-09-19T12:00:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/stella-barey/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/461707353_7566758176759997_2471232661548324674_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=9f807c&_nc_ohc=hg0A8AYRRuMQ7kNvgHBi5r4&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=ApISAGznDU0i9usJk3sgvyX&oh=03_Q7cD1QFKldw1ehgjP9qUKlBkupRJWUuBITmPDJiS-eGdfozS1Q&oe=672A90E6" alt="Stella Barey">
+                Stella Barey
+                <div class="time-since" data-updated="2024-09-14T12:45:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/suttin/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/461876850_999055158662047_2840329537297212864_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=9f807c&_nc_ohc=dUhF2aMrnJkQ7kNvgGe5hqA&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AUQB6TTy1lLZEBCOuGSfGKl&oh=03_Q7cD1QHyzAa6dutqKoErkKLV_PW8p4T0u5y9mFasBck_bQecSw&oe=672A750E" alt="Suttin">
+                Suttin
+                <div class="time-since" data-updated="2024-09-05"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/thedandangler/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/461435577_1481834068982420_2646343435055328639_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=9f807c&_nc_ohc=Gm00wRsbPXQQ7kNvgFjMa9W&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AN83vL5dbJc4FL2oTFxFIM6&oh=03_Q7cD1QEHj0_9dMWtoZRLduWAaSYsW2K-2ge1ayrFcnSqRsaIfQ&oe=6725BD55" alt="TheDanDangler">
+                TheDanDangler
+                <div class="time-since" data-updated="2024-10-11T12:25:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/theodora-day/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/457748409_1841389003018795_6594048996702421035_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=9f807c&_nc_ohc=6X0Zw2q_OWEQ7kNvgHjr9o1&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AvydpQqYmhYRlMPT8gOQGQ0&oh=03_Q7cD1QFEbt8HgFx0e5o09k3lkNG6Vgq2qUlcJlJJy9FDlSBFdQ&oe=672D1140" alt="Theodora Day">
+                Theodora Day
+                <div class="time-since" data-updated="2024-09-08T12:25:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/tru-kait/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/460315018_549507617566284_7231753200175183193_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=9f807c&_nc_ohc=uKpXavrbpuUQ7kNvgEZ3uJG&_nc_ht=scontent.fcwb2-3.fna&oh=03_Q7cD1QFVL1flcwWM3z_F3SHhxMg_fs1uE9PzQLkVCCsan3Tyyw&oe=671C6CC3" alt="Tru Kait">
+                Tru Kait
+                <div class="time-since" data-updated="2024-09-26T12:10:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/valentina-nappi/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/461512019_983321604002639_6979157963886493084_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=9f807c&_nc_ohc=rq5dhT9EXA0Q7kNvgHqYU0S&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=Aaul7MPHUqA1nQPB5J_CYCC&oh=03_Q7cD1QG8sWg_-hCRTCPpTW7_h54L9zPnE0DxT0G4k5z2yRVxyQ&oe=672A4B3F" alt="Valentina Nappi">
+                Valentina Nappi
+                <div class="time-since" data-updated="2024-10-06T12:25:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/valerica-steele/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/462220885_3865212390410271_1607059324327763283_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=9f807c&_nc_ohc=JNMVw-3o8TwQ7kNvgGBJ-5Z&_nc_zt=23&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AfnCxO964hVCMr5xBkNlO8l&oh=03_Q7cD1QEPNG-r4mJaxOK3YZuQyy6SwdIdcqImNQyQpyzQ6mlYvQ&oe=6736741B" alt="Valerica Steele">
+                Valerica Steele
+                <div class="time-since" data-updated="2024-10-16T12:25:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/violet-myers/">
+            <div>
+                <img src="/imgs/violet-myers.jpg" alt="Violet Myers">
+                Violet Myers
+                <div class="time-since" data-updated="2024-10-18T12:30:00"><span></span></div>
+            </div>
+        </a>
+
+        <a href="/vivian-taylor/">
+            <div>
+                <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/461715482_889604662688683_8983167853884219291_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=9f807c&_nc_ohc=oDZa7bHB2h8Q7kNvgGoZTSj&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=A6y4gbpgADVDTLCKGAPwg21&oh=03_Q7cD1QFdaqo-4haul7MgsavDHtmUHQAJbNTY_DNt11DNukZmwA&oe=672A8F96" alt="Vivian Taylor">
+                Vivian Taylor
+                <div class="time-since" data-updated="2024-09-10T12:05:00"><span></span></div>
+            </div>
+        </a>
+
+        <!-- Elemento fantasma para alinhar corretamente a última linha -->
+        <div class="ghost"></div>
+        <div class="ghost"></div>
+        <div class="ghost"></div>
+        <div class="ghost"></div>
     </div>
 
-    <a class="back-to-models" href="../">Return to models page</a>
-    <button class="back-to-top" id="backToTop" onclick="window.scrollTo(0, 0)">
-        &#8593; <!-- �cone de seta para cima -->
-    </button>
+    <!-- Botão para rolar até o topo -->
+    <button id="scrollToTop"><i class="fas fa-arrow-up"></i></button>
 
     <script>
-        const totalVideos = {}; // Atualize o total de v�deos
-        document.getElementById('total-videos').textContent = totalVideos;
-
-        // Exibir o bot�o "Voltar ao Topo" quando rolar para baixo
-        window.onscroll = function() {
-            const backToTopBtn = document.getElementById('backToTop');
-            if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
-                backToTopBtn.style.display = 'block';
-            } else {
-                backToTopBtn.style.display = 'none';
+        document.addEventListener("DOMContentLoaded", function() {
+            const container = document.querySelector('.container');
+            const models = Array.from(document.querySelectorAll(".container a"));
+            const counter = document.getElementById("counter");
+            const searchInput = document.getElementById("search");
+            const sortOrderSelect = document.getElementById("sort-order");
+    
+            // Função para atualizar o contador de modelos
+            function updateCounter() {
+                const visibleModels = models.filter(model => model.style.display !== "none");
+                counter.textContent = `All Models: ${visibleModels.length}`;
             }
+
+            // Atualiza o contador inicialmente
+            updateCounter();
+    
+            // Filtro de pesquisa em tempo real
+            searchInput.addEventListener("input", function() {
+                const query = searchInput.value.toLowerCase();
+                models.forEach(model => {
+                    const name = model.textContent.toLowerCase();
+                    if (name.includes(query)) {
+                        model.style.display = "block";
+                    } else {
+                        model.style.display = "none";
+                    }
+                });
+                updateCounter();
+            });
+
+            // Função para ordenar os modelos
+            function sortModels(order) {
+                // Converter NodeList para Array novamente para evitar inconsistências
+                let sortedModels = Array.from(models);
+            
+                sortedModels.sort((a, b) => {
+                    if (order === 'newest' || order === 'oldest') {
+                        const dateA = a.querySelector('.time-since') ? new Date(a.querySelector('.time-since').getAttribute('data-updated')) : new Date(0);
+                        const dateB = b.querySelector('.time-since') ? new Date(b.querySelector('.time-since').getAttribute('data-updated')) : new Date(0);
+            
+                        if (order === 'newest') {
+                            return dateB - dateA; // Mais novo primeiro
+                        } else {
+                            return dateA - dateB; // Mais antigo primeiro
+                        }
+                    } else if (order === 'az') {
+                        const nameA = a.textContent.toLowerCase();
+                        const nameB = b.textContent.toLowerCase();
+                        return nameA.localeCompare(nameB); // Ordem alfabética A-Z
+                    } else if (order === 'za') {
+                        const nameA = a.textContent.toLowerCase();
+                        const nameB = b.textContent.toLowerCase();
+                        return nameB.localeCompare(nameA); // Ordem alfabética Z-A
+                    }
+                });
+            
+                // Limpar o container e anexar os modelos ordenados
+                sortedModels.forEach(model => container.appendChild(model));
+            
+                // Manter os elementos fantasma no final
+                const ghosts = Array.from(container.querySelectorAll('.ghost'));
+                ghosts.forEach(ghost => container.appendChild(ghost));
+            }
+
+            // Evento de mudança no select de ordenação
+            sortOrderSelect.addEventListener("change", function() {
+                const selectedOrder = sortOrderSelect.value;
+                sortModels(selectedOrder);
+            });
+
+            // Ordenar inicialmente por mais novo para mais antigo
+            sortModels('newest');
+    
+            // Atualizar o contador quando a ordenação ou filtragem mudar
+            // Já está sendo chamado na função de filtro
+
+        });
+    </script>
+
+    <script>
+        function timeSince(date) {
+            const now = new Date();
+            const updatedDate = new Date(date);
+            const seconds = Math.floor((now - updatedDate) / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+            const weeks = Math.floor(days / 7);
+            const months = Math.floor(days / 30);
+            const years = Math.floor(days / 365);
+    
+            if (years > 0) {
+                return years === 1 ? '1 year' : `${years} years`;
+            } else if (months > 0) {
+                return months === 1 ? '1 month' : `${months} months`;
+            } else if (weeks > 0) {
+                return weeks === 1 ? '1 week' : `${weeks} weeks`;
+            } else if (days > 0) {
+                return days === 1 ? '1 day' : `${days} days`;
+            } else if (hours > 0) {
+                return 'New'; // Trata qualquer tempo dentro do dia atual como "New"
+            } else if (minutes > 0) {
+                return 'New'; // Trata qualquer tempo dentro da hora atual como "New"
+            } else {
+                return 'New'; // Trata qualquer tempo dentro do minuto atual como "New"
+            }
+        }
+    
+        function updateTimes() {
+            const timeElements = document.querySelectorAll('.time-since');
+            timeElements.forEach(el => {
+                const updatedDate = el.getAttribute('data-updated');
+                const timeSinceUpdate = timeSince(updatedDate);
+                el.querySelector('span').textContent = timeSinceUpdate;
+            });
+        }
+    
+        // Atualiza o tempo desde a última atualização a cada minuto
+        updateTimes();
+        setInterval(updateTimes, 60000); // 1 minuto em milissegundos
+    </script>
+
+    <script>
+        const scrollToTopButton = document.getElementById('scrollToTop');
+
+        // Exibe o botão quando a página é rolada para baixo
+        window.onscroll = function() {
+            scrollToTopButton.style.display = (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) ? 'block' : 'none';
         };
 
-        function openModal(thumbnail) {
-            const videoSrc = thumbnail.getAttribute('data-src');
-            const downloadLink = thumbnail.getAttribute('data-download');
-            const modal = document.getElementById('videoModal');
-            const modalVideo = document.getElementById('modalVideo');
-            const downloadBtn = document.getElementById('downloadBtn');
-            
-            modalVideo.src = videoSrc;
-            downloadBtn.onclick = () => window.open(downloadLink, '_blank');
-            
-            modal.style.display = 'flex';
-        }
-
-        function closeModal() {
-            const modal = document.getElementById('videoModal');
-            const modalVideo = document.getElementById('modalVideo');
-            modalVideo.src = '';
-            modal.style.display = 'none';
-        }
-
-        // Fun��o para substituir a imagem quando ela n�o carregar
-        function handleImageError(img) {
-            img.style.display = 'none'; // Esconde a imagem quebrada
-            img.src = '/imgs/warning.jpg'; // Substitua pelo caminho da sua imagem de fallback
-            img.onerror = null; // Para evitar um loop infinito caso a imagem de fallback tamb�m falhe
-        }
+        // Rolagem suave para o topo
+        scrollToTopButton.onclick = function() {
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        };
     </script>
+
 </body>
 </html>

@@ -361,7 +361,8 @@
     </button>
 
     <script>
-        const totalVideos = {}; // Atualize o total de v�deos
+        // Conta automaticamente o n�mero de miniaturas com a classe 'thumbnail'
+        const totalVideos = document.querySelectorAll('.thumbnail').length;
         document.getElementById('total-videos').textContent = totalVideos;
 
         // Exibir o bot�o "Voltar ao Topo" quando rolar para baixo

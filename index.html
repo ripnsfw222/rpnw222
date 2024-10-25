@@ -2,7 +2,6 @@
 <html lang="pt-BR">
 <head>
     <link rel="icon" href="/imgs/ripnsfw222.com.png" type="image/png">
-    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-4Q5W50413V"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -175,7 +174,7 @@
     <div class="container">
         <a href="/addison-vodka/">
             <div>
-                <img src="/imgs/addison-vodka.jpg" alt="Addison Vodka">
+                <img src="imgs/addison-vodka.jpg" alt="Addison Vodka">
                 Addison Vodka
                 <div class="time-since" data-updated="2024-09-23T12:05:00"><span></span></div>
             </div>
@@ -183,13 +182,13 @@
         
         <a href="/adriana-chechik/">
             <div>
-                <img src="/imgs/adriana-chechik.jpg" alt="Adriana Chechik">
+                <img src="imgs/adriana-chechik.jpg" alt="Adriana Chechik">
                 Adriana Chechik
                 <div class="time-since" data-updated="2024-10-21T12:10:00"><span></span></div>
             </div>
         </a>
 
-        <a href="/alexis-texas/">
+        <a href="alexis-texas/">
             <div>
                 <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/461482084_509404608636186_4065417813280432770_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=9f807c&_nc_ohc=STUDrWdEuwUQ7kNvgExxWu8&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AuRRqpH9o2gj_EJRN7B_gSF&oh=03_Q7cD1QGifd6MX7_AgozKmeeY6oJxgbhmC6Yqcz28SlZ-yWMpMA&oe=672A9E29" alt="Alexis Texas">
                 Alexis Texas
@@ -421,7 +420,7 @@
             </div>
         </a>
 
-        <a href="/gabbie-carter/">
+        <a href="gabbie-carter/">
             <div>
                 <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/461086228_1565348991007482_5382442753927192219_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=9f807c&_nc_ohc=uOzgPNOabNUQ7kNvgEALJ4c&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=Aa_UFocE-aaKDc5MnNhqmru&oh=03_Q7cD1QELTQoNiHm_z-0ZoNs3HS-4mr6XAS0B-WOslGA8xB_D6A&oe=6725BEC4" alt="Gabbie Carter">
                 Gabbie Carter
@@ -517,7 +516,7 @@
             </div>
         </a>
 
-        <a href="/jessie-rogers/">
+        <a href="jessie-rogers/">
             <div>
                 <img src="/imgs/jessie-rogers.jpg" alt="Jessie Rogers">
                 Jessie Rogers
@@ -549,7 +548,7 @@
             </div>
         </a>
 
-        <a href="/karlee-grey/">
+        <a href="karlee-grey/">
             <div>
                 <img src="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/462541352_523069453809845_307017384589834313_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=9f807c&_nc_ohc=hFI44cxdNsAQ7kNvgFwrX-D&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=A8Xgf62NY-ttTRxaw2Jgnxj&oh=03_Q7cD1QHNDpVTmsJ7uFeNblD3km_h_1x-fBoo52RZ8j3bQXmFzw&oe=67316484" alt="Karlee Grey">
                 Karlee Grey
@@ -1018,139 +1017,68 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const container = document.querySelector('.container');
-            const models = Array.from(document.querySelectorAll(".container a"));
             const counter = document.getElementById("counter");
             const searchInput = document.getElementById("search");
-            const sortOrderSelect = document.getElementById("sort-order");
+            const GITHUB_TOKEN = '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'; // Insira seu token de acesso aqui
+            const REPO_OWNER = 'ripnsfw222';
+            const REPO_NAME = 'rpnw222';
+    
+            // Função para buscar modelos do repositório
+            async function fetchModels() {
+                const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/`, {
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Accept': 'application/vnd.github.v3.raw'
+                    }
+                });
+    
+                if (!response.ok) {
+                    console.error('Erro ao buscar modelos:', response.statusText);
+                    return;
+                }
+    
+                const data = await response.json();
+                data.forEach(item => {
+                    if (item.type === 'dir') { // Filtra apenas diretórios
+                        const newModel = document.createElement('a');
+                        newModel.href = `/${item.name}/`;
+                        newModel.innerHTML = `
+                            <div>
+                                <img src="/imgs/${item.name}.jpg" alt="${item.name}">
+                                ${item.name}
+                                <div class="time-since" data-updated="${new Date().toISOString()}"><span></span></div>
+                            </div>
+                        `;
+                        container.appendChild(newModel);
+                    }
+                });
+    
+                updateCounter();
+                sortModels('newest'); // Ordenar após carregar
+            }
     
             // Função para atualizar o contador de modelos
             function updateCounter() {
-                const visibleModels = models.filter(model => model.style.display !== "none");
+                const visibleModels = Array.from(container.children).filter(model => model.style.display !== "none");
                 counter.textContent = `All Models: ${visibleModels.length}`;
             }
-
-            // Atualiza o contador inicialmente
-            updateCounter();
     
-            // Filtro de pesquisa em tempo real
-            searchInput.addEventListener("input", function() {
-                const query = searchInput.value.toLowerCase();
-                models.forEach(model => {
-                    const name = model.textContent.toLowerCase();
-                    if (name.includes(query)) {
-                        model.style.display = "block";
-                    } else {
-                        model.style.display = "none";
-                    }
+            // Função para filtrar modelos
+            function filterModels(query) {
+                Array.from(container.children).forEach(model => {
+                    const name = model.querySelector('div').textContent.toLowerCase();
+                    model.style.display = name.includes(query) ? 'block' : 'none';
                 });
                 updateCounter();
-            });
-
-            // Função para ordenar os modelos
-            function sortModels(order) {
-                // Converter NodeList para Array novamente para evitar inconsistências
-                let sortedModels = Array.from(models);
-            
-                sortedModels.sort((a, b) => {
-                    if (order === 'newest' || order === 'oldest') {
-                        const dateA = a.querySelector('.time-since') ? new Date(a.querySelector('.time-since').getAttribute('data-updated')) : new Date(0);
-                        const dateB = b.querySelector('.time-since') ? new Date(b.querySelector('.time-since').getAttribute('data-updated')) : new Date(0);
-            
-                        if (order === 'newest') {
-                            return dateB - dateA; // Mais novo primeiro
-                        } else {
-                            return dateA - dateB; // Mais antigo primeiro
-                        }
-                    } else if (order === 'az') {
-                        const nameA = a.textContent.toLowerCase();
-                        const nameB = b.textContent.toLowerCase();
-                        return nameA.localeCompare(nameB); // Ordem alfabética A-Z
-                    } else if (order === 'za') {
-                        const nameA = a.textContent.toLowerCase();
-                        const nameB = b.textContent.toLowerCase();
-                        return nameB.localeCompare(nameA); // Ordem alfabética Z-A
-                    }
-                });
-            
-                // Limpar o container e anexar os modelos ordenados
-                sortedModels.forEach(model => container.appendChild(model));
-            
-                // Manter os elementos fantasma no final
-                const ghosts = Array.from(container.querySelectorAll('.ghost'));
-                ghosts.forEach(ghost => container.appendChild(ghost));
             }
-
-            // Evento de mudança no select de ordenação
-            sortOrderSelect.addEventListener("change", function() {
-                const selectedOrder = sortOrderSelect.value;
-                sortModels(selectedOrder);
-            });
-
-            // Ordenar inicialmente por mais novo para mais antigo
-            sortModels('newest');
     
-            // Atualizar o contador quando a ordenação ou filtragem mudar
-            // Já está sendo chamado na função de filtro
-
+            // Filtro de pesquisa
+            searchInput.addEventListener("input", function() {
+                filterModels(searchInput.value.toLowerCase());
+            });
+    
+            // Chamar a função para buscar os modelos ao carregar a página
+            fetchModels();
         });
     </script>
-
-    <script>
-        function timeSince(date) {
-            const now = new Date();
-            const updatedDate = new Date(date);
-            const seconds = Math.floor((now - updatedDate) / 1000);
-            const minutes = Math.floor(seconds / 60);
-            const hours = Math.floor(minutes / 60);
-            const days = Math.floor(hours / 24);
-            const weeks = Math.floor(days / 7);
-            const months = Math.floor(days / 30);
-            const years = Math.floor(days / 365);
     
-            if (years > 0) {
-                return years === 1 ? '1 year' : `${years} years`;
-            } else if (months > 0) {
-                return months === 1 ? '1 month' : `${months} months`;
-            } else if (weeks > 0) {
-                return weeks === 1 ? '1 week' : `${weeks} weeks`;
-            } else if (days > 0) {
-                return days === 1 ? '1 day' : `${days} days`;
-            } else if (hours > 0) {
-                return 'New'; // Trata qualquer tempo dentro do dia atual como "New"
-            } else if (minutes > 0) {
-                return 'New'; // Trata qualquer tempo dentro da hora atual como "New"
-            } else {
-                return 'New'; // Trata qualquer tempo dentro do minuto atual como "New"
-            }
-        }
-    
-        function updateTimes() {
-            const timeElements = document.querySelectorAll('.time-since');
-            timeElements.forEach(el => {
-                const updatedDate = el.getAttribute('data-updated');
-                const timeSinceUpdate = timeSince(updatedDate);
-                el.querySelector('span').textContent = timeSinceUpdate;
-            });
-        }
-    
-        // Atualiza o tempo desde a última atualização a cada minuto
-        updateTimes();
-        setInterval(updateTimes, 60000); // 1 minuto em milissegundos
-    </script>
-
-    <script>
-        const scrollToTopButton = document.getElementById('scrollToTop');
-
-        // Exibe o botão quando a página é rolada para baixo
-        window.onscroll = function() {
-            scrollToTopButton.style.display = (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) ? 'block' : 'none';
-        };
-
-        // Rolagem suave para o topo
-        scrollToTopButton.onclick = function() {
-            window.scrollTo({top: 0, behavior: 'smooth'});
-        };
-    </script>
-
-</body>
-</html>

@@ -135,6 +135,7 @@ const container = document.querySelector('.container');
   let paginaAtual = 1;
 
   function paginar() {
+    const modelos = container.children; // Recarrega os modelos ao paginar para incluir novos itens
     const inicio = (paginaAtual - 1) * itensPorPagina;
     const fim = inicio + itensPorPagina;
 
@@ -152,18 +153,32 @@ const container = document.querySelector('.container');
     paginar();
   }
 
-  // Inicializar paginação
-  paginar();
+  function atualizarPaginacao() {
+  const modelos = container.children;
+  const numPaginas = Math.ceil(modelos.length / itensPorPagina);
+  
+  // Limpar botões de paginação existentes
+  paginacao.innerHTML = '';
 
-  // Criar botões de paginação
-  const paginacao = document.createElement('div');
-  paginacao.className = 'paginacao';
-
-  for (let i = 1; i <= Math.ceil(modelos.length / itensPorPagina); i++) {
+  // Criar novos botões de paginação
+  for (let i = 1; i <= numPaginas; i++) {
     const botao = document.createElement('button');
     botao.textContent = i;
     botao.onclick = () => mudarPagina(i);
     paginacao.appendChild(botao);
   }
+}
 
-  container.parentNode.insertBefore(paginacao, container.nextSibling);
+  // Inicializar a paginação e os botões
+paginar();
+const paginacao = document.createElement('div');
+paginacao.className = 'paginacao';
+container.parentNode.insertBefore(paginacao, container.nextSibling);
+atualizarPaginacao();
+
+// Adicione um MutationObserver para monitorar mudanças no container
+const observer = new MutationObserver(() => {
+  atualizarPaginacao(); // Atualiza a paginação sempre que novos itens são adicionados
+  paginar(); // Reaplica a paginação com os novos itens
+});
+observer.observe(container, { childList: true });

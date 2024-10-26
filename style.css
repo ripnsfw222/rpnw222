@@ -133,19 +133,3 @@ body {
     border-radius: 5px;
     cursor: pointer;
 }
-
-#modelos {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.modelo {
-    margin: 20px;
-    width: 200px;
-}
-
-.paginacao{
-    margin-top: 30px;
-    margin-bottom: 30px;
-}

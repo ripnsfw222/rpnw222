@@ -30,7 +30,7 @@
         }
         .thumbnail {
             max-height: 700px;  /* Defina uma altura fixa */
-            object-fit: cover;  /* Faz com que a imagem seja cortada para preencher o contêiner */
+            object-fit: cover;  /* Faz com que a imagem seja cortada para preencher o cont�iner */
             margin: 20px auto;
             border-radius: 10px;
             cursor: pointer;
@@ -61,7 +61,7 @@
         }
         .modal-content iframe {
             width: 100%;
-            height: 600px;  /* Altura padrão para desktop */
+            height: 600px;  /* Altura padr�o para desktop */
             border: none;
         }
         .download-btn {
@@ -96,7 +96,7 @@
             text-decoration: none;
             font-size: 1.2em;
         }
-        /* Botão fixo para voltar ao topo */
+        /* Bot�o fixo para voltar ao topo */
         .back-to-top {
             position: fixed;
             bottom: 20px;
@@ -115,19 +115,19 @@
         .back-to-top:hover {
             background-color: #e07b00;
         }
-        /* Consultas de mídia para dispositivos móveis */
+        /* Consultas de m�dia para dispositivos m�veis */
         @media (max-width: 768px) {
             .modal-content iframe {
-                height: 400px;  /* Ajuste a altura para dispositivos móveis */
+                height: 400px;  /* Ajuste a altura para dispositivos m�veis */
             }
             h1 {
-                font-size: 2em;  /* Reduzir o tamanho da fonte para o título */
+                font-size: 2em;  /* Reduzir o tamanho da fonte para o t�tulo */
             }
             .video-counter {
                 font-size: 1em;  /* Ajustar o tamanho da fonte do contador */
             }
             .thumbnail {
-                max-width: 100%;  /* Thumbnail ocupa 100% da largura em dispositivos móveis */
+                max-width: 100%;  /* Thumbnail ocupa 100% da largura em dispositivos m�veis */
             }
         }
     </style>
@@ -135,8 +135,11 @@
 <body>
     <p><a class="back-to-models" href="../">Return to models page</a></p>
     <h1>Jessie Rogers</h1>
-    <div class="video-counter">Videos: <span id="total-videos">45</span></div>
+    <div class="video-counter">Videos: <span id="total-videos">46</span></div>
 
+    <img class="thumbnail" data-src="https://dood.li/e/p5gdp70u4thn" data-download="https://dood.li/d/p5gdp70u4thn" src="https://img.doodcdn.co/splash/8anvxclc40767q97.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+    
     <img class="thumbnail" data-src="https://dood.li/e/0h0pv5zfth7y" data-download="https://dood.li/d/0h0pv5zfth7y" src="https://img.doodcdn.co/splash/y8zy2rledakaaml5.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
     <br>
     
@@ -282,15 +285,15 @@
 
     <a class="back-to-models" href="../">Return to models page</a>
     <button class="back-to-top" id="backToTop" onclick="window.scrollTo(0, 0)">
-        &#8593; <!-- Ícone de seta para cima -->
+        &#8593; <!-- �cone de seta para cima -->
     </button>
 
     <script>
-        // Conta automaticamente o número de miniaturas com a classe 'thumbnail'
+        // Conta automaticamente o n�mero de miniaturas com a classe 'thumbnail'
         const totalVideos = document.querySelectorAll('.thumbnail').length;
         document.getElementById('total-videos').textContent = totalVideos;
 
-        // Exibir o botão "Voltar ao Topo" quando rolar para baixo
+        // Exibir o bot�o "Voltar ao Topo" quando rolar para baixo
         window.onscroll = function() {
             const backToTopBtn = document.getElementById('backToTop');
             if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
@@ -320,11 +323,11 @@
             modal.style.display = 'none';
         }
 
-        // Função para substituir a imagem quando ela não carregar
+        // Fun��o para substituir a imagem quando ela n�o carregar
         function handleImageError(img) {
             img.style.display = 'block'; // Mostra a imagem de fallback, caso tenha sido escondida
             img.src = '/imgs/warning.jpg'; // Substitua pelo caminho da sua imagem de fallback
-            img.onerror = null; // Para evitar um loop infinito caso a imagem de fallback também falhe
+            img.onerror = null; // Para evitar um loop infinito caso a imagem de fallback tamb�m falhe
         }
     </script>
 </body>

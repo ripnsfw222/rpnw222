@@ -1,14 +1,17 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <link rel="icon" href="/imgs/ripnsfw222.com.png" type="image/png">
+    <script src="/analytics.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Brenda Trindade</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #000; /* Fundo preto */
-            color: #fff; /* Texto branco */
+            background-color: #000;
+            color: #fff;
             margin: 0;
             padding: 0;
             display: flex;
@@ -18,157 +21,314 @@
         h1 {
             font-size: 2.5em;
             margin: 20px 0;
-            color: #ff9000; /* Título laranja */
+            color: #ff9000;
         }
         .video-counter {
             font-size: 1.2em;
             margin-bottom: 20px;
-            color: #ff9000; /* Cor do contador de vídeos */
+            color: #ff9000;
         }
-        .video-container {
-            display: none;
-            width: 90%;
-            max-width: 1920px;
-            height: 640px;
+        .thumbnail {
+            max-height: 700px;  /* Defina uma altura fixa */
+            object-fit: cover;  /* Faz com que a imagem seja cortada para preencher o cont�iner */
             margin: 20px auto;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+        .thumbnail:hover {
+            box-shadow: 0 0 20px 5px rgba(255, 165, 0, 0.7); /* Sombra laranja */
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            position: relative;
+            width: 85%;
+            max-width: 1200px;
+            background-color: #222;
+            border-radius: 10px;
+            padding: 10px;
+        }
+        .modal-content iframe {
+            width: 100%;
+            height: 600px;  /* Altura padr�o para desktop */
             border: none;
-            border-radius: 10px; /* Bordas arredondadas */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Sombra */
         }
-        .video-container.active {
+        .download-btn {
             display: block;
-        }
-        .load-more {
-            font-size: 1.2em;
-            color: #000; /* Texto preto */
-            background-color: #ff9000; /* Botão laranja */
-            padding: 10px 20px;
+            width: 100%;
+            max-width: 200px;
+            margin: 20px auto;
+            padding: 10px;
+            text-align: center;
+            background-color: #ff9000;
+            color: #fff;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            font-size: 1em;
+        }
+        .download-btn:hover {
+            background-color: #e07b00;
+        }
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        .back-to-models {
             margin: 20px 0;
-            transition: background-color 0.3s ease;
-        }
-        .load-more:hover {
-            background-color: #e67e00; /* Efeito de hover */
-        }
-        a {
+            color: #ff9000;
             text-decoration: none;
-            color: #ff9000; /* Links laranja */
             font-size: 1.2em;
-            margin-top: 20px;
-            transition: color 0.3s ease;
         }
-        a:hover {
-            color: #fff; /* Efeito de hover */
+        /* Bot�o fixo para voltar ao topo */
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #ff9000;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 1em;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: none; /* Inicialmente escondido */
         }
-        @media (max-width: 600px) {
+        .back-to-top:hover {
+            background-color: #e07b00;
+        }
+        /* Consultas de m�dia para dispositivos m�veis */
+        @media (max-width: 768px) {
+            .modal-content iframe {
+                height: 400px;  /* Ajuste a altura para dispositivos m�veis */
+            }
             h1 {
-                font-size: 1.8em;
+                font-size: 2em;  /* Reduzir o tamanho da fonte para o t�tulo */
             }
-            .video-container {
-                height: 200px;
+            .video-counter {
+                font-size: 1em;  /* Ajustar o tamanho da fonte do contador */
             }
-            .load-more {
-                font-size: 1em;
-            }
-            a {
-                font-size: 1em;
+            .thumbnail {
+                max-width: 100%;  /* Thumbnail ocupa 100% da largura em dispositivos m�veis */
             }
         }
     </style>
 </head>
 <body>
-    <p><a href="../">Return to Models Page</a></p>
+    <p><a class="back-to-models" href="../">Return to models page</a></p>
+    <h1>Brenda Trindade</h1>
+    <div class="video-counter">Videos: <span id="total-videos">46</span></div>
 
-    <div class="video-counter">Videos: <span id="total-videos">0</span></div>
+    <img class="thumbnail" data-src="https://dood.li/e/w8g728w8ff6w" data-download="https://dood.li/d/w8g728w8ff6w" src="https://img.doodcdn.co/splash/cbtvxj2nemlojifj.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
     
-    <!-- Vídeos -->
-    <iframe class="video-container" data-src="https://dood.li/e/wifryktdyrjf" scrolling="no" frameborder="0" allowfullscreen></iframe>
-    <iframe class="video-container" data-src="https://dood.li/e/0k4idf3ecnt8" scrolling="no" frameborder="0" allowfullscreen></iframe>
-    <iframe class="video-container" data-src="https://dood.li/e/therr6bge4do" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <img class="thumbnail" data-src="https://dood.li/e/wifryktdyrjf" data-download="https://dood.li/d/wifryktdyrjf" src="https://img.doodcdn.co/splash/5qsf76h1l2rbxucl.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
     
-    <iframe class="video-container" data-src="https://dood.li/e/v5wnyvuwx61y" scrolling="no" frameborder="0" allowfullscreen></iframe>
-    <iframe class="video-container" data-src="https://dood.li/e/1ypmycjeks7t" scrolling="no" frameborder="0" allowfullscreen></iframe>
-    <iframe class="video-container" data-src="https://dood.li/e/e0qlie90h57d" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <img class="thumbnail" data-src="https://dood.li/e/0k4idf3ecnt8" data-download="https://dood.li/d/0k4idf3ecnt8" src="https://img.doodcdn.co/splash/ypbso4kl0mhv7xz1.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
     
-    <iframe class="video-container" data-src="https://dood.li/e/uuo1lpoxarwg" scrolling="no" frameborder="0" allowfullscreen></iframe>
-    <iframe class="video-container" data-src="https://dood.li/e/yrgj6xh1kv1g" scrolling="no" frameborder="0" allowfullscreen></iframe>
-    <iframe class="video-container" data-src="https://dood.li/e/7oqqhktgl7il" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <img class="thumbnail" data-src="https://dood.li/e/therr6bge4do" data-download="https://dood.li/d/therr6bge4do" src="https://img.doodcdn.co/splash/wa8h08jh76mdomlc.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
     
-    <iframe class="video-container" data-src="https://dood.li/e/ih00zxom7wmt" scrolling="no" frameborder="0" allowfullscreen></iframe>
-    <iframe class="video-container" data-src="https://dood.li/e/p9w83a8x8hrd" scrolling="no" frameborder="0" allowfullscreen></iframe>
-    <iframe class="video-container" data-src="https://dood.li/e/ibnv8yv1p2n9" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <img class="thumbnail" data-src="https://dood.li/e/v5wnyvuwx61y" data-download="https://dood.li/d/v5wnyvuwx61y" src="https://img.doodcdn.co/splash/cqazkyqytfajqgmw.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
     
-    <iframe class="video-container" data-src="https://dood.li/e/w06sn2918rj8" scrolling="no" frameborder="0" allowfullscreen></iframe>
-    <iframe class="video-container" data-src="https://dood.li/e/2ixuktspi1ml" scrolling="no" frameborder="0" allowfullscreen></iframe>
-    <iframe class="video-container" data-src="https://dood.li/e/skp7ioj0o0jv" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <img class="thumbnail" data-src="https://dood.li/e/1ypmycjeks7t" data-download="https://dood.li/d/1ypmycjeks7t" src="https://img.doodcdn.co/splash/cx026zzngqa5bmmq.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
     
-    <iframe class="video-container" data-src="https://dood.li/e/gwsegz0upv3c" scrolling="no" frameborder="0" allowfullscreen></iframe>
-    <iframe class="video-container" data-src="https://dood.li/e/n006rh922cmq" scrolling="no" frameborder="0" allowfullscreen></iframe>
-    <iframe class="video-container" data-src="https://dood.li/e/zurrkloh8s1p" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <img class="thumbnail" data-src="https://dood.li/e/e0qlie90h57d" data-download="https://dood.li/d/e0qlie90h57d" src="https://img.doodcdn.co/splash/57nimty8wqbmb6hf.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
     
-    <iframe class="video-container" data-src="https://dood.li/e/5vztqj5oxvao" scrolling="no" frameborder="0" allowfullscreen></iframe>
-    <iframe class="video-container" data-src="https://dood.li/e/l11rbaqykmzn" scrolling="no" frameborder="0" allowfullscreen></iframe>
-    <iframe class="video-container" data-src="https://dood.li/e/hh56091b40fb" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <img class="thumbnail" data-src="https://dood.li/e/uuo1lpoxarwg" data-download="https://dood.li/d/uuo1lpoxarwg" src="https://img.doodcdn.co/splash/vjauumfrshoa9xt2.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
     
-    <iframe class="video-container" data-src="https://dood.li/e/hahvmmq030d7" scrolling="no" frameborder="0" allowfullscreen></iframe>
-    <iframe class="video-container" data-src="https://dood.li/e/83o15v45x4dp" scrolling="no" frameborder="0" allowfullscreen></iframe>
-    <iframe class="video-container" data-src="https://dood.li/e/pbf97f5wg1zh" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <img class="thumbnail" data-src="https://dood.li/e/yrgj6xh1kv1g" data-download="https://dood.li/d/yrgj6xh1kv1g" src="https://img.doodcdn.co/splash/63toa5ip0obpcy4w.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
     
-    <iframe class="video-container" data-src="https://dood.li/e/ekd7ynqt99o0" scrolling="no" frameborder="0" allowfullscreen></iframe>
-    <iframe class="video-container" data-src="https://dood.li/e/0dr713ujk63i" scrolling="no" frameborder="0" allowfullscreen></iframe>
-    <iframe class="video-container" data-src="https://dood.li/e/hyzmmrojrg7r" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <img class="thumbnail" data-src="https://dood.li/e/7oqqhktgl7il" data-download="https://dood.li/d/7oqqhktgl7il" src="https://img.doodcdn.co/splash/qbzz7dqp5nhlel26.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
     
-    <iframe class="video-container" data-src="https://dood.li/e/u4jq2em69m9s" scrolling="no" frameborder="0" allowfullscreen></iframe>
-    <iframe class="video-container" data-src="https://dood.li/e/oh6mn93hc7hl" scrolling="no" frameborder="0" allowfullscreen></iframe>
-    <iframe class="video-container" data-src="https://dood.li/e/gwqksptwpts7" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <img class="thumbnail" data-src="https://dood.li/e/ih00zxom7wmt" data-download="https://dood.li/d/ih00zxom7wmt" src="https://img.doodcdn.co/splash/iwk91a7hpcre2t1w.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
     
-    <iframe class="video-container" data-src="https://dood.li/e/pqjxdfdvov4f" scrolling="no" frameborder="0" allowfullscreen></iframe>
-    <iframe class="video-container" data-src="https://dood.li/e/dglev381mxyc" scrolling="no" frameborder="0" allowfullscreen></iframe>
-    <iframe class="video-container" data-src="https://dood.li/e/8085b18nq42b" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <img class="thumbnail" data-src="https://dood.li/e/p9w83a8x8hrd" data-download="https://dood.li/d/p9w83a8x8hrd" src="https://img.doodcdn.co/splash/hafgrdqv9v2hb167.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
     
-    <iframe class="video-container" data-src="https://dood.li/e/aoj4laeq6jvh" scrolling="no" frameborder="0" allowfullscreen></iframe>
-    <iframe class="video-container" data-src="https://dood.li/e/8rzwlfq3g1vl" scrolling="no" frameborder="0" allowfullscreen></iframe>
-    <iframe class="video-container" data-src="https://dood.li/e/046tl4mwljjr" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <img class="thumbnail" data-src="https://dood.li/e/ibnv8yv1p2n9" data-download="https://dood.li/d/ibnv8yv1p2n9" src="https://img.doodcdn.co/splash/ychugk6n9edd6278.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
     
-    <iframe class="video-container" data-src="https://dood.li/e/v6a1expc3n4y" scrolling="no" frameborder="0" allowfullscreen></iframe>
-    <iframe class="video-container" data-src="https://dood.li/e/xblgxxry5vfw" scrolling="no" frameborder="0" allowfullscreen></iframe>
-    <iframe class="video-container" data-src="https://dood.li/e/93fppesbxa9h" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <img class="thumbnail" data-src="https://dood.li/e/w06sn2918rj8" data-download="https://dood.li/d/w06sn2918rj8" src="https://img.doodcdn.co/splash/c12bebvtryneqbvg.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
     
-    <iframe class="video-container" data-src="https://dood.li/e/dtyu0qk6ry4t" scrolling="no" frameborder="0" allowfullscreen></iframe>
-    <iframe class="video-container" data-src="https://dood.li/e/o73f4fqmam2o" scrolling="no" frameborder="0" allowfullscreen></iframe>
-    <iframe class="video-container" data-src="https://dood.li/e/35ke4ydrl9jc" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <img class="thumbnail" data-src="https://dood.li/e/2ixuktspi1ml" data-download="https://dood.li/d/2ixuktspi1ml" src="https://img.doodcdn.co/splash/jyo2r3aajbloqslw.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
     
-    <iframe class="video-container" data-src="https://dood.li/e/oeqn7b9ksgxv" scrolling="no" frameborder="0" allowfullscreen></iframe>
-    <iframe class="video-container" data-src="https://dood.li/e/ivamlclwokez" scrolling="no" frameborder="0" allowfullscreen></iframe>
-    <iframe class="video-container" data-src="https://dood.li/e/2962emd0vza4" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    <img class="thumbnail" data-src="https://dood.li/e/skp7ioj0o0jv" data-download="https://dood.li/d/skp7ioj0o0jv" src="https://img.doodcdn.co/splash/ctmtbcdjisnj0srx.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
     
-    <button class="load-more" onclick="loadMore()">Load more</button>
+    <img class="thumbnail" data-src="https://dood.li/e/gwsegz0upv3c" data-download="https://dood.li/d/gwsegz0upv3c" src="https://img.doodcdn.co/splash/2izzxqa6azxamnj2.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/n006rh922cmq" data-download="https://dood.li/d/n006rh922cmq" src="https://img.doodcdn.co/splash/xdog0rzi2xdffjge.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/zurrkloh8s1p" data-download="https://dood.li/d/zurrkloh8s1p" src="https://img.doodcdn.co/splash/07gdq0wmqy092qf1.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/5vztqj5oxvao" data-download="https://dood.li/d/5vztqj5oxvao" src="https://img.doodcdn.co/splash/se2pouys6u43yzac.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/l11rbaqykmzn" data-download="https://dood.li/d/l11rbaqykmzn" src="https://img.doodcdn.co/splash/4l9bsy1aar54m384.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/hh56091b40fb" data-download="https://dood.li/d/hh56091b40fb" src="https://img.doodcdn.co/splash/iulqblpm5u90plky.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/hahvmmq030d7" data-download="https://dood.li/d/hahvmmq030d7" src="https://img.doodcdn.co/splash/ix75o22ek3uo0hsv.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/83o15v45x4dp" data-download="https://dood.li/d/83o15v45x4dp" src="https://img.doodcdn.co/splash/aqq2074j97f248f6.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/pbf97f5wg1zh" data-download="https://dood.li/d/pbf97f5wg1zh" src="https://img.doodcdn.co/splash/5sikb4gnwsta0836.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/ekd7ynqt99o0" data-download="https://dood.li/d/ekd7ynqt99o0" src="https://img.doodcdn.co/splash/d05hi6wl6opzfeoi.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/0dr713ujk63i" data-download="https://dood.li/d/0dr713ujk63i" src="https://img.doodcdn.co/splash/67co0xx1qn92lh2i.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/hyzmmrojrg7r" data-download="https://dood.li/d/hyzmmrojrg7r" src="https://img.doodcdn.co/splash/dey25lmk45f6rgt3.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/u4jq2em69m9s" data-download="https://dood.li/d/u4jq2em69m9s" src="https://img.doodcdn.co/splash/b3w0mf0bgx5nh5me.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/oh6mn93hc7hl" data-download="https://dood.li/d/oh6mn93hc7hl" src="https://img.doodcdn.co/splash/f8ye024d2kvawscj.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/gwqksptwpts7" data-download="https://dood.li/d/gwqksptwpts7" src="https://img.doodcdn.co/splash/ha11mk8aa0ychhe4.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/pqjxdfdvov4f" data-download="https://dood.li/d/pqjxdfdvov4f" src="https://img.doodcdn.co/splash/09tqbev97jfsud4s.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/dglev381mxyc" data-download="https://dood.li/d/dglev381mxyc" src="https://img.doodcdn.co/splash/ra8iqyldwjg4gnps.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/8085b18nq42b" data-download="https://dood.li/d/8085b18nq42b" src="https://img.doodcdn.co/splash/asry4q9eqw61d9wc.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/aoj4laeq6jvh" data-download="https://dood.li/d/aoj4laeq6jvh" src="https://img.doodcdn.co/splash/h80qn4prmvbkvraw.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/8rzwlfq3g1vl" data-download="https://dood.li/d/8rzwlfq3g1vl" src="https://img.doodcdn.co/splash/ys72sbhyest6wlmv.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/046tl4mwljjr" data-download="https://dood.li/d/046tl4mwljjr" src="https://img.doodcdn.co/splash/hmf4jkboawqfidxx.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/v6a1expc3n4y" data-download="https://dood.li/d/v6a1expc3n4y" src="https://img.doodcdn.co/splash/0973f8bnyhp96npl.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/xblgxxry5vfw" data-download="https://dood.li/d/xblgxxry5vfw" src="https://img.doodcdn.co/splash/cjr9nkfspu1yf1id.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/93fppesbxa9h" data-download="https://dood.li/d/93fppesbxa9h" src="https://img.doodcdn.co/splash/kzpbgqvjp33ayzu5.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/dtyu0qk6ry4t" data-download="https://dood.li/d/dtyu0qk6ry4t" src="https://img.doodcdn.co/splash/d4ka8owi1dyfbqp6.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/o73f4fqmam2o" data-download="https://dood.li/d/o73f4fqmam2o" src="https://img.doodcdn.co/splash/78nk747jqr2te57z.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/35ke4ydrl9jc" data-download="https://dood.li/d/35ke4ydrl9jc" src="https://img.doodcdn.co/splash/p7onguqxt1kjj69u.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/oeqn7b9ksgxv" data-download="https://dood.li/d/oeqn7b9ksgxv" src="https://img.doodcdn.co/splash/ku96grn5h37bsest.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/ivamlclwokez" data-download="https://dood.li/d/ivamlclwokez" src="https://img.doodcdn.co/splash/9ruptvde3ndar0dy.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/2962emd0vza4" data-download="https://dood.li/d/2962emd0vza4" src="https://img.doodcdn.co/splash/qamhr1qirj6fgou6.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+    
+    <div class="modal" id="videoModal">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <div class="modal-content">
+            <iframe id="modalVideo" allowfullscreen></iframe>
+            <button id="downloadBtn" class="download-btn">Download</button>
+        </div>
+    </div>
 
-    <p><a href="../">Return to Models Page</a></p>
-    
-        <script>
-            let videosShown = 0;
-            const videos = document.querySelectorAll('.video-container');
-            const totalVideos = videos.length;
-            document.getElementById('total-videos').textContent = totalVideos;
-    
-            function loadMore() {
-                for (let i = videosShown; i < videosShown + 3 && i < videos.length; i++) {
-                    videos[i].src = videos[i].getAttribute('data-src');
-                    videos[i].classList.add('active');
-                }
-                videosShown += 3;
-    
-                // Se todos os v�deos estiverem vis�veis, esconda o bot�o
-                if (videosShown >= videos.length) {
-                    document.querySelector('.load-more').style.display = 'none';
-                }
+    <a class="back-to-models" href="../">Return to models page</a>
+    <button class="back-to-top" id="backToTop" onclick="window.scrollTo(0, 0)">
+        &#8593; <!-- �cone de seta para cima -->
+    </button>
+
+    <script>
+        // Conta automaticamente o n�mero de miniaturas com a classe 'thumbnail'
+        const totalVideos = document.querySelectorAll('.thumbnail').length;
+        document.getElementById('total-videos').textContent = totalVideos;
+
+        // Exibir o bot�o "Voltar ao Topo" quando rolar para baixo
+        window.onscroll = function() {
+            const backToTopBtn = document.getElementById('backToTop');
+            if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+                backToTopBtn.style.display = 'block';
+            } else {
+                backToTopBtn.style.display = 'none';
             }
-    
-            // Carregar os primeiros 3 v�deos na inicializa��o
-            loadMore();
-        </script>
+        };
+
+        function openModal(thumbnail) {
+            const videoSrc = thumbnail.getAttribute('data-src');
+            const downloadLink = thumbnail.getAttribute('data-download');
+            const modal = document.getElementById('videoModal');
+            const modalVideo = document.getElementById('modalVideo');
+            const downloadBtn = document.getElementById('downloadBtn');
+            
+            modalVideo.src = videoSrc;
+            downloadBtn.onclick = () => window.open(downloadLink, '_blank');
+            
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('videoModal');
+            const modalVideo = document.getElementById('modalVideo');
+            modalVideo.src = '';
+            modal.style.display = 'none';
+        }
+
+        // Fun��o para substituir a imagem quando ela n�o carregar
+        function handleImageError(img) {
+            img.style.display = 'block'; // Mostra a imagem de fallback, caso tenha sido escondida
+            img.src = '/imgs/warning.jpg'; // Substitua pelo caminho da sua imagem de fallback
+            img.onerror = null; // Para evitar um loop infinito caso a imagem de fallback tamb�m falhe
+        }
+    </script>
 </body>
 </html>

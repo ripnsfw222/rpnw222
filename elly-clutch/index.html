@@ -1,4 +1,17 @@
+# Perguntar o nome da modelo
+model_name = input("Digite o nome da modelo: ")
 
+# Leitura de links de vídeos, imagens e download de arquivos de texto
+with open('videos.txt', 'r') as video_file, open('images.txt', 'r') as image_file, open('downloads.txt', 'r') as download_file:
+    video_links = video_file.readlines()
+    image_links = image_file.readlines()
+    download_links = download_file.readlines()
+
+# Garantir que todos os arquivos tenham o mesmo número de links
+assert len(video_links) == len(image_links) == len(download_links), "A quantidade de links não corresponde."
+
+# Gerar HTML
+html_content = """
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -6,9 +19,9 @@
     <script src="/analytics.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elly Clutch</title>
+    <title>{}</title>
     <style>
-        body {
+        body {{
             font-family: Arial, sans-serif;
             background-color: #000;
             color: #fff;
@@ -17,29 +30,29 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-        }
-        h1 {
+        }}
+        h1 {{
             font-size: 2.5em;
             margin: 20px 0;
             color: #ff9000;
-        }
-        .video-counter {
+        }}
+        .video-counter {{
             font-size: 1.2em;
             margin-bottom: 20px;
             color: #ff9000;
-        }
-        .thumbnail {
+        }}
+        .thumbnail {{
             max-height: 700px;  /* Defina uma altura fixa */
-            object-fit: cover;  /* Faz com que a imagem seja cortada para preencher o cont�iner */
+            object-fit: cover;  /* Faz com que a imagem seja cortada para preencher o contêiner */
             margin: 20px auto;
             border-radius: 10px;
             cursor: pointer;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-        }
-        .thumbnail:hover {
+        }}
+        .thumbnail:hover {{
             box-shadow: 0 0 20px 5px rgba(255, 165, 0, 0.7); /* Sombra laranja */
-        }
-        .modal {
+        }}
+        .modal {{
             display: none;
             position: fixed;
             z-index: 1000;
@@ -50,21 +63,21 @@
             background-color: rgba(0, 0, 0, 0.8);
             justify-content: center;
             align-items: center;
-        }
-        .modal-content {
+        }}
+        .modal-content {{
             position: relative;
             width: 85%;
             max-width: 1200px;
             background-color: #222;
             border-radius: 10px;
             padding: 10px;
-        }
-        .modal-content iframe {
+        }}
+        .modal-content iframe {{
             width: 100%;
-            height: 600px;  /* Altura padr�o para desktop */
+            height: 600px;  /* Altura padrão para desktop */
             border: none;
-        }
-        .download-btn {
+        }}
+        .download-btn {{
             display: block;
             width: 100%;
             max-width: 200px;
@@ -77,11 +90,11 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 1em;
-        }
-        .download-btn:hover {
+        }}
+        .download-btn:hover {{
             background-color: #e07b00;
-        }
-        .close {
+        }}
+        .close {{
             position: absolute;
             top: 10px;
             right: 15px;
@@ -89,15 +102,15 @@
             font-size: 30px;
             cursor: pointer;
             z-index: 1001;
-        }
-        .back-to-models {
+        }}
+        .back-to-models {{
             margin: 20px 0;
             color: #ff9000;
             text-decoration: none;
             font-size: 1.2em;
-        }
-        /* Bot�o fixo para voltar ao topo */
-        .back-to-top {
+        }}
+        /* Botão fixo para voltar ao topo */
+        .back-to-top {{
             position: fixed;
             bottom: 20px;
             right: 20px;
@@ -111,146 +124,41 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
             z-index: 1000;
             display: none; /* Inicialmente escondido */
-        }
-        .back-to-top:hover {
+        }}
+        .back-to-top:hover {{
             background-color: #e07b00;
-        }
-        /* Consultas de m�dia para dispositivos m�veis */
-        @media (max-width: 768px) {
-            .modal-content iframe {
-                height: 400px;  /* Ajuste a altura para dispositivos m�veis */
-            }
-            h1 {
-                font-size: 2em;  /* Reduzir o tamanho da fonte para o t�tulo */
-            }
-            .video-counter {
+        }}
+        /* Consultas de mídia para dispositivos móveis */
+        @media (max-width: 768px) {{
+            .modal-content iframe {{
+                height: 400px;  /* Ajuste a altura para dispositivos móveis */
+            }}
+            h1 {{
+                font-size: 2em;  /* Reduzir o tamanho da fonte para o título */
+            }}
+            .video-counter {{
                 font-size: 1em;  /* Ajustar o tamanho da fonte do contador */
-            }
-            .thumbnail {
-                max-width: 100%;  /* Thumbnail ocupa 100% da largura em dispositivos m�veis */
-            }
-        }
+            }}
+            .thumbnail {{
+                max-width: 100%;  /* Thumbnail ocupa 100% da largura em dispositivos móveis */
+            }}
+        }}
     </style>
 </head>
 <body>
     <p><a class="back-to-models" href="../">Return to models page</a></p>
-    <h1>Elly Clutch</h1>
-    <div class="video-counter">Videos: <span id="total-videos">38</span></div>
+    <h1>{}</h1>
+    <div class="video-counter">Videos: <span id="total-videos">{}</span></div>
+""".format(model_name, model_name, len(video_links))
 
-    <img class="thumbnail" data-src="https://dood.li/e/t6a7bud8j969" data-download="https://dood.li/d/t6a7bud8j969" src="https://img.doodcdn.co/splash/1sp6k1rrayjymbk6.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+# Adicionar as miniaturas e os botões de download no HTML
+for video_link, image_link, download_link in zip(video_links, image_links, download_links):
+    html_content += f"""
+    <img class="thumbnail" data-src="{video_link.strip()}" data-download="{download_link.strip()}" src="{image_link.strip()}" onclick="openModal(this)" onerror="handleImageError(this)" />
     <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/0nnmj8o9fz85" data-download="https://dood.li/d/0nnmj8o9fz85" src="https://img.doodcdn.co/splash/3jerk6iawrvixwkj.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/ka6har35nz7f" data-download="https://dood.li/d/ka6har35nz7f" src="https://img.doodcdn.co/splash/y51h3x9god7aq6aw.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/15f3ksvndt1b" data-download="https://dood.li/d/15f3ksvndt1b" src="https://img.doodcdn.co/splash/ggrsz3239tjzb89s.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/5pvhrx32gxjg" data-download="https://dood.li/d/5pvhrx32gxjg" src="https://img.doodcdn.co/splash/kdooaaqxy5r55xxa.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/lptbjp9kl2nd" data-download="https://dood.li/d/lptbjp9kl2nd" src="https://img.doodcdn.co/splash/mpxalmqkfv56pa2z.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/1yo7wea4cu30" data-download="https://dood.li/d/1yo7wea4cu30" src="https://img.doodcdn.co/splash/2q1i7pfr04ro56ik.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/0kslcblptmku" data-download="https://dood.li/d/0kslcblptmku" src="https://img.doodcdn.co/splash/x9gqnvejxi1awonb.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/891gdg24c7xi" data-download="https://dood.li/d/891gdg24c7xi" src="https://img.doodcdn.co/splash/0w5hph73h5vap9ny.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/0kbmypjxj304" data-download="https://dood.li/d/0kbmypjxj304" src="https://img.doodcdn.co/splash/i0g8jnngtfse99s8.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/pzkvzqp03zzl" data-download="https://dood.li/d/pzkvzqp03zzl" src="https://img.doodcdn.co/splash/2fjf40qpuu49yjev.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/d2uzw2qxo6s6" data-download="https://dood.li/d/d2uzw2qxo6s6" src="https://img.doodcdn.co/splash/8c6d8k55jypdsp02.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/jzo3n1gqk5qk" data-download="https://dood.li/d/jzo3n1gqk5qk" src="https://img.doodcdn.co/splash/md3ziijy4ex5ttai.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/5kycnlyvce1k" data-download="https://dood.li/d/5kycnlyvce1k" src="https://img.doodcdn.co/splash/870s84nx15qdxd7g.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/hshes6tr9soi" data-download="https://dood.li/d/hshes6tr9soi" src="https://img.doodcdn.co/splash/3mu7p7jhhsx49qvr.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/win913xuas7t" data-download="https://dood.li/d/win913xuas7t" src="https://img.doodcdn.co/splash/bvmlzvqyg7sb31by.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/fc95dd2u855p" data-download="https://dood.li/d/fc95dd2u855p" src="https://img.doodcdn.co/splash/l1gaaktvfb7oloer.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/azsxquh54alk" data-download="https://dood.li/d/azsxquh54alk" src="https://img.doodcdn.co/splash/e5m9j0pwm22vc3z2.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/84m61o4un4fz" data-download="https://dood.li/d/84m61o4un4fz" src="https://img.doodcdn.co/splash/00canhq17rb25jho.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/7ltq66fm07gk" data-download="https://dood.li/d/7ltq66fm07gk" src="https://img.doodcdn.co/splash/5jxyb5f12ck400mv.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/j0bjvcyqsa9u" data-download="https://dood.li/d/j0bjvcyqsa9u" src="https://img.doodcdn.co/splash/b3xr3wrqd4e9ekxv.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/vu5q89ag0qaw" data-download="https://dood.li/d/vu5q89ag0qaw" src="https://img.doodcdn.co/splash/gn1lztlbe02ys7da.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/cnici5twklyx" data-download="https://dood.li/d/cnici5twklyx" src="https://img.doodcdn.co/splash/vio44wjxxi2rk31b.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/kzj0ow8pmb1s" data-download="https://dood.li/d/kzj0ow8pmb1s" src="https://img.doodcdn.co/splash/kmdwdkhp5lm0wkl8.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/b0v2j3l2j0et" data-download="https://dood.li/d/b0v2j3l2j0et" src="https://img.doodcdn.co/splash/g1xyqsbappp2zfxn.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/guvgnaclbync" data-download="https://dood.li/d/guvgnaclbync" src="https://img.doodcdn.co/splash/ql3avgk76no9tykt.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/reo4k3ki1vep" data-download="https://dood.li/d/reo4k3ki1vep" src="https://img.doodcdn.co/splash/6jjs3yxjmxkaq29j.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/rfqpc3tzru5b" data-download="https://dood.li/d/rfqpc3tzru5b" src="https://img.doodcdn.co/splash/gsdmk0tkta7sqz7t.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/1neg5lqafr5j" data-download="https://dood.li/d/1neg5lqafr5j" src="https://img.doodcdn.co/splash/jnooegl1owp93cf6.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/gcspovx6pjva" data-download="https://dood.li/d/gcspovx6pjva" src="https://img.doodcdn.co/splash/rdozd3o9o8wiqtb0.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/wb8rny68nq81" data-download="https://dood.li/d/wb8rny68nq81" src="https://img.doodcdn.co/splash/dxw5ddpluufwe64p.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/ol6m482zcnoo" data-download="https://dood.li/d/ol6m482zcnoo" src="https://img.doodcdn.co/splash/ubym5b1z6ok9xo9r.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/cjvuiynr0ap5" data-download="https://dood.li/d/cjvuiynr0ap5" src="https://img.doodcdn.co/splash/fugu6jz6lwr36w27.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/su2d9hlq645w" data-download="https://dood.li/d/su2d9hlq645w" src="https://img.doodcdn.co/splash/h70o6kjyqi541q37.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/0gebq1i0x58h" data-download="https://dood.li/d/0gebq1i0x58h" src="https://img.doodcdn.co/splash/tq010matcr89g8yy.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/buv9mronu5gz" data-download="https://dood.li/d/buv9mronu5gz" src="https://img.doodcdn.co/splash/jiy18f5vp9zxo9mp.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/l5avy52n46g8" data-download="https://dood.li/d/l5avy52n46g8" src="https://img.doodcdn.co/splash/ebubgy22unez43ws.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
-    <img class="thumbnail" data-src="https://dood.li/e/n1n5zg8cquga" data-download="https://dood.li/d/n1n5zg8cquga" src="https://img.doodcdn.co/splash/42pprfo4wp2xcd48.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-    
+    """
+
+html_content += """
     <div class="modal" id="videoModal">
         <span class="close" onclick="closeModal()">&times;</span>
         <div class="modal-content">
@@ -261,15 +169,15 @@
 
     <a class="back-to-models" href="../">Return to models page</a>
     <button class="back-to-top" id="backToTop" onclick="window.scrollTo(0, 0)">
-        &#8593; <!-- �cone de seta para cima -->
+        &#8593; <!-- Ícone de seta para cima -->
     </button>
 
     <script>
-        // Conta automaticamente o n�mero de miniaturas com a classe 'thumbnail'
+        // Conta automaticamente o número de miniaturas com a classe 'thumbnail'
         const totalVideos = document.querySelectorAll('.thumbnail').length;
         document.getElementById('total-videos').textContent = totalVideos;
 
-        // Exibir o bot�o "Voltar ao Topo" quando rolar para baixo
+        // Exibir o botão "Voltar ao Topo" quando rolar para baixo
         window.onscroll = function() {
             const backToTopBtn = document.getElementById('backToTop');
             if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
@@ -299,12 +207,17 @@
             modal.style.display = 'none';
         }
 
-        // Fun��o para substituir a imagem quando ela n�o carregar
+        // Função para substituir a imagem quando ela não carregar
         function handleImageError(img) {
             img.style.display = 'block'; // Mostra a imagem de fallback, caso tenha sido escondida
             img.src = '/imgs/warning.jpg'; // Substitua pelo caminho da sua imagem de fallback
-            img.onerror = null; // Para evitar um loop infinito caso a imagem de fallback tamb�m falhe
+            img.onerror = null; // Para evitar um loop infinito caso a imagem de fallback também falhe
         }
     </script>
 </body>
 </html>
+"""
+
+# Salvar o HTML gerado em um arquivo
+with open('index.html', 'w') as output_file:
+    output_file.write(html_content)

@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <link rel="icon" href="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/462555106_1479674479385179_1208773154491782749_n.png?_nc_cat=111&ccb=1-7&_nc_sid=9f807c&_nc_ohc=XIJ7BwGfrOkQ7kNvgHZyZ4B&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AQGbMniTo09vDAKkDUQUkzL&oh=03_Q7cD1QERa6IlYD-y5Ns8r8zGR2P7MWixSALFYkX4eCAJ6Oc8Xg&oe=67309D81" type="image/png">
+    <link rel="icon" href="/imgs/ripnsfw222.com.png" type="image/png">
     <script src="/analytics.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -35,6 +35,9 @@
             border-radius: 10px;
             cursor: pointer;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+        .thumbnail:hover {
+            box-shadow: 0 0 20px 5px rgba(255, 165, 0, 0.7); /* Sombra laranja */
         }
         .modal {
             display: none;
@@ -132,24 +135,27 @@
 <body>
     <p><a class="back-to-models" href="../">Return to models page</a></p>
     <h1>Codi Vore</h1>
-    <div class="video-counter">Videos: <span id="total-videos">6</span></div>
+    <div class="video-counter">Videos: <span id="total-videos">7</span></div>
 
-    <img class="thumbnail" data-src="https://dood.li/e/xv4qnak42h3z" data-download="https://dood.li/d/xv4qnak42h3z" src="https://img.doodcdn.co/splash/o8t01ifau20r98q7.jpg" onclick="openModal(this)" />
+    <img class="thumbnail" data-src="https://dood.li/e/5hnw3zz82yqg" data-download="https://dood.li/d/5hnw3zz82yqg" src="https://img.doodcdn.co/splash/zlbddcsvjad5smhi.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
     <br>
     
-    <img class="thumbnail" data-src="https://dood.li/e/n8996gby0rc1" data-download="https://dood.li/d/n8996gby0rc1" src="https://img.doodcdn.co/splash/qmq80sy41slxippa.jpg" onclick="openModal(this)" />
+    <img class="thumbnail" data-src="https://dood.li/e/xv4qnak42h3z" data-download="https://dood.li/d/xv4qnak42h3z" src="https://img.doodcdn.co/splash/o8t01ifau20r98q7.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
     <br>
     
-    <img class="thumbnail" data-src="https://dood.li/e/zdd6jpsxsy1y" data-download="https://dood.li/d/zdd6jpsxsy1y" src="https://img.doodcdn.co/splash/2s33gfn6zlacurrl.jpg" onclick="openModal(this)" />
+    <img class="thumbnail" data-src="https://dood.li/e/n8996gby0rc1" data-download="https://dood.li/d/n8996gby0rc1" src="https://img.doodcdn.co/splash/qmq80sy41slxippa.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
     <br>
     
-    <img class="thumbnail" data-src="https://dood.li/e/kul3n0ngwks9" data-download="https://dood.li/d/kul3n0ngwks9" src="https://img.doodcdn.co/splash/jc3vt9o0n79h8r7v.jpg" onclick="openModal(this)" />
+    <img class="thumbnail" data-src="https://dood.li/e/zdd6jpsxsy1y" data-download="https://dood.li/d/zdd6jpsxsy1y" src="https://img.doodcdn.co/splash/2s33gfn6zlacurrl.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
     <br>
     
-    <img class="thumbnail" data-src="https://dood.li/e/gp0zjudauza4" data-download="https://dood.li/d/gp0zjudauza4" src="https://img.doodcdn.co/splash/qoeorjtxx6cfm9ip.jpg" onclick="openModal(this)" />
+    <img class="thumbnail" data-src="https://dood.li/e/kul3n0ngwks9" data-download="https://dood.li/d/kul3n0ngwks9" src="https://img.doodcdn.co/splash/jc3vt9o0n79h8r7v.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
     <br>
     
-    <img class="thumbnail" data-src="https://dood.li/e/luku89j5tw1u" data-download="https://dood.li/d/luku89j5tw1u" src="https://img.doodcdn.co/splash/gyetgca0fhsz22jn.jpg" onclick="openModal(this)" />
+    <img class="thumbnail" data-src="https://dood.li/e/gp0zjudauza4" data-download="https://dood.li/d/gp0zjudauza4" src="https://img.doodcdn.co/splash/qoeorjtxx6cfm9ip.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/luku89j5tw1u" data-download="https://dood.li/d/luku89j5tw1u" src="https://img.doodcdn.co/splash/gyetgca0fhsz22jn.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
     <br>
     
     <div class="modal" id="videoModal">
@@ -166,7 +172,8 @@
     </button>
 
     <script>
-        const totalVideos = 6; // Atualize o total de v�deos
+        // Conta automaticamente o n�mero de miniaturas com a classe 'thumbnail'
+        const totalVideos = document.querySelectorAll('.thumbnail').length;
         document.getElementById('total-videos').textContent = totalVideos;
 
         // Exibir o bot�o "Voltar ao Topo" quando rolar para baixo
@@ -197,6 +204,13 @@
             const modalVideo = document.getElementById('modalVideo');
             modalVideo.src = '';
             modal.style.display = 'none';
+        }
+
+        // Fun��o para substituir a imagem quando ela n�o carregar
+        function handleImageError(img) {
+            img.style.display = 'block'; // Mostra a imagem de fallback, caso tenha sido escondida
+            img.src = '/imgs/warning.jpg'; // Substitua pelo caminho da sua imagem de fallback
+            img.onerror = null; // Para evitar um loop infinito caso a imagem de fallback tamb�m falhe
         }
     </script>
 </body>

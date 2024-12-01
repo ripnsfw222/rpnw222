@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <link rel="icon" href="https://scontent.fcwb2-3.fna.fbcdn.net/v/t1.15752-9/462555106_1479674479385179_1208773154491782749_n.png?_nc_cat=111&ccb=1-7&_nc_sid=9f807c&_nc_ohc=XIJ7BwGfrOkQ7kNvgHZyZ4B&_nc_ht=scontent.fcwb2-3.fna&_nc_gid=AQGbMniTo09vDAKkDUQUkzL&oh=03_Q7cD1QERa6IlYD-y5Ns8r8zGR2P7MWixSALFYkX4eCAJ6Oc8Xg&oe=67309D81" type="image/png">
+    <link rel="icon" href="/imgs/ripnsfw222.com.png" type="image/png">
     <script src="/analytics.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -35,6 +35,9 @@
             border-radius: 10px;
             cursor: pointer;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+        .thumbnail:hover {
+            box-shadow: 0 0 20px 5px rgba(255, 165, 0, 0.7); /* Sombra laranja */
         }
         .modal {
             display: none;
@@ -132,30 +135,33 @@
 <body>
     <p><a class="back-to-models" href="../">Return to models page</a></p>
     <h1>Elle Brooke</h1>
-    <div class="video-counter">Videos: <span id="total-videos">8</span></div>
+    <div class="video-counter">Videos: <span id="total-videos">9</span></div>
 
-    <img class="thumbnail" data-src="https://dood.li/e/cwmwz4noqkwm" data-download="https://dood.li/d/cwmwz4noqkwm" src="https://img.doodcdn.co/splash/21q0ty2n504tyi5d.jpg" onclick="openModal(this)" />
+    <img class="thumbnail" data-src="https://dood.li/e/ft2bejbfhhay" data-download="https://dood.li/d/ft2bejbfhhay" src="https://img.doodcdn.co/splash/qzucr0ybuo6ot475.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
     <br>
     
-    <img class="thumbnail" data-src="https://dood.li/e/atl9knnxj8vc" data-download="https://dood.li/d/atl9knnxj8vc" src="https://img.doodcdn.co/splash/y95qlshpet3hvb5u.jpg" onclick="openModal(this)" />
+    <img class="thumbnail" data-src="https://dood.li/e/cwmwz4noqkwm" data-download="https://dood.li/d/cwmwz4noqkwm" src="https://img.doodcdn.co/splash/21q0ty2n504tyi5d.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
     <br>
     
-    <img class="thumbnail" data-src="https://dood.li/e/3l0rslxxctwp" data-download="https://dood.li/d/3l0rslxxctwp" src="https://img.doodcdn.co/splash/cgiqt8sw6hmaq642.jpg" onclick="openModal(this)" />
+    <img class="thumbnail" data-src="https://dood.li/e/atl9knnxj8vc" data-download="https://dood.li/d/atl9knnxj8vc" src="https://img.doodcdn.co/splash/y95qlshpet3hvb5u.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
     <br>
     
-    <img class="thumbnail" data-src="https://dood.li/e/az2j34bwr6lp" data-download="https://dood.li/d/az2j34bwr6lp" src="https://img.doodcdn.co/splash/3bwnqfpg1tg0ra4a.jpg" onclick="openModal(this)" />
+    <img class="thumbnail" data-src="https://dood.li/e/3l0rslxxctwp" data-download="https://dood.li/d/3l0rslxxctwp" src="https://img.doodcdn.co/splash/cgiqt8sw6hmaq642.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
     <br>
     
-    <img class="thumbnail" data-src="https://dood.li/e/bi9i2yf7n6rl" data-download="https://dood.li/d/bi9i2yf7n6rl" src="https://img.doodcdn.co/splash/8q0u34sukbz7xzkl.jpg" onclick="openModal(this)" />
+    <img class="thumbnail" data-src="https://dood.li/e/az2j34bwr6lp" data-download="https://dood.li/d/az2j34bwr6lp" src="https://img.doodcdn.co/splash/3bwnqfpg1tg0ra4a.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
     <br>
     
-    <img class="thumbnail" data-src="https://dood.li/e/l76ato3utjpt" data-download="https://dood.li/d/l76ato3utjpt" src="https://img.doodcdn.co/splash/6gub6e5qgg6a9x66.jpg" onclick="openModal(this)" />
+    <img class="thumbnail" data-src="https://dood.li/e/bi9i2yf7n6rl" data-download="https://dood.li/d/bi9i2yf7n6rl" src="https://img.doodcdn.co/splash/8q0u34sukbz7xzkl.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
     <br>
     
-    <img class="thumbnail" data-src="https://dood.li/e/5m84mbkmw0ti" data-download="https://dood.li/d/5m84mbkmw0ti" src="https://img.doodcdn.co/splash/9yy58vgh49l5kwma.jpg" onclick="openModal(this)" />
+    <img class="thumbnail" data-src="https://dood.li/e/l76ato3utjpt" data-download="https://dood.li/d/l76ato3utjpt" src="https://img.doodcdn.co/splash/6gub6e5qgg6a9x66.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
     <br>
     
-    <img class="thumbnail" data-src="https://dood.li/e/3uv65y2godgx" data-download="https://dood.li/d/3uv65y2godgx" src="https://img.doodcdn.co/splash/d23qkghhr3sqpzjy.jpg" onclick="openModal(this)" />
+    <img class="thumbnail" data-src="https://dood.li/e/5m84mbkmw0ti" data-download="https://dood.li/d/5m84mbkmw0ti" src="https://img.doodcdn.co/splash/9yy58vgh49l5kwma.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+    
+    <img class="thumbnail" data-src="https://dood.li/e/3uv65y2godgx" data-download="https://dood.li/d/3uv65y2godgx" src="https://img.doodcdn.co/splash/d23qkghhr3sqpzjy.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
     <br>
     
     <div class="modal" id="videoModal">
@@ -172,7 +178,8 @@
     </button>
 
     <script>
-        const totalVideos = 8; // Atualize o total de v�deos
+        // Conta automaticamente o n�mero de miniaturas com a classe 'thumbnail'
+        const totalVideos = document.querySelectorAll('.thumbnail').length;
         document.getElementById('total-videos').textContent = totalVideos;
 
         // Exibir o bot�o "Voltar ao Topo" quando rolar para baixo
@@ -203,6 +210,13 @@
             const modalVideo = document.getElementById('modalVideo');
             modalVideo.src = '';
             modal.style.display = 'none';
+        }
+
+        // Fun��o para substituir a imagem quando ela n�o carregar
+        function handleImageError(img) {
+            img.style.display = 'block'; // Mostra a imagem de fallback, caso tenha sido escondida
+            img.src = '/imgs/warning.jpg'; // Substitua pelo caminho da sua imagem de fallback
+            img.onerror = null; // Para evitar um loop infinito caso a imagem de fallback tamb�m falhe
         }
     </script>
 </body>

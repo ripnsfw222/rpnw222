@@ -1,6 +1,6 @@
-
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en-US">
+
 <head>
     <link rel="icon" href="/imgs/ripnsfw222.com.png" type="image/png">
     <script src="/analytics.js"></script>
@@ -18,27 +18,32 @@
             flex-direction: column;
             align-items: center;
         }
+
         h1 {
             font-size: 2.5em;
             margin: 20px 0;
             color: #ff9000;
         }
+
         .video-counter {
             font-size: 1.2em;
             margin-bottom: 20px;
             color: #ff9000;
         }
+
         .thumbnail {
-            max-height: 700px;  /* Defina uma altura fixa */
-            object-fit: cover;  /* Faz com que a imagem seja cortada para preencher o cont�iner */
+            max-height: 700px;
+            object-fit: cover;
             margin: 20px auto;
             border-radius: 10px;
             cursor: pointer;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
         }
+
         .thumbnail:hover {
-            box-shadow: 0 0 20px 5px rgba(255, 165, 0, 0.7); /* Sombra laranja */
+            box-shadow: 0 0 20px 5px rgba(255, 165, 0, 0.7);
         }
+
         .modal {
             display: none;
             position: fixed;
@@ -51,6 +56,7 @@
             justify-content: center;
             align-items: center;
         }
+
         .modal-content {
             position: relative;
             width: 85%;
@@ -59,11 +65,13 @@
             border-radius: 10px;
             padding: 10px;
         }
+
         .modal-content iframe {
             width: 100%;
-            height: 600px;  /* Altura padr�o para desktop */
+            height: 600px;
             border: none;
         }
+
         .download-btn {
             display: block;
             width: 100%;
@@ -78,9 +86,11 @@
             cursor: pointer;
             font-size: 1em;
         }
+
         .download-btn:hover {
             background-color: #e07b00;
         }
+
         .close {
             position: absolute;
             top: 10px;
@@ -90,13 +100,14 @@
             cursor: pointer;
             z-index: 1001;
         }
+
         .back-to-models {
             margin: 20px 0;
             color: #ff9000;
             text-decoration: none;
             font-size: 1.2em;
         }
-        /* Bot�o fixo para voltar ao topo */
+
         .back-to-top {
             position: fixed;
             bottom: 20px;
@@ -110,102 +121,331 @@
             font-size: 1em;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
             z-index: 1000;
-            display: none; /* Inicialmente escondido */
+            display: none;
         }
+
         .back-to-top:hover {
             background-color: #e07b00;
         }
-        /* Consultas de m�dia para dispositivos m�veis */
+
         @media (max-width: 768px) {
             .modal-content iframe {
-                height: 400px;  /* Ajuste a altura para dispositivos m�veis */
+                height: 400px;
             }
+
             h1 {
-                font-size: 2em;  /* Reduzir o tamanho da fonte para o t�tulo */
+                font-size: 2em;
             }
+
             .video-counter {
-                font-size: 1em;  /* Ajustar o tamanho da fonte do contador */
+                font-size: 1em;
             }
+
             .thumbnail {
-                max-width: 100%;  /* Thumbnail ocupa 100% da largura em dispositivos m�veis */
+                max-width: 100%;
             }
         }
     </style>
 </head>
+
 <body>
     <p><a class="back-to-models" href="../">Return to models page</a></p>
-    <h1>Riley Reid</h1>
-    <div class="video-counter">Videos: <span id="total-videos">7</span></div>
+    <h1>Riley Reid</h1> <!-- Aqui, o nome da modelo será exibido -->
+    <div class="video-counter">Videos: <span id="total-videos">82</span></div>
 
-    <img class="thumbnail" data-src="https://bigwarp.io/embed-wzf04xy3f54p.html" data-download="https://bigwarp.io/wzf04xy3f54p" src="https://fs46.bigwarp.io/i/01/00311/wzf04xy3f54p_x.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-<img class="thumbnail" data-src="https://bigwarp.io/embed-mr4kra5s1728.html" data-download="https://bigwarp.io/mr4kra5s1728" src="https://fs38.bigwarp.io/i/01/00236/mr4kra5s1728_x.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-<img class="thumbnail" data-src="https://bigwarp.io/embed-6dotztgmgf6v.html" data-download="https://bigwarp.io/6dotztgmgf6v" src="https://fs37.bigwarp.io/i/02/00084/6dotztgmgf6v_x.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-<img class="thumbnail" data-src="https://bigwarp.io/embed-fu0l8rni0jtx.html" data-download="https://bigwarp.io/fu0l8rni0jtx" src="https://fs63.bigwarp.io/i/01/00379/fu0l8rni0jtx_x.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-<img class="thumbnail" data-src="https://bigwarp.io/embed-hj5vq1c12qhz.html" data-download="https://bigwarp.io/hj5vq1c12qhz" src="https://fs72.bigwarp.io/i/01/00282/hj5vq1c12qhz_x.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-<img class="thumbnail" data-src="https://bigwarp.io/embed-e6c9ayeahjc5.html" data-download="https://bigwarp.io/e6c9ayeahjc5" src="https://fs55.bigwarp.io/i/02/00162/e6c9ayeahjc5_x.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-<img class="thumbnail" data-src="https://bigwarp.io/embed-votr1ogwpbwb.html" data-download="https://bigwarp.io/votr1ogwpbwb" src="https://fs35.bigwarp.io/i/02/00125/votr1ogwpbwb_x.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
     
-    <div class="modal" id="videoModal">
-        <span class="close" onclick="closeModal()">&times;</span>
+    <img class="thumbnail" data-src="https://do7go.com/e/3z3dmt1wzesd" data-download="https://do7go.com/d/3z3dmt1wzesd" src="https://img.doodcdn.io/splash/a4fk7qlc0cm9ke22.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/9c06dcd65g8e" data-download="https://do7go.com/d/9c06dcd65g8e" src="https://img.doodcdn.io/splash/p4xmedx3u87lxylz.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/2j8hd4qswif6" data-download="https://do7go.com/d/2j8hd4qswif6" src="https://img.doodcdn.io/splash/ze9qubwweopkj4uz.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/xrnu0z1ceuav" data-download="https://do7go.com/d/xrnu0z1ceuav" src="https://img.doodcdn.io/splash/wz6n1iqpkchupx08.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/0ufewadxltqp" data-download="https://do7go.com/d/0ufewadxltqp" src="https://img.doodcdn.io/splash/z2w2jsrgclftcfa4.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/uwcvaqhdwjht" data-download="https://do7go.com/d/uwcvaqhdwjht" src="https://img.doodcdn.io/splash/js28t20qst880eg6.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/w3932akgt6be" data-download="https://do7go.com/d/w3932akgt6be" src="https://img.doodcdn.io/splash/f220nok7eb9gvg3i.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/5qkoabp4mfut" data-download="https://do7go.com/d/5qkoabp4mfut" src="https://img.doodcdn.io/splash/75y5gt2kmxlf20zu.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/nvaphmgndf7k" data-download="https://do7go.com/d/nvaphmgndf7k" src="https://img.doodcdn.io/splash/lffwe18d04muqr80.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/ka4ji5xs2ecc" data-download="https://do7go.com/d/ka4ji5xs2ecc" src="https://img.doodcdn.io/splash/hnikvp9c2enwkb5q.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/57lxa0fqbd7o" data-download="https://do7go.com/d/57lxa0fqbd7o" src="https://img.doodcdn.io/splash/dg1aysy5mcegloki.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/wg3dqp1sxz1x" data-download="https://do7go.com/d/wg3dqp1sxz1x" src="https://img.doodcdn.io/splash/yuyxio22hfzbjyxh.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/w2lfduu9iwo7" data-download="https://do7go.com/d/w2lfduu9iwo7" src="https://img.doodcdn.io/splash/jag8fzq4bxeux6be.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/8yoak10ls4mz" data-download="https://do7go.com/d/8yoak10ls4mz" src="https://img.doodcdn.io/splash/w89zav4qsv9g15zz.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/x7qvvjosgt13" data-download="https://do7go.com/d/x7qvvjosgt13" src="https://img.doodcdn.io/splash/hg4rvu5ljgrqr6lm.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/krmokb0q05n0" data-download="https://do7go.com/d/krmokb0q05n0" src="https://img.doodcdn.io/splash/b7kb24e8zbftndnb.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/ehk1iwe98fxj" data-download="https://do7go.com/d/ehk1iwe98fxj" src="https://img.doodcdn.io/splash/xd9m3r7ehtsshjms.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/n2pf3cnm9vis" data-download="https://do7go.com/d/n2pf3cnm9vis" src="https://img.doodcdn.io/splash/9l4s0w9uxtab3klj.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/7bqpu5etvzmq" data-download="https://do7go.com/d/7bqpu5etvzmq" src="https://img.doodcdn.io/splash/aekvkh4wigu1cgi5.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/btg3oyk0imwa" data-download="https://do7go.com/d/btg3oyk0imwa" src="https://img.doodcdn.io/splash/33cjwczir6qhgelq.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/1nkdkyl8uymr" data-download="https://do7go.com/d/1nkdkyl8uymr" src="https://img.doodcdn.io/splash/o935rqso8kuv1j3j.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/95lcp7hvszp6" data-download="https://do7go.com/d/95lcp7hvszp6" src="https://img.doodcdn.io/splash/x22uh3c54f1phkcs.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/m55vb1as8a36" data-download="https://do7go.com/d/m55vb1as8a36" src="https://img.doodcdn.io/splash/isiymfizrcc99xfd.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/1gyyfzh1z3mi" data-download="https://do7go.com/d/1gyyfzh1z3mi" src="https://img.doodcdn.io/splash/qcc0dqjxf5mtm1j8.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/md4usqcjoj21" data-download="https://do7go.com/d/md4usqcjoj21" src="https://img.doodcdn.io/splash/ktrn2k6fxjpapdux.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/yicanntf4bjd" data-download="https://do7go.com/d/yicanntf4bjd" src="https://img.doodcdn.io/splash/m4u8ztjvkzdm30qd.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/0ywik8oi6oc1" data-download="https://do7go.com/d/0ywik8oi6oc1" src="https://img.doodcdn.io/splash/sn2ykyci85xgxzoo.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/b5icaj5pzarw" data-download="https://do7go.com/d/b5icaj5pzarw" src="https://img.doodcdn.io/splash/bik65ogcjxtpes9x.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/n4etwbo33ahm" data-download="https://do7go.com/d/n4etwbo33ahm" src="https://img.doodcdn.io/splash/7xca6z0bu37tudgw.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/4ai896fglx45" data-download="https://do7go.com/d/4ai896fglx45" src="https://img.doodcdn.io/splash/wch2fltyo8g2sn66.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/wklvr32k5x32" data-download="https://do7go.com/d/wklvr32k5x32" src="https://img.doodcdn.io/splash/w1g072s4zs5euei9.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/45wc7e3tqn6l" data-download="https://do7go.com/d/45wc7e3tqn6l" src="https://img.doodcdn.io/splash/gjejy0fftjfvcp06.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/sk49m19m5gf2" data-download="https://do7go.com/d/sk49m19m5gf2" src="https://img.doodcdn.io/splash/tkg45ni65bqd2i0n.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/hwyfly392ucu" data-download="https://do7go.com/d/hwyfly392ucu" src="https://img.doodcdn.io/splash/g93eykr9j46z4o77.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/aswf4g3tpqky" data-download="https://do7go.com/d/aswf4g3tpqky" src="https://img.doodcdn.io/splash/426rv38kuu3rabnx.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/glydszjwdbck" data-download="https://do7go.com/d/glydszjwdbck" src="https://img.doodcdn.io/splash/wudvop99comd71q9.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/fma1c3tyk8bq" data-download="https://do7go.com/d/fma1c3tyk8bq" src="https://img.doodcdn.io/splash/t06f668wbjtgzbyy.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/ruhbje7c1726" data-download="https://do7go.com/d/ruhbje7c1726" src="https://img.doodcdn.io/splash/xh98q2a2m0mcaas6.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/73jxr0sjbumj" data-download="https://do7go.com/d/73jxr0sjbumj" src="https://img.doodcdn.io/splash/rtxskyjtbl7d27rl.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/6kuxub1s2pt4" data-download="https://do7go.com/d/6kuxub1s2pt4" src="https://img.doodcdn.io/splash/45sx0emfaj5pehs6.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/8bkchplzoww2" data-download="https://do7go.com/d/8bkchplzoww2" src="https://img.doodcdn.io/splash/xn6cjl0mm4ald7b0.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/49cg2t287wd0" data-download="https://do7go.com/d/49cg2t287wd0" src="https://img.doodcdn.io/splash/pdtf2wsmzaxv0f7a.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/fxcw9hxf0b4p" data-download="https://do7go.com/d/fxcw9hxf0b4p" src="https://img.doodcdn.io/splash/lsuiriwb7ueeh5gz.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/20ogfkae5zeh" data-download="https://do7go.com/d/20ogfkae5zeh" src="https://img.doodcdn.io/splash/8z5e8cxzu9oqdmy5.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/eluhu9ekb110" data-download="https://do7go.com/d/eluhu9ekb110" src="https://img.doodcdn.io/splash/ds54a6mrmyilpirw.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/eus66qtt3yps" data-download="https://do7go.com/d/eus66qtt3yps" src="https://img.doodcdn.io/splash/fjrbpvp1kz1mpksr.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/mhlty6wtl98j" data-download="https://do7go.com/d/mhlty6wtl98j" src="https://img.doodcdn.io/splash/nvxoonfbrxurk7hf.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/kd1f4uhixwep" data-download="https://do7go.com/d/kd1f4uhixwep" src="https://img.doodcdn.io/splash/s8v1gr1a0sx3h5ud.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/v4yhmptqsngp" data-download="https://do7go.com/d/v4yhmptqsngp" src="https://img.doodcdn.io/splash/4p720wn3au90s19w.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/g0x9gsg8178r" data-download="https://do7go.com/d/g0x9gsg8178r" src="https://img.doodcdn.io/splash/x8iles0dhjlxmjay.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/19pbhud354s8" data-download="https://do7go.com/d/19pbhud354s8" src="https://img.doodcdn.io/splash/19kahiohfraqvtlv.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/id67v2kenylk" data-download="https://do7go.com/d/id67v2kenylk" src="https://img.doodcdn.io/splash/zeut3rokxmpejr7r.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/lv6uu3d160xb" data-download="https://do7go.com/d/lv6uu3d160xb" src="https://img.doodcdn.io/splash/wb7s5iyqvb8mc2wa.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/gs6w9rhrnvjx" data-download="https://do7go.com/d/gs6w9rhrnvjx" src="https://img.doodcdn.io/splash/rc644b9icf44izeh.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/23dt9klto1g7" data-download="https://do7go.com/d/23dt9klto1g7" src="https://img.doodcdn.io/splash/3o9xe741o939614o.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/k96rgvadnueb" data-download="https://do7go.com/d/k96rgvadnueb" src="https://img.doodcdn.io/splash/lccptlmtk29vn8uz.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/cqnk71n99h19" data-download="https://do7go.com/d/cqnk71n99h19" src="https://img.doodcdn.io/splash/v4hoc946mrhdev4s.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/x4gedx9et3vo" data-download="https://do7go.com/d/x4gedx9et3vo" src="https://img.doodcdn.io/splash/214fdag1n1rqx4cg.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/db2mahzn5p4g" data-download="https://do7go.com/d/db2mahzn5p4g" src="https://img.doodcdn.io/splash/iu655nnep6yra21a.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/lhknwzp6hzks" data-download="https://do7go.com/d/lhknwzp6hzks" src="https://img.doodcdn.io/splash/v2dunox7rfxertz0.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/80jezw4pfhn8" data-download="https://do7go.com/d/80jezw4pfhn8" src="https://img.doodcdn.io/splash/ds11s44i35vnw35u.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/8p8je7i15wcs" data-download="https://do7go.com/d/8p8je7i15wcs" src="https://img.doodcdn.io/splash/55fc84vr09f2jpgx.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/3fe861fd4gd0" data-download="https://do7go.com/d/3fe861fd4gd0" src="https://img.doodcdn.io/splash/kp55vgew0w0d2b44.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/jbh35f0iljyh" data-download="https://do7go.com/d/jbh35f0iljyh" src="https://img.doodcdn.io/splash/atayqgrvozf1s98b.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/6emqz2cuiqb2" data-download="https://do7go.com/d/6emqz2cuiqb2" src="https://img.doodcdn.io/splash/os3yszbluamdugk2.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/4gaojorndk0o" data-download="https://do7go.com/d/4gaojorndk0o" src="https://img.doodcdn.io/splash/3kzj476dylefwkhh.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/875kzslz9wsn" data-download="https://do7go.com/d/875kzslz9wsn" src="https://img.doodcdn.io/splash/465bk8itvhonb06d.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/c4hactvcyxla" data-download="https://do7go.com/d/c4hactvcyxla" src="https://img.doodcdn.io/splash/yqhxxzinlaw5qrlv.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/bijogs2q98zh" data-download="https://do7go.com/d/bijogs2q98zh" src="https://img.doodcdn.io/splash/m5v57gkkw8ul18rs.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/esd6xajm4g1a" data-download="https://do7go.com/d/esd6xajm4g1a" src="https://img.doodcdn.io/splash/npitwzbg8vnz0vaw.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/v8bmrxfgxnas" data-download="https://do7go.com/d/v8bmrxfgxnas" src="https://img.doodcdn.io/splash/atzqrvxcoz13e6kr.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/yo5e2khw57sg" data-download="https://do7go.com/d/yo5e2khw57sg" src="https://img.doodcdn.io/splash/mkr7yl7xpu827opa.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/n4qkr7iieoie" data-download="https://do7go.com/d/n4qkr7iieoie" src="https://img.doodcdn.io/splash/y582z7uf8y61vpvp.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/omiryzpocf6f" data-download="https://do7go.com/d/omiryzpocf6f" src="https://img.doodcdn.io/splash/d8373y3w0fm8aaim.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/x4m42usn9h26" data-download="https://do7go.com/d/x4m42usn9h26" src="https://img.doodcdn.io/splash/3vyv4nfjrfzrvvpb.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/kixuhdy6tucf" data-download="https://do7go.com/d/kixuhdy6tucf" src="https://img.doodcdn.io/splash/jmjezxvgz5k7j7c8.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/bvjammzdzdcf" data-download="https://do7go.com/d/bvjammzdzdcf" src="https://img.doodcdn.io/splash/bhw77q8ms5t356ak.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/in65ylzif421" data-download="https://do7go.com/d/in65ylzif421" src="https://img.doodcdn.io/splash/nynyys878zvlxzxv.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/epjk4027kb6n" data-download="https://do7go.com/d/epjk4027kb6n" src="https://img.doodcdn.io/splash/octtkjcuo8ztdwnp.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/b614nkblk1x1" data-download="https://do7go.com/d/b614nkblk1x1" src="https://img.doodcdn.io/splash/xfn50f5qwh7orxy6.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/rqfmmemjk8xa" data-download="https://do7go.com/d/rqfmmemjk8xa" src="https://img.doodcdn.io/splash/54eys4b1gl3hx71x.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/naemwrgmi383" data-download="https://do7go.com/d/naemwrgmi383" src="https://img.doodcdn.io/splash/oinzh8d2nenb6o03.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <div id="videoModal" class="modal" onclick="closeModal(event)">
         <div class="modal-content">
-            <iframe id="modalVideo" allowfullscreen></iframe>
-            <button id="downloadBtn" class="download-btn">Download</button>
+            <span class="close" onclick="closeModal(event)">&times;</span>
+            <iframe id="videoFrame" src="" allowfullscreen></iframe>
+            <a id="downloadLink" href="#" target="_blank" class="download-btn">Download</a>
         </div>
     </div>
 
-    <a class="back-to-models" href="../">Return to models page</a>
-    <button class="back-to-top" id="backToTop" onclick="window.scrollTo(0, 0)">
-        &#8593; <!-- �cone de seta para cima -->
-    </button>
+    <button class="back-to-top" onclick="scrollToTop()">Back to top</button>
 
     <script>
-        // Conta automaticamente o n�mero de miniaturas com a classe 'thumbnail'
-        const totalVideos = document.querySelectorAll('.thumbnail').length;
-        document.getElementById('total-videos').textContent = totalVideos;
-
-        // Exibir o bot�o "Voltar ao Topo" quando rolar para baixo
-        window.onscroll = function() {
-            const backToTopBtn = document.getElementById('backToTop');
-            if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
-                backToTopBtn.style.display = 'block';
-            } else {
-                backToTopBtn.style.display = 'none';
-            }
-        };
-
-        function openModal(thumbnail) {
-            const videoSrc = thumbnail.getAttribute('data-src');
-            const downloadLink = thumbnail.getAttribute('data-download');
+        function openModal(element) {
             const modal = document.getElementById('videoModal');
-            const modalVideo = document.getElementById('modalVideo');
-            const downloadBtn = document.getElementById('downloadBtn');
-            
-            modalVideo.src = videoSrc;
-            downloadBtn.onclick = () => window.open(downloadLink, '_blank');
-            
+            const iframe = document.getElementById('videoFrame');
+            const downloadLink = document.getElementById('downloadLink');
+            iframe.src = element.dataset.src;
+            downloadLink.href = element.dataset.download;
             modal.style.display = 'flex';
         }
 
-        function closeModal() {
-            const modal = document.getElementById('videoModal');
-            const modalVideo = document.getElementById('modalVideo');
-            modalVideo.src = '';
-            modal.style.display = 'none';
+        function closeModal(event) {
+            if (event.target.classList.contains('modal') || event.target.classList.contains('close')) {
+                const modal = document.getElementById('videoModal');
+                const iframe = document.getElementById('videoFrame');
+                iframe.src = '';
+                modal.style.display = 'none';
+            }
         }
 
-        // Fun��o para substituir a imagem quando ela n�o carregar
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.onscroll = function () {
+            const button = document.querySelector('.back-to-top');
+            if (window.pageYOffset > 300) {
+                button.style.display = 'block';
+            } else {
+                button.style.display = 'none';
+            }
+        };
+
         function handleImageError(img) {
-            img.style.display = 'block'; // Mostra a imagem de fallback, caso tenha sido escondida
-            img.src = '/imgs/warning.jpg'; // Substitua pelo caminho da sua imagem de fallback
-            img.onerror = null; // Para evitar um loop infinito caso a imagem de fallback tamb�m falhe
+            img.style.display = 'none';
         }
     </script>
 </body>
+
 </html>

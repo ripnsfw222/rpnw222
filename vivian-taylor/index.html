@@ -1,6 +1,6 @@
-
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en-US">
+
 <head>
     <link rel="icon" href="/imgs/ripnsfw222.com.png" type="image/png">
     <script src="/analytics.js"></script>
@@ -18,27 +18,32 @@
             flex-direction: column;
             align-items: center;
         }
+
         h1 {
             font-size: 2.5em;
             margin: 20px 0;
             color: #ff9000;
         }
+
         .video-counter {
             font-size: 1.2em;
             margin-bottom: 20px;
             color: #ff9000;
         }
+
         .thumbnail {
-            max-height: 700px;  /* Defina uma altura fixa */
-            object-fit: cover;  /* Faz com que a imagem seja cortada para preencher o cont�iner */
+            max-height: 700px;
+            object-fit: cover;
             margin: 20px auto;
             border-radius: 10px;
             cursor: pointer;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
         }
+
         .thumbnail:hover {
-            box-shadow: 0 0 20px 5px rgba(255, 165, 0, 0.7); /* Sombra laranja */
+            box-shadow: 0 0 20px 5px rgba(255, 165, 0, 0.7);
         }
+
         .modal {
             display: none;
             position: fixed;
@@ -51,6 +56,7 @@
             justify-content: center;
             align-items: center;
         }
+
         .modal-content {
             position: relative;
             width: 85%;
@@ -59,11 +65,13 @@
             border-radius: 10px;
             padding: 10px;
         }
+
         .modal-content iframe {
             width: 100%;
-            height: 600px;  /* Altura padr�o para desktop */
+            height: 600px;
             border: none;
         }
+
         .download-btn {
             display: block;
             width: 100%;
@@ -78,9 +86,11 @@
             cursor: pointer;
             font-size: 1em;
         }
+
         .download-btn:hover {
             background-color: #e07b00;
         }
+
         .close {
             position: absolute;
             top: 10px;
@@ -90,13 +100,14 @@
             cursor: pointer;
             z-index: 1001;
         }
+
         .back-to-models {
             margin: 20px 0;
             color: #ff9000;
             text-decoration: none;
             font-size: 1.2em;
         }
-        /* Bot�o fixo para voltar ao topo */
+
         .back-to-top {
             position: fixed;
             bottom: 20px;
@@ -110,93 +121,109 @@
             font-size: 1em;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
             z-index: 1000;
-            display: none; /* Inicialmente escondido */
+            display: none;
         }
+
         .back-to-top:hover {
             background-color: #e07b00;
         }
-        /* Consultas de m�dia para dispositivos m�veis */
+
         @media (max-width: 768px) {
             .modal-content iframe {
-                height: 400px;  /* Ajuste a altura para dispositivos m�veis */
+                height: 400px;
             }
+
             h1 {
-                font-size: 2em;  /* Reduzir o tamanho da fonte para o t�tulo */
+                font-size: 2em;
             }
+
             .video-counter {
-                font-size: 1em;  /* Ajustar o tamanho da fonte do contador */
+                font-size: 1em;
             }
+
             .thumbnail {
-                max-width: 100%;  /* Thumbnail ocupa 100% da largura em dispositivos m�veis */
+                max-width: 100%;
             }
         }
     </style>
 </head>
+
 <body>
     <p><a class="back-to-models" href="../">Return to models page</a></p>
-    <h1>Vivian Taylor</h1>
-    <div class="video-counter">Videos: <span id="total-videos">2</span></div>
+    <h1>Vivian Taylor</h1> <!-- Aqui, o nome da modelo será exibido -->
+    <div class="video-counter">Videos: <span id="total-videos">8</span></div>
 
-    <img class="thumbnail" data-src="https://bigwarp.io/embed-5xq4wej3odrp.html" data-download="https://bigwarp.io/5xq4wej3odrp" src="https://fs22.bigwarp.io/i/01/00322/5xq4wej3odrp_x.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
     
-    <img class="thumbnail" data-src="https://bigwarp.io/embed-64eqh63a1qb3.html" data-download="https://bigwarp.io/64eqh63a1qb3" src="https://fs47.bigwarp.io/i/03/00305/64eqh63a1qb3_x.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <img class="thumbnail" data-src="https://do7go.com/e/07vypebdenbh" data-download="https://do7go.com/d/07vypebdenbh" src="https://img.doodcdn.io/splash/xoy3cej6mtzuweu0.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
     <br>
-    
-    <div class="modal" id="videoModal">
-        <span class="close" onclick="closeModal()">&times;</span>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/xs4lyc5j7so1" data-download="https://do7go.com/d/xs4lyc5j7so1" src="https://img.doodcdn.io/splash/mxaynrlugxsz3ygt.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/uxu7kp2k1l51" data-download="https://do7go.com/d/uxu7kp2k1l51" src="https://img.doodcdn.io/splash/ks5o27fbpjup8y87.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/oa2g3arupl9h" data-download="https://do7go.com/d/oa2g3arupl9h" src="https://img.doodcdn.io/splash/hu1xpd2wsm0tsp3u.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/tu9bil1gu2ju" data-download="https://do7go.com/d/tu9bil1gu2ju" src="https://img.doodcdn.io/splash/6s4i1bw7p3er48l6.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/gpmb92cazx1e" data-download="https://do7go.com/d/gpmb92cazx1e" src="https://img.doodcdn.io/splash/dxvdbrxc5mt3py84.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/916f30wiolgm" data-download="https://do7go.com/d/916f30wiolgm" src="https://img.doodcdn.io/splash/byjcfvqbm0anasj0.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <img class="thumbnail" data-src="https://do7go.com/e/cdod1apztqfy" data-download="https://do7go.com/d/cdod1apztqfy" src="https://img.doodcdn.io/splash/3q9jmeb15x3uhpkm.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
+    <br>
+
+    <div id="videoModal" class="modal" onclick="closeModal(event)">
         <div class="modal-content">
-            <iframe id="modalVideo" allowfullscreen></iframe>
-            <button id="downloadBtn" class="download-btn">Download</button>
+            <span class="close" onclick="closeModal(event)">&times;</span>
+            <iframe id="videoFrame" src="" allowfullscreen></iframe>
+            <a id="downloadLink" href="#" target="_blank" class="download-btn">Download</a>
         </div>
     </div>
 
-    <a class="back-to-models" href="../">Return to models page</a>
-    <button class="back-to-top" id="backToTop" onclick="window.scrollTo(0, 0)">
-        &#8593; <!-- �cone de seta para cima -->
-    </button>
+    <button class="back-to-top" onclick="scrollToTop()">Back to top</button>
 
     <script>
-        // Conta automaticamente o n�mero de miniaturas com a classe 'thumbnail'
-        const totalVideos = document.querySelectorAll('.thumbnail').length;
-        document.getElementById('total-videos').textContent = totalVideos;
-
-        // Exibir o bot�o "Voltar ao Topo" quando rolar para baixo
-        window.onscroll = function() {
-            const backToTopBtn = document.getElementById('backToTop');
-            if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
-                backToTopBtn.style.display = 'block';
-            } else {
-                backToTopBtn.style.display = 'none';
-            }
-        };
-
-        function openModal(thumbnail) {
-            const videoSrc = thumbnail.getAttribute('data-src');
-            const downloadLink = thumbnail.getAttribute('data-download');
+        function openModal(element) {
             const modal = document.getElementById('videoModal');
-            const modalVideo = document.getElementById('modalVideo');
-            const downloadBtn = document.getElementById('downloadBtn');
-            
-            modalVideo.src = videoSrc;
-            downloadBtn.onclick = () => window.open(downloadLink, '_blank');
-            
+            const iframe = document.getElementById('videoFrame');
+            const downloadLink = document.getElementById('downloadLink');
+            iframe.src = element.dataset.src;
+            downloadLink.href = element.dataset.download;
             modal.style.display = 'flex';
         }
 
-        function closeModal() {
-            const modal = document.getElementById('videoModal');
-            const modalVideo = document.getElementById('modalVideo');
-            modalVideo.src = '';
-            modal.style.display = 'none';
+        function closeModal(event) {
+            if (event.target.classList.contains('modal') || event.target.classList.contains('close')) {
+                const modal = document.getElementById('videoModal');
+                const iframe = document.getElementById('videoFrame');
+                iframe.src = '';
+                modal.style.display = 'none';
+            }
         }
 
-        // Fun��o para substituir a imagem quando ela n�o carregar
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.onscroll = function () {
+            const button = document.querySelector('.back-to-top');
+            if (window.pageYOffset > 300) {
+                button.style.display = 'block';
+            } else {
+                button.style.display = 'none';
+            }
+        };
+
         function handleImageError(img) {
-            img.style.display = 'block'; // Mostra a imagem de fallback, caso tenha sido escondida
-            img.src = '/imgs/warning.jpg'; // Substitua pelo caminho da sua imagem de fallback
-            img.onerror = null; // Para evitar um loop infinito caso a imagem de fallback tamb�m falhe
+            img.style.display = 'none';
         }
     </script>
 </body>
+
 </html>

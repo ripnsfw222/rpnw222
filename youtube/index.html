@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>YouTube Vídeos</title>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #121212;
+      color: white;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    .main-container {
+      width: 100%;
+      max-width: 1200px;
+      padding: 1rem;
+      padding-top: 100px;
+      /* Espaço para o header fixo */
+    }
+
+    /* CONTROLES FIXOS NO TOPO */
+    .controls {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 1200px;
+      background: rgba(30, 30, 30, 0.95);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+      padding: 15px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      z-index: 9999;
+      user-select: none;
+    }
+
+    .search-bar {
+      width: 100%;
+      max-width: 500px;
+      padding: 0.5rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: solid 3px #6ab04c;
+    }
+
+    .order-select {
+      width: 180px;
+      padding: 0.4rem;
+      font-size: 1rem;
+      border-radius: 4px;
+      border: none;
+      background: #1e1e1e;
+      color: white;
+      cursor: pointer;
+    }
+
+    button {
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      border: none;
+      background: #6ab04c;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover:not(:disabled) {
+      background: #519636;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+
+    .videos {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      padding: 0 1rem;
+    }
+
+    .video-card {
+      background: #1e1e1e;
+      border-radius: 8px;
+      flex: 1 1 300px;
+      max-width: 33%;
+      min-width: 280px;
+      overflow: hidden;
+      padding-bottom: 0.5rem;
+    }
+
+    .video-card img {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      display: block;
+    }
+
+    .video-card h4 {
+      margin: 0.5rem;
+      font-size: 1rem;
+      text-align: center;
+
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .video-info {
+      margin: 0 0.5rem 0.5rem;
+      font-size: 0.875rem;
+      color: #ccc;
+      text-align: center;
+    }
+
+    .channel-link {
+      color: #6ab04c;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .channel-link:hover {
+      text-decoration: underline;
+    }
+
+    .channel-name {
+      margin-bottom: 10px;
+    }
+
+    /* Contador de vídeos por canal */
+    #channelCounts {
+      max-width: 800px;
+      margin: 0 auto 1rem auto;
+      color: #6ab04c;
+      font-weight: bold;
+      text-align: center;
+      font-size: 0.9rem;
+      user-select: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="main-container">
+
+    <div class="controls">
+      <button id="btnInicio" type="button">Início</button>
+      <button id="btnVoltar" type="button" disabled>Voltar</button>
+      <input class="search-bar" type="text" placeholder="Buscar vídeo..." />
+      <select class="order-select">
+        <option value="newest">Mais novos primeiro</option>
+        <option value="oldest">Mais antigos primeiro</option>
+      </select>
+    </div>
+
+    <div id="channelCounts" style="display:none;"></div>
+
+    <div class="videos" id="videoContainer"></div>
+  </div>
+
+  <script>
+    let allVideos = [];
+    let lastFilteredVideos = null; // para controlar "voltar"
+    let lastSearchValue = '';
+    let lastOrderValue = 'newest';
+
+    const inputSearch = document.querySelector('.search-bar');
+    const selectOrder = document.querySelector('.order-select');
+    const btnInicio = document.getElementById('btnInicio');
+    const btnVoltar = document.getElementById('btnVoltar');
+    const channelCountsDiv = document.getElementById('channelCounts');
+
+    async function loadVideos() {
+      try {
+        const res = await fetch('videos.json');
+        if (!res.ok) throw new Error('Erro ao carregar videos.json');
+        const data = await res.json();
+        allVideos = data;
+        displayVideos(allVideos);
+      } catch (err) {
+        console.error('Erro ao carregar vídeos:', err);
+      }
+    }
+
+    function displayVideos(videos) {
+      const container = document.getElementById('videoContainer');
+      container.innerHTML = '';
+
+      // Ordenar vídeos conforme o select
+      const order = selectOrder.value;
+      lastOrderValue = order;
+      videos.sort((a, b) => {
+        const dateA = a.publishedAt ? new Date(a.publishedAt) : new Date(0);
+        const dateB = b.publishedAt ? new Date(b.publishedAt) : new Date(0);
+        return order === 'newest' ? dateB - dateA : dateA - dateB;
+      });
+
+      videos.forEach(video => {
+        const videoId = video.id;
+        const title = video.title;
+        const thumbnail = video.thumbnail;
+        const channel = video.channel || 'Canal Desconhecido';
+        const publishedAt = video.publishedAt ? new Date(video.publishedAt).toLocaleDateString('pt-BR') : '';
+
+        const card = document.createElement('div');
+        card.className = 'video-card';
+        card.innerHTML = `
+          <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank" rel="noopener noreferrer">
+            <img src="${thumbnail}" alt="${title}">
+          </a>
+          <h4>${title}</h4>
+          <div class="video-info">
+            <div class="channel-name"><strong><a href="#" class="channel-link">${channel}</a></strong></div>
+            <div class="published-date">${publishedAt}</div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      // Eventos de clique nos canais para filtrar
+      const channelLinks = document.querySelectorAll('.channel-link');
+      channelLinks.forEach(link => {
+        link.addEventListener('click', e => {
+          e.preventDefault();
+          const channelName = e.target.textContent;
+          inputSearch.value = channelName;
+          handleFilter(true);
+        });
+      });
+
+      // Atualiza contador de vídeos por canal se estiver filtrado
+      updateChannelCounts(videos);
+
+      // Atualiza botão voltar
+      btnVoltar.disabled = (lastFilteredVideos === null);
+    }
+
+    // Função para filtrar + ordenar ao mesmo tempo
+    // parâmetro para saber se deve salvar a lista atual para "voltar"
+    function handleFilter(saveHistory = false) {
+      const query = inputSearch.value.trim().toLowerCase();
+      const filtered = allVideos.filter(v =>
+        v.title.toLowerCase().includes(query) ||
+        (v.channel && v.channel.toLowerCase().includes(query))
+      );
+
+      if (saveHistory) {
+        lastFilteredVideos = allVideos.slice(); // copia atual antes da filtragem
+      }
+
+      lastSearchValue = query;
+
+      displayVideos(filtered);
+    }
+
+    // Botão Início: limpa busca e mostra todos vídeos
+    btnInicio.addEventListener('click', () => {
+      inputSearch.value = '';
+      lastFilteredVideos = null;
+      displayVideos(allVideos);
+      btnVoltar.disabled = true;
+      channelCountsDiv.style.display = 'none';
+    });
+
+    // Botão Voltar: volta para último estado antes da última filtragem
+    btnVoltar.addEventListener('click', () => {
+      if (lastFilteredVideos) {
+        inputSearch.value = '';
+        displayVideos(lastFilteredVideos);
+        lastFilteredVideos = null;
+        btnVoltar.disabled = true;
+        channelCountsDiv.style.display = 'none';
+      }
+    });
+
+    // Atualiza o contador de vídeos por canal (aparece só quando filtrado)
+    function updateChannelCounts(videos) {
+      if (videos.length === allVideos.length) {
+        // Lista completa, não mostra contador
+        channelCountsDiv.style.display = 'none';
+        return;
+      }
+      // Conta quantos vídeos por canal
+      const counts = {};
+      videos.forEach(v => {
+        const ch = v.channel || 'Canal Desconhecido';
+        counts[ch] = (counts[ch] || 0) + 1;
+      });
+
+      // Cria texto exibindo os canais e seus contadores
+      let text = 'Vídeos por canal nesta busca: ';
+      text += Object.entries(counts)
+        .map(([ch, count]) => `${ch}: ${count}`)
+        .join(' | ');
+
+      channelCountsDiv.textContent = text;
+      channelCountsDiv.style.display = 'block';
+    }
+
+    // Event listeners para busca e ordenação
+    inputSearch.addEventListener('input', () => handleFilter(true));
+    selectOrder.addEventListener('change', () => {
+      // Aplica a ordenação na lista atual (filtrada ou completa)
+      handleFilter(false);
+    });
+
+    loadVideos();
+  </script>
+</body>
+
+</html>

@@ -26,10 +26,8 @@
       max-width: 1200px;
       padding: 1rem;
       padding-top: 100px;
-      /* Espaço para o header fixo */
     }
 
-    /* CONTROLES FIXOS NO TOPO */
     .controls {
       position: fixed;
       top: 0;
@@ -119,7 +117,6 @@
       margin: 0.5rem;
       font-size: 1rem;
       text-align: center;
-
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -146,7 +143,6 @@
       margin-bottom: 10px;
     }
 
-    /* Contador de vídeos por canal */
     #channelCounts {
       max-width: 800px;
       margin: 0 auto 1rem auto;
@@ -160,9 +156,7 @@
 </head>
 
 <body>
-
   <div class="main-container">
-
     <div class="controls">
       <button id="btnInicio" type="button">Início</button>
       <button id="btnVoltar" type="button" disabled>Voltar</button>
@@ -174,13 +168,12 @@
     </div>
 
     <div id="channelCounts" style="display:none;"></div>
-
     <div class="videos" id="videoContainer"></div>
   </div>
 
   <script>
     let allVideos = [];
-    let lastFilteredVideos = null; // para controlar "voltar"
+    let lastFilteredVideos = null;
     let lastSearchValue = '';
     let lastOrderValue = 'newest';
 
@@ -206,7 +199,6 @@
       const container = document.getElementById('videoContainer');
       container.innerHTML = '';
 
-      // Ordenar vídeos conforme o select
       const order = selectOrder.value;
       lastOrderValue = order;
       videos.sort((a, b) => {
@@ -219,7 +211,7 @@
         const videoId = video.id;
         const title = video.title;
         const thumbnail = video.thumbnail;
-        const channel = video.channel || 'Canal Desconhecido';
+        const channels = video.channels || ['Canal Desconhecido'];
         const publishedAt = video.publishedAt ? new Date(video.publishedAt).toLocaleDateString('pt-BR') : '';
 
         const card = document.createElement('div');
@@ -230,14 +222,15 @@
           </a>
           <h4>${title}</h4>
           <div class="video-info">
-            <div class="channel-name"><strong><a href="#" class="channel-link">${channel}</a></strong></div>
+            <div class="channel-name">
+              ${channels.map(ch => `<strong><a href="#" class="channel-link">${ch}</a></strong>`).join(' | ')}
+            </div>
             <div class="published-date">${publishedAt}</div>
           </div>
         `;
         container.appendChild(card);
       });
 
-      // Eventos de clique nos canais para filtrar
       const channelLinks = document.querySelectorAll('.channel-link');
       channelLinks.forEach(link => {
         link.addEventListener('click', e => {
@@ -248,32 +241,26 @@
         });
       });
 
-      // Atualiza contador de vídeos por canal se estiver filtrado
       updateChannelCounts(videos);
-
-      // Atualiza botão voltar
       btnVoltar.disabled = (lastFilteredVideos === null);
     }
 
-    // Função para filtrar + ordenar ao mesmo tempo
-    // parâmetro para saber se deve salvar a lista atual para "voltar"
     function handleFilter(saveHistory = false) {
       const query = inputSearch.value.trim().toLowerCase();
-      const filtered = allVideos.filter(v =>
-        v.title.toLowerCase().includes(query) ||
-        (v.channel && v.channel.toLowerCase().includes(query))
-      );
+      const filtered = allVideos.filter(v => {
+        const titleMatch = v.title.toLowerCase().includes(query);
+        const channelMatch = (v.channels || []).some(ch => ch.toLowerCase().includes(query));
+        return titleMatch || channelMatch;
+      });
 
       if (saveHistory) {
-        lastFilteredVideos = allVideos.slice(); // copia atual antes da filtragem
+        lastFilteredVideos = allVideos.slice();
       }
 
       lastSearchValue = query;
-
       displayVideos(filtered);
     }
 
-    // Botão Início: limpa busca e mostra todos vídeos
     btnInicio.addEventListener('click', () => {
       inputSearch.value = '';
       lastFilteredVideos = null;
@@ -282,7 +269,6 @@
       channelCountsDiv.style.display = 'none';
     });
 
-    // Botão Voltar: volta para último estado antes da última filtragem
     btnVoltar.addEventListener('click', () => {
       if (lastFilteredVideos) {
         inputSearch.value = '';
@@ -293,21 +279,20 @@
       }
     });
 
-    // Atualiza o contador de vídeos por canal (aparece só quando filtrado)
     function updateChannelCounts(videos) {
       if (videos.length === allVideos.length) {
-        // Lista completa, não mostra contador
         channelCountsDiv.style.display = 'none';
         return;
       }
-      // Conta quantos vídeos por canal
+
       const counts = {};
       videos.forEach(v => {
-        const ch = v.channel || 'Canal Desconhecido';
-        counts[ch] = (counts[ch] || 0) + 1;
+        const chList = v.channels || ['Canal Desconhecido'];
+        chList.forEach(ch => {
+          counts[ch] = (counts[ch] || 0) + 1;
+        });
       });
 
-      // Cria texto exibindo os canais e seus contadores
       let text = 'Vídeos por canal nesta busca: ';
       text += Object.entries(counts)
         .map(([ch, count]) => `${ch}: ${count}`)
@@ -317,10 +302,8 @@
       channelCountsDiv.style.display = 'block';
     }
 
-    // Event listeners para busca e ordenação
     inputSearch.addEventListener('input', () => handleFilter(true));
     selectOrder.addEventListener('change', () => {
-      // Aplica a ordenação na lista atual (filtrada ou completa)
       handleFilter(false);
     });
 

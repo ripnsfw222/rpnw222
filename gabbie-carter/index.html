@@ -27,7 +27,7 @@
             width: 100%;
             max-width: 1200px;
             padding: 1rem;
-            padding-top: 210px;
+            padding-top: 100px;
         }
 
         .controls {
@@ -215,6 +215,10 @@
                     width: 100%;
                     max-width: 100%;
                 }
+
+                .main-container {
+                    padding-top: 210px;
+                }
             }
         }
     </style>
@@ -244,7 +248,8 @@
         let lastFilteredVideos = null;
         let lastSearchValue = '';
         let lastOrderValue = 'newest';
-        let currentPage = 1;
+        const urlParams = new URLSearchParams(window.location.search);
+        let currentPage = parseInt(urlParams.get('page')) || 1;
         const VIDEOS_PER_PAGE = 12;
 
         const inputSearch = document.querySelector('.search-bar');
@@ -358,7 +363,11 @@
                 if (i !== currentPage) {
                     btn.addEventListener('click', () => {
                         currentPage = i;
+                        const url = new URL(window.location);
+                        url.searchParams.set('page', currentPage);
+                        window.history.pushState({}, '', url); // Atualiza a URL sem recarregar
                         displayVideos(videos);
+
                     });
                 }
 
@@ -380,8 +389,19 @@
             }
 
             lastSearchValue = query;
-            currentPage = 1;
+            if (!saveHistory) {
+                const urlParamPage = parseInt(new URLSearchParams(window.location.search).get('page'));
+                currentPage = isNaN(urlParamPage) ? 1 : urlParamPage;
+            } else {
+                currentPage = 1;
+            }
+
             displayVideos(filtered);
+
+            const url = new URL(window.location);
+            url.searchParams.set('page', currentPage);
+            window.history.replaceState({}, '', url);
+
         }
 
         btnInicio.addEventListener('click', () => {

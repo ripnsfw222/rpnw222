@@ -228,7 +228,7 @@
     <div class="main-container">
         <div class="controls">
             <button id="btnInicio" type="button">Home</button>
-            <input class="search-bar" type="text" placeholder="Buscar vídeo..." />
+            <input class="search-bar" type="text" placeholder="Search video..." />
             <select class="order-select">
                 <option value="newest">Newest</option>
                 <option value="oldest">Oldest</option>
@@ -290,7 +290,7 @@
             paginatedVideos.forEach(video => {
                 const title = video.title;
                 const thumbnail = video.thumbnail;
-                const channels = video.channels || ['Canal Desconhecido'];
+                const channels = video.channels || ['Unkown Channel'];
                 const categories = video.categories || [];
                 const publishedAt = video.publishedAt ? new Date(video.publishedAt).toLocaleDateString('pt-BR') : '';
                 const videoUrls = video.videoUrls || [];

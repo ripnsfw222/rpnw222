@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Ripnsfw222</title>
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #121212;
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 1200px;
+            padding: 1rem;
+            padding-top: 100px;
+        }
+
+        .controls {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 1200px;
+            background: rgba(30, 30, 30, 0.95);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+            padding: 15px 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            z-index: 9999;
+            user-select: none;
+        }
+
+        .search-bar {
+            width: 100%;
+            max-width: 500px;
+            padding: 0.5rem;
+            font-size: 1rem;
+            border-radius: 8px;
+            border: solid 3px #6ab04c;
+        }
+
+        .order-select {
+            width: 180px;
+            padding: 0.4rem;
+            font-size: 1rem;
+            border-radius: 4px;
+            border: none;
+            background: #1e1e1e;
+            color: white;
+            cursor: pointer;
+        }
+
+        button {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            border: none;
+            background: #6ab04c;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover:not(:disabled) {
+            background: #519636;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: default;
+        }
+
+        .videos {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            padding: 0 1rem;
+        }
+
+        .video-card {
+            background: #1e1e1e;
+            border-radius: 8px;
+            flex: 1 1 300px;
+            max-width: 33%;
+            min-width: 280px;
+            overflow: hidden;
+            padding-bottom: 0.5rem;
+        }
+
+        .video-card img {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+            display: block;
+        }
+
+        .video-card h4 {
+            margin: 0.5rem;
+            font-size: 1rem;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .video-info {
+            margin: 0 0.5rem 0.5rem;
+            font-size: 0.875rem;
+            color: #ccc;
+            text-align: center;
+        }
+
+        .channel-link {
+            color: #6ab04c;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .channel-link:hover {
+            text-decoration: underline;
+        }
+
+        .channel-name {
+            margin-bottom: 10px;
+        }
+
+        .categories {
+            margin-bottom: 10px;
+        }
+
+        .category-link {
+            color: #f1c40f;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .category-link:hover {
+            text-decoration: underline;
+        }
+
+        .links {
+            margin-bottom: 10px;
+        }
+
+        .links a {
+            display: inline-block;
+            margin: 0 6px 6px 0;
+            padding: 6px 12px;
+            background-color: #6ab04c;
+            /* verde parecido com canal */
+            color: rgb(0, 0, 0) !important;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .links a:hover {
+            background-color: #519636;
+            /* verde mais escuro no hover */
+            text-decoration: none;
+        }
+
+        #channelCounts {
+            max-width: 800px;
+            margin: 0 auto 1rem auto;
+            color: #6ab04c;
+            font-weight: bold;
+            text-align: center;
+            font-size: 0.9rem;
+            user-select: none;
+        }
+
+        @media (max-width: 600px) {
+            #paginationControls button {
+                padding: 6px 10px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main-container">
+        <div class="controls">
+            <button id="btnInicio" type="button">Início</button>
+            <button id="btnVoltar" type="button" disabled>Voltar</button>
+            <input class="search-bar" type="text" placeholder="Buscar vídeo..." />
+            <select class="order-select">
+                <option value="newest">Mais novos primeiro</option>
+                <option value="oldest">Mais antigos primeiro</option>
+            </select>
+        </div>
+
+        <div id="channelCounts" style="display:none;"></div>
+        <div class="videos" id="videoContainer"></div>
+
+        <div id="paginationControls"
+            style="display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin: 2rem 0;"></div>
+    </div>
+
+    <script>
+        let allVideos = [];
+        let lastFilteredVideos = null;
+        let lastSearchValue = '';
+        let lastOrderValue = 'newest';
+        let currentPage = 1;
+        const VIDEOS_PER_PAGE = 12;
+
+        const inputSearch = document.querySelector('.search-bar');
+        const selectOrder = document.querySelector('.order-select');
+        const btnInicio = document.getElementById('btnInicio');
+        const btnVoltar = document.getElementById('btnVoltar');
+        const channelCountsDiv = document.getElementById('channelCounts');
+        const paginationDiv = document.getElementById('paginationControls');
+
+        async function loadVideos() {
+            try {
+                const res = await fetch('videos.json');
+                if (!res.ok) throw new Error('Erro ao carregar videos.json');
+                const data = await res.json();
+                allVideos = data;
+                handleFilter();
+            } catch (err) {
+                console.error('Erro ao carregar vídeos:', err);
+            }
+        }
+
+        function displayVideos(videos) {
+            const container = document.getElementById('videoContainer');
+            container.innerHTML = '';
+
+            const order = selectOrder.value;
+            lastOrderValue = order;
+            videos.sort((a, b) => {
+                const dateA = a.publishedAt ? new Date(a.publishedAt) : new Date(0);
+                const dateB = b.publishedAt ? new Date(b.publishedAt) : new Date(0);
+                return order === 'newest' ? dateB - dateA : dateA - dateB;
+            });
+
+            const totalPages = Math.ceil(videos.length / VIDEOS_PER_PAGE);
+            if (currentPage > totalPages) currentPage = 1;
+
+            const start = (currentPage - 1) * VIDEOS_PER_PAGE;
+            const paginatedVideos = videos.slice(start, start + VIDEOS_PER_PAGE);
+
+            paginatedVideos.forEach(video => {
+                const title = video.title;
+                const thumbnail = video.thumbnail;
+                const channels = video.channels || ['Canal Desconhecido'];
+                const categories = video.categories || [];
+                const publishedAt = video.publishedAt ? new Date(video.publishedAt).toLocaleDateString('pt-BR') : '';
+                const videoUrls = video.videoUrls || [];
+
+                const card = document.createElement('div');
+                card.className = 'video-card';
+                card.innerHTML = `
+            <a href="${videoUrls[0] || '#'}" target="_blank" rel="noopener noreferrer">
+                <img src="${thumbnail}" alt="${title}" />
+            </a>
+            <h4>${title}</h4>
+            <div class="video-info">
+                <div class="channel-name">
+                    ${channels.map(ch => `<strong><a href="#" class="channel-link">${ch}</a></strong>`).join(' | ')}
+                </div>
+                ${categories.length > 0 ? `<div class="categories">${categories.map(cat => `<a href="#" class="category-link">${cat}</a>`).join(' | ')}</div>` : ''}
+                ${videoUrls.length > 0 ? `<div class="links">${videoUrls.map((url, i) => `<a href="${url}" target="_blank">Link ${i + 1}</a>`).join(' | ')}</div>` : ''}
+                <div class="published-date">${publishedAt}</div>
+            </div>
+                `;
+                container.appendChild(card);
+            });
+
+            document.querySelectorAll('.channel-link').forEach(link => {
+                link.addEventListener('click', e => {
+                    e.preventDefault();
+                    const channelName = e.target.textContent;
+                    inputSearch.value = channelName;
+                    handleFilter(true);
+                });
+            });
+
+            document.querySelectorAll('.category-link').forEach(link => {
+                link.addEventListener('click', e => {
+                    e.preventDefault();
+                    const categoryName = e.target.textContent;
+                    inputSearch.value = categoryName;
+                    handleFilter(true);
+                });
+            });
+
+            renderPagination(videos);
+        } // <-- Fecha aqui a função displayVideos!
+
+        // Agora as outras funções ficam fora da displayVideos
+
+        function renderPagination(videos) {
+            paginationDiv.innerHTML = '';
+            const totalPages = Math.ceil(videos.length / VIDEOS_PER_PAGE);
+            if (totalPages <= 1) {
+                paginationDiv.style.display = 'none';
+                return;
+            }
+
+            paginationDiv.style.display = 'flex';
+
+            for (let i = 1; i <= totalPages; i++) {
+                const btn = document.createElement('button');
+                btn.textContent = i;
+                btn.style.padding = '8px 14px';
+                btn.style.margin = '2px';
+                btn.style.background = i === currentPage ? '#6ab04c' : '#1e1e1e';
+                btn.style.color = i === currentPage ? '#fff' : '#ccc';
+                btn.style.border = '1px solid #444';
+                btn.style.cursor = 'pointer';
+                btn.style.borderRadius = '4px';
+
+                if (i !== currentPage) {
+                    btn.addEventListener('click', () => {
+                        currentPage = i;
+                        displayVideos(videos);
+                    });
+                }
+
+                paginationDiv.appendChild(btn);
+            }
+        }
+
+        function handleFilter(saveHistory = false) {
+            const query = inputSearch.value.trim().toLowerCase();
+            const filtered = allVideos.filter(v => {
+                const titleMatch = v.title.toLowerCase().includes(query);
+                const channelMatch = (v.channels || []).some(ch => ch.toLowerCase().includes(query));
+                const categoryMatch = (v.categories || []).some(cat => cat.toLowerCase().includes(query));
+                return titleMatch || channelMatch || categoryMatch;
+            });
+
+            if (saveHistory) {
+                lastFilteredVideos = allVideos.slice();
+            }
+
+            lastSearchValue = query;
+            currentPage = 1;
+            displayVideos(filtered);
+        }
+
+        btnInicio.addEventListener('click', () => {
+            inputSearch.value = '';
+            lastFilteredVideos = null;
+            currentPage = 1;
+            displayVideos(allVideos);
+            btnVoltar.disabled = true;
+            channelCountsDiv.style.display = 'none';
+        });
+
+        btnVoltar.addEventListener('click', () => {
+            if (lastFilteredVideos) {
+                inputSearch.value = '';
+                currentPage = 1;
+                displayVideos(lastFilteredVideos);
+                lastFilteredVideos = null;
+                btnVoltar.disabled = true;
+                channelCountsDiv.style.display = 'none';
+            }
+        });
+
+        function updateChannelCounts(videos) {
+            if (videos.length === allVideos.length) {
+                channelCountsDiv.style.display = 'none';
+                return;
+            }
+
+            const counts = {};
+            videos.forEach(v => {
+                const chList = v.channels || ['Canal Desconhecido'];
+                chList.forEach(ch => {
+                    counts[ch] = (counts[ch] || 0) + 1;
+                });
+            });
+
+            let text = 'Vídeos por canal nesta busca: ';
+            text += Object.entries(counts)
+                .map(([ch, count]) => `${ch}: ${count}`)
+                .join(' | ');
+
+            channelCountsDiv.textContent = text;
+            channelCountsDiv.style.display = 'block';
+        }
+
+        inputSearch.addEventListener('input', () => handleFilter(true));
+        selectOrder.addEventListener('change', () => handleFilter(false));
+        loadVideos();
+    </script>
+
+</body>
+
+</html>

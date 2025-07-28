@@ -227,12 +227,11 @@
 <body>
     <div class="main-container">
         <div class="controls">
-            <button id="btnInicio" type="button">Início</button>
-            <button id="btnVoltar" type="button" disabled>Voltar</button>
+            <button id="btnInicio" type="button">Home</button>
             <input class="search-bar" type="text" placeholder="Buscar vídeo..." />
             <select class="order-select">
-                <option value="newest">Mais novos primeiro</option>
-                <option value="oldest">Mais antigos primeiro</option>
+                <option value="newest">Newest</option>
+                <option value="oldest">Oldest</option>
             </select>
         </div>
 
@@ -255,7 +254,6 @@
         const inputSearch = document.querySelector('.search-bar');
         const selectOrder = document.querySelector('.order-select');
         const btnInicio = document.getElementById('btnInicio');
-        const btnVoltar = document.getElementById('btnVoltar');
         const channelCountsDiv = document.getElementById('channelCounts');
         const paginationDiv = document.getElementById('paginationControls');
 
@@ -406,18 +404,6 @@
 
         btnInicio.addEventListener('click', () => {
             window.location.href = 'https://ripnsfw222.com';
-        });
-
-
-        btnVoltar.addEventListener('click', () => {
-            if (lastFilteredVideos) {
-                inputSearch.value = '';
-                currentPage = 1;
-                displayVideos(lastFilteredVideos);
-                lastFilteredVideos = null;
-                btnVoltar.disabled = true;
-                channelCountsDiv.style.display = 'none';
-            }
         });
 
         function updateChannelCounts(videos) {

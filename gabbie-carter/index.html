@@ -292,7 +292,7 @@
                 const thumbnail = video.thumbnail;
                 const channels = video.channels || ['Unkown Channel'];
                 const categories = video.categories || [];
-                const publishedAt = video.publishedAt ? new Date(video.publishedAt).toLocaleDateString('pt-BR') : '';
+                const publishedAt = video.publishedAt ? new Date(video.publishedAt).toISOString().split('T')[0].replace(/-/g, '/') : '';
                 const videoUrls = video.videoUrls || [];
 
                 const card = document.createElement('div');

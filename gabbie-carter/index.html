@@ -142,7 +142,8 @@
         }
 
         .channel-name {
-            margin-bottom: 10px;
+            margin-top: 20px;
+            margin-bottom: 5px;
         }
 
         .categories {
@@ -301,7 +302,7 @@
             <a href="${videoUrls[0] || '#'}" target="_blank" rel="noopener noreferrer">
                 <img src="${thumbnail}" alt="${title}" />
             </a>
-            <h4>${title}</h4>
+            
             <div class="video-info">
                 <div class="channel-name">
                     ${channels.map(ch => `<strong><a href="#" class="channel-link">${ch}</a></strong>`).join(' | ')}

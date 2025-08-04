@@ -1,244 +1,33 @@
 <!DOCTYPE html>
-<html lang="en-US">
+<html lang="pt-BR">
 
 <head>
-    <link rel="icon" href="/imgs/ripnsfw222.com.png" type="image/png">
-    <script src="/analytics.js"></script>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Bonnie Blue</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #000;
-            color: #fff;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        h1 {
-            font-size: 2.5em;
-            margin: 20px 0;
-            color: #ff9000;
-        }
-
-        .video-counter {
-            font-size: 1.2em;
-            margin-bottom: 20px;
-            color: #ff9000;
-        }
-
-        .thumbnail {
-            max-height: 700px;
-            object-fit: cover;
-            margin: 20px auto;
-            border-radius: 10px;
-            cursor: pointer;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-        }
-
-        .thumbnail:hover {
-            box-shadow: 0 0 20px 5px rgba(255, 165, 0, 0.7);
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            position: relative;
-            width: 85%;
-            max-width: 1200px;
-            background-color: #222;
-            border-radius: 10px;
-            padding: 10px;
-        }
-
-        .modal-content iframe {
-            width: 100%;
-            height: 600px;
-            border: none;
-        }
-
-        .download-btn {
-            display: block;
-            width: 100%;
-            max-width: 200px;
-            margin: 20px auto;
-            padding: 10px;
-            text-align: center;
-            background-color: #ff9000;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-        }
-
-        .download-btn:hover {
-            background-color: #e07b00;
-        }
-
-        .close {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            color: white;
-            font-size: 30px;
-            cursor: pointer;
-            z-index: 1001;
-        }
-
-        .back-to-models {
-            margin: 20px 0;
-            color: #ff9000;
-            text-decoration: none;
-            font-size: 1.2em;
-        }
-
-        .back-to-top {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: #ff9000;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            padding: 10px 15px;
-            cursor: pointer;
-            font-size: 1em;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            display: none;
-        }
-
-        .back-to-top:hover {
-            background-color: #e07b00;
-        }
-
-        @media (max-width: 768px) {
-            .modal-content iframe {
-                height: 400px;
-            }
-
-            h1 {
-                font-size: 2em;
-            }
-
-            .video-counter {
-                font-size: 1em;
-            }
-
-            .thumbnail {
-                max-width: 100%;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-    <p><a class="back-to-models" href="../">Return to models page</a></p>
-    <h1>Bonnie Blue</h1> <!-- Aqui, o nome da modelo será exibido -->
-    <div class="video-counter">Videos: <span id="total-videos">13</span></div>
-
-    
-    <img class="thumbnail" data-src="https://doply.net/e/bars8n2oo4hs" data-download="https://doply.net/d/bars8n2oo4hs" src="https://img.doodcdn.io/splash/71091zrt3gf53klg.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-
-    <img class="thumbnail" data-src="https://doply.net/e/crl809s0lxin" data-download="https://doply.net/d/crl809s0lxin" src="https://img.doodcdn.io/splash/6pl5okgkcemtjwen.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-
-    <img class="thumbnail" data-src="https://doply.net/e/19ety1io1l3b" data-download="https://doply.net/d/19ety1io1l3b" src="https://img.doodcdn.io/splash/3fspidrh177b8mko.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-
-    <img class="thumbnail" data-src="https://doply.net/e/3z3dmt1wzesd" data-download="https://doply.net/d/3z3dmt1wzesd" src="https://img.doodcdn.io/splash/a4fk7qlc0cm9ke22.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-
-    <img class="thumbnail" data-src="https://doply.net/e/wljizzuxlpr8" data-download="https://doply.net/d/wljizzuxlpr8" src="https://img.doodcdn.io/splash/zhzr2zvhrgfmf8mf.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-
-    <img class="thumbnail" data-src="https://doply.net/e/9srzzls29c3k" data-download="https://doply.net/d/9srzzls29c3k" src="https://img.doodcdn.io/splash/efuq2a0wukmv058v.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-
-    <img class="thumbnail" data-src="https://doply.net/e/6zv1kzq83uv8" data-download="https://doply.net/d/6zv1kzq83uv8" src="https://img.doodcdn.io/splash/oujulyx8tp1mez5e.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-
-    <img class="thumbnail" data-src="https://doply.net/e/jwhihds2tktx" data-download="https://doply.net/d/jwhihds2tktx" src="https://img.doodcdn.io/splash/6ld295wp0aarubjv.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-
-    <img class="thumbnail" data-src="https://doply.net/e/wnoqqnen1axq" data-download="https://doply.net/d/wnoqqnen1axq" src="https://img.doodcdn.io/splash/nmsyzsypn23sdzqd.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-
-    <img class="thumbnail" data-src="https://doply.net/e/mw1ligsvixel" data-download="https://doply.net/d/mw1ligsvixel" src="https://img.doodcdn.io/splash/amo229j18odnu0py.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-
-    <img class="thumbnail" data-src="https://doply.net/e/hypmhudlbcq4" data-download="https://doply.net/d/hypmhudlbcq4" src="https://img.doodcdn.io/splash/at4uaa9ope5relmm.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-
-    <img class="thumbnail" data-src="https://doply.net/e/hsd5qmraesq3" data-download="https://doply.net/d/hsd5qmraesq3" src="https://img.doodcdn.io/splash/wewtmrui1fv3fz8z.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-
-    <img class="thumbnail" data-src="https://doply.net/e/l6o9rr5i9w2w" data-download="https://doply.net/d/l6o9rr5i9w2w" src="https://img.doodcdn.io/splash/91f7rf7b5sgwcogc.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-
-    <div id="videoModal" class="modal" onclick="closeModal(event)">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal(event)">&times;</span>
-            <iframe id="videoFrame" src="" allowfullscreen></iframe>
-            <a id="downloadLink" href="#" target="_blank" class="download-btn">Download</a>
+    <div class="main-container">
+        <div class="controls">
+            <button id="btnInicio" type="button">Home</button>
+            <input class="search-bar" type="text" placeholder="Search video..." />
+            <select class="order-select">
+                <option value="newest">Newest</option>
+                <option value="oldest">Oldest</option>
+            </select>
         </div>
+
+        <div id="channelCounts" style="display:none;"></div>
+        <div class="videos" id="videoContainer"></div>
+
+        <div id="paginationControls"
+            style="display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin: 2rem 0;"></div>
     </div>
 
-    <button class="back-to-top" onclick="scrollToTop()">Back to top</button>
-
-    <script>
-        function openModal(element) {
-            const modal = document.getElementById('videoModal');
-            const iframe = document.getElementById('videoFrame');
-            const downloadLink = document.getElementById('downloadLink');
-            iframe.src = element.dataset.src;
-            downloadLink.href = element.dataset.download;
-            modal.style.display = 'flex';
-        }
-
-        function closeModal(event) {
-            if (event.target.classList.contains('modal') || event.target.classList.contains('close')) {
-                const modal = document.getElementById('videoModal');
-                const iframe = document.getElementById('videoFrame');
-                iframe.src = '';
-                modal.style.display = 'none';
-            }
-        }
-
-        function scrollToTop() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        window.onscroll = function () {
-            const button = document.querySelector('.back-to-top');
-            if (window.pageYOffset > 300) {
-                button.style.display = 'block';
-            } else {
-                button.style.display = 'none';
-            }
-        };
-
-        function handleImageError(img) {
-            img.style.display = 'none';
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 
 </html>

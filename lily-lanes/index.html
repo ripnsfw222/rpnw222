@@ -1,1 +1,33 @@
-l
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Ripnsfw222</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <div class="main-container">
+        <div class="controls">
+            <button id="btnInicio" type="button">Home</button>
+            <input class="search-bar" type="text" placeholder="Search video..." />
+            <select class="order-select">
+                <option value="newest">Newest</option>
+                <option value="oldest">Oldest</option>
+            </select>
+        </div>
+
+        <div id="channelCounts" style="display:none;"></div>
+        <div class="videos" id="videoContainer"></div>
+
+        <div id="paginationControls"
+            style="display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin: 2rem 0;"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

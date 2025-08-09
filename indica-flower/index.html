@@ -2,243 +2,32 @@
 <html lang="pt-BR">
 
 <head>
-    <link rel="icon" href="/imgs/ripnsfw222.com.png" type="image/png">
-    <script src="/analytics.js"></script>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Indica Flower</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #000;
-            color: #fff;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
 
-        h1 {
-            font-size: 2.5em;
-            margin: 20px 0;
-            color: #ff9000;
-        }
-
-        .video-counter {
-            font-size: 1.2em;
-            margin-bottom: 20px;
-            color: #ff9000;
-        }
-
-        .thumbnail {
-            max-height: 700px;
-            object-fit: cover;
-            margin: 20px auto;
-            border-radius: 10px;
-            cursor: pointer;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-        }
-
-        .thumbnail:hover {
-            box-shadow: 0 0 20px 5px rgba(255, 165, 0, 0.7);
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            position: relative;
-            width: 85%;
-            max-width: 1200px;
-            background-color: #222;
-            border-radius: 10px;
-            padding: 10px;
-        }
-
-        .modal-content iframe {
-            width: 100%;
-            height: 600px;
-            border: none;
-        }
-
-        .download-btn {
-            display: block;
-            width: 100%;
-            max-width: 200px;
-            margin: 20px auto;
-            padding: 10px;
-            text-align: center;
-            background-color: #ff9000;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-        }
-
-        .download-btn:hover {
-            background-color: #e07b00;
-        }
-
-        .close {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            color: white;
-            font-size: 30px;
-            cursor: pointer;
-            z-index: 1001;
-        }
-
-        .back-to-models {
-            margin: 20px 0;
-            color: #ff9000;
-            text-decoration: none;
-            font-size: 1.2em;
-        }
-
-        .back-to-top {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: #ff9000;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            padding: 10px 15px;
-            cursor: pointer;
-            font-size: 1em;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            display: none;
-        }
-
-        .back-to-top:hover {
-            background-color: #e07b00;
-        }
-
-        @media (max-width: 768px) {
-            .modal-content iframe {
-                height: 400px;
-            }
-
-            h1 {
-                font-size: 2em;
-            }
-
-            .video-counter {
-                font-size: 1em;
-            }
-
-            .thumbnail {
-                max-width: 100%;
-            }
-        }
-    </style>
+    <title>Ripnsfw222</title>
+    <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-    <p><a class="back-to-models" href="../">Return to models page</a></p>
-    <h1>Indica Flower</h1> <!-- Aqui, o nome da modelo será exibido -->
-    <div class="video-counter">Videos: <span id="total-videos">13</span></div>
-
-    
-    <img class="thumbnail" data-src="https://do7go.com/e/7w75c8pjhyun" data-download="https://do7go.com/d/7w75c8pjhyun" src="https://img.doodcdn.io/splash/8knhdhp85uxl63rj.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-
-    <img class="thumbnail" data-src="https://do7go.com/e/eknkj4ctikqb" data-download="https://do7go.com/d/eknkj4ctikqb" src="https://img.doodcdn.io/splash/q8tm92fv10tq4ko5.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-
-    <img class="thumbnail" data-src="https://do7go.com/e/c451i2dxe2uv" data-download="https://do7go.com/d/c451i2dxe2uv" src="https://img.doodcdn.io/splash/a3knhdbbg5ukqjr5.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-
-    <img class="thumbnail" data-src="https://do7go.com/e/3lhomioszbqz" data-download="https://do7go.com/d/3lhomioszbqz" src="https://img.doodcdn.io/splash/uiwmph1z7mftp8ra.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-
-    <img class="thumbnail" data-src="https://do7go.com/e/khispk8vi4xm" data-download="https://do7go.com/d/khispk8vi4xm" src="https://img.doodcdn.io/splash/fetceptmbyktrqwq.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-
-    <img class="thumbnail" data-src="https://do7go.com/e/1gcnn75qoltd" data-download="https://do7go.com/d/1gcnn75qoltd" src="https://img.doodcdn.io/splash/2n5q03yciqmh6cy8.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-
-    <img class="thumbnail" data-src="https://do7go.com/e/thz1sc4s7u1b" data-download="https://do7go.com/d/thz1sc4s7u1b" src="https://img.doodcdn.io/splash/431bonkhw6gywjfx.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-
-    <img class="thumbnail" data-src="https://do7go.com/e/pq8y4mjituew" data-download="https://do7go.com/d/pq8y4mjituew" src="https://img.doodcdn.io/splash/qs8d9drmfovu9d89.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-
-    <img class="thumbnail" data-src="https://do7go.com/e/kvabaxmqgvkb" data-download="https://do7go.com/d/kvabaxmqgvkb" src="https://img.doodcdn.io/splash/ldrdpclaukh8t3s3.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-
-    <img class="thumbnail" data-src="https://do7go.com/e/45zv4bt2ycws" data-download="https://do7go.com/d/45zv4bt2ycws" src="https://img.doodcdn.io/splash/bpzji6fh3okcg13o.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-
-    <img class="thumbnail" data-src="https://do7go.com/e/fgs0yivr6alq" data-download="https://do7go.com/d/fgs0yivr6alq" src="https://img.doodcdn.io/splash/r5qaw6lor4fab3t2.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-
-    <img class="thumbnail" data-src="https://do7go.com/e/vbzm49marpix" data-download="https://do7go.com/d/vbzm49marpix" src="https://img.doodcdn.io/splash/z38ghg18mjgl12sf.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-
-    <img class="thumbnail" data-src="https://do7go.com/e/tyd2qox4wqx4" data-download="https://do7go.com/d/tyd2qox4wqx4" src="https://img.doodcdn.io/splash/fergfdnzixbq0di3.jpg" onclick="openModal(this)" onerror="handleImageError(this)" />
-    <br>
-
-    <div id="videoModal" class="modal" onclick="closeModal(event)">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal(event)">&times;</span>
-            <iframe id="videoFrame" src="" allowfullscreen></iframe>
-            <a id="downloadLink" href="#" target="_blank" class="download-btn">Download</a>
+    <div class="main-container">
+        <div class="controls">
+            <button id="btnInicio" type="button">Home</button>
+            <input class="search-bar" type="text" placeholder="Search video..." />
+            <select class="order-select">
+                <option value="newest">Newest</option>
+                <option value="oldest">Oldest</option>
+            </select>
         </div>
+
+        <div id="channelCounts" style="display:none;"></div>
+        <div class="videos" id="videoContainer"></div>
+
+        <div id="paginationControls"
+            style="display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin: 2rem 0;"></div>
     </div>
 
-    <button class="back-to-top" onclick="scrollToTop()">Voltar ao topo</button>
-
-    <script>
-        function openModal(element) {
-            const modal = document.getElementById('videoModal');
-            const iframe = document.getElementById('videoFrame');
-            const downloadLink = document.getElementById('downloadLink');
-            iframe.src = element.dataset.src;
-            downloadLink.href = element.dataset.download;
-            modal.style.display = 'flex';
-        }
-
-        function closeModal(event) {
-            if (event.target.classList.contains('modal') || event.target.classList.contains('close')) {
-                const modal = document.getElementById('videoModal');
-                const iframe = document.getElementById('videoFrame');
-                iframe.src = '';
-                modal.style.display = 'none';
-            }
-        }
-
-        function scrollToTop() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        window.onscroll = function () {
-            const button = document.querySelector('.back-to-top');
-            if (window.pageYOffset > 300) {
-                button.style.display = 'block';
-            } else {
-                button.style.display = 'none';
-            }
-        };
-
-        function handleImageError(img) {
-            img.style.display = 'none';
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 
 </html>

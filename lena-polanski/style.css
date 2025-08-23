@@ -106,6 +106,20 @@ button:disabled {
     display: block;
 }
 
+.video-card .video-embed {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+.video-card .video-embed iframe {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    max-height: 360px;
+    border: none;
+}
+
 .video-card h4 {
     margin: 0.5rem;
     font-size: 1rem;
@@ -160,7 +174,6 @@ button:disabled {
     margin: 0 6px 6px 0;
     padding: 6px 12px;
     background-color: #6ab04c;
-    /* verde parecido com canal */
     color: rgb(0, 0, 0) !important;
     text-decoration: none;
     border-radius: 6px;
@@ -171,7 +184,6 @@ button:disabled {
 
 .links a:hover {
     background-color: #519636;
-    /* verde mais escuro no hover */
     text-decoration: none;
 }
 
@@ -185,31 +197,31 @@ button:disabled {
     user-select: none;
 }
 
+@media (max-width: 768px) {
+    .video-card {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+
+    .controls {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .search-bar,
+    .order-select {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .main-container {
+        padding-top: 210px;
+    }
+}
+
 @media (max-width: 600px) {
     #paginationControls button {
         padding: 6px 10px;
         font-size: 0.9rem;
-    }
-
-    @media (max-width: 768px) {
-        .video-card {
-            flex: 1 1 100%;
-            max-width: 100%;
-        }
-
-        .controls {
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .search-bar,
-        .order-select {
-            width: 100%;
-            max-width: 100%;
-        }
-
-        .main-container {
-            padding-top: 210px;
-        }
     }
 }

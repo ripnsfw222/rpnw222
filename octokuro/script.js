@@ -3,7 +3,7 @@ let lastFilteredVideos = null;
 let lastSearchValue = '';
 let lastOrderValue = 'newest';
 let currentPage = 1;
-const VIDEOS_PER_PAGE = 12;
+const VIDEOS_PER_PAGE = 3;
 
 const inputSearch = document.querySelector('.search-bar');
 const selectOrder = document.querySelector('.order-select');
@@ -43,27 +43,47 @@ function displayVideos(videos) {
     paginatedVideos.forEach(video => {
         const title = video.title;
         const thumbnail = video.thumbnail;
-        const channels = video.channels || ['Unkown Channel'];
+        const embed = video.embed || null;
+        const channels = video.channels || ['Unknown Channel'];
         const categories = video.categories || [];
         const publishedAt = video.publishedAt ? new Date(video.publishedAt).toISOString().split('T')[0].replace(/-/g, '/') : '';
         const videoUrls = video.videoUrls || [];
 
         const card = document.createElement('div');
         card.className = 'video-card';
-        card.innerHTML = `
-        <a href="${videoUrls[0] || '#'}" target="_blank" rel="noopener noreferrer">
-            <img src="${thumbnail}" alt="${title}" />
-        </a>
-        
-        <div class="video-info">
-            <div class="channel-name">
-                ${channels.map(ch => `<strong><a href="#" class="channel-link">${ch}</a></strong>`).join(' | ')}
-            </div>
-            ${categories.length > 0 ? `<div class="categories">${categories.map(cat => `<a href="#" class="category-link">${cat}</a>`).join(' | ')}</div>` : ''}
-            ${videoUrls.length > 0 ? `<div class="links">${videoUrls.map((url, i) => `<a href="${url}" target="_blank">Link ${i + 1}</a>`).join(' | ')}</div>` : ''}
-            <div class="published-date">${publishedAt}</div>
-        </div>
-        `;
+
+        if (embed) {
+            // Renderiza embed se existir
+            card.innerHTML = `
+                <div class="video-embed">
+                    ${embed}
+                </div>
+                <div class="video-info">
+                    <div class="channel-name">
+                        ${channels.map(ch => `<strong><a href="#" class="channel-link">${ch}</a></strong>`).join(' | ')}
+                    </div>
+                    ${categories.length > 0 ? `<div class="categories">${categories.map(cat => `<a href="#" class="category-link">${cat}</a>`).join(' | ')}</div>` : ''}
+                    ${videoUrls.length > 0 ? `<div class="links">${videoUrls.map((url, i) => `<a href="${url}" target="_blank">Link ${i + 1}</a>`).join(' | ')}</div>` : ''}
+                    <div class="published-date">${publishedAt}</div>
+                </div>
+            `;
+        } else {
+            // Fallback para thumbnail
+            card.innerHTML = `
+                <a href="${videoUrls[0] || '#'}" target="_blank" rel="noopener noreferrer">
+                    <img src="${thumbnail}" alt="${title}" />
+                </a>
+                <div class="video-info">
+                    <div class="channel-name">
+                        ${channels.map(ch => `<strong><a href="#" class="channel-link">${ch}</a></strong>`).join(' | ')}
+                    </div>
+                    ${categories.length > 0 ? `<div class="categories">${categories.map(cat => `<a href="#" class="category-link">${cat}</a>`).join(' | ')}</div>` : ''}
+                    ${videoUrls.length > 0 ? `<div class="links">${videoUrls.map((url, i) => `<a href="${url}" target="_blank">Link ${i + 1}</a>`).join(' | ')}</div>` : ''}
+                    <div class="published-date">${publishedAt}</div>
+                </div>
+            `;
+        }
+
         container.appendChild(card);
     });
 
@@ -89,6 +109,7 @@ function displayVideos(videos) {
 
     renderPagination(videos);
 }
+
 
 function renderPagination(videos) {
     paginationDiv.innerHTML = '';

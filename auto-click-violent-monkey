@@ -1,0 +1,81 @@
+// ==UserScript==
+// @name         Auto Click + Block External Redirects + Auto Reload on Security Alert
+// @namespace    http://tampermonkey.net/
+// @version      4.6
+// @match        *://*/*
+// @grant        none
+// ==/UserScript==
+
+(function() {
+    'use strict';
+
+    const keywords = [
+        "start","begin","verify","continue","open","next post",
+        "click here","next step","go next","proceed", "please wait"
+    ];
+
+    const idSelector = '[id$="_start"]';
+    const clicked = new WeakMap();
+
+    function isSafe(el) {
+        if (!el.offsetParent) return false;
+        if (el.tagName === "A" && el.href) {
+            const linkHost = new URL(el.href).hostname;
+            if (linkHost !== window.location.hostname) return false;
+            if (el.href.trim() === "#" || el.href.trim() === "") return true;
+        }
+        return true;
+    }
+
+    function safeClick(el, label) {
+        const delay = 200 + Math.random() * 300;
+        setTimeout(() => {
+            if (!isSafe(el)) {
+                console.warn("❌ Clique bloqueado:", label, el.href || "");
+                return;
+            }
+            console.log("✔ CLICANDO:", label);
+            try { el.click(); }
+            catch(e) { el.dispatchEvent(new MouseEvent("click",{bubbles:true,cancelable:true})); }
+            clicked.set(el, Date.now());
+        }, delay);
+    }
+
+    function checkSecurityAlert() {
+        const alertEl = document.querySelector("#alert");
+        if (alertEl && alertEl.innerText.toLowerCase().includes("security check (captcha) was not entered correctly")) {
+            console.warn("⚠ Security alert detectado, recarregando a página...");
+            location.reload();
+        }
+    }
+
+    function scanButtons() {
+        try {
+            // Verifica alerta antes de clicar
+            checkSecurityAlert();
+
+            const allEls = document.querySelectorAll("button, a, div, span, input[type=button], input[type=submit]");
+            allEls.forEach(el => {
+                const lastClick = clicked.get(el) || 0;
+                if (Date.now() - lastClick < 3000) return;
+
+                const txt = (el.innerText || "").toLowerCase().trim();
+                if (txt && keywords.some(k => txt.includes(k))) {
+                    safeClick(el, txt);
+                }
+            });
+
+            document.querySelectorAll(idSelector).forEach(el => {
+                const lastClick = clicked.get(el) || 0;
+                if (Date.now() - lastClick < 3000) return;
+                safeClick(el, el.id);
+            });
+
+        } catch(err) {
+            console.warn("AutoClick Error ignorado:", err);
+        }
+    }
+
+    setInterval(scanButtons, 1000);
+
+})();

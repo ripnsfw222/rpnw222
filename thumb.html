@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Gerador de Thumbnails de Vídeo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f9f9f9;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        input,
+        button {
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            /* sempre 2 colunas */
+            gap: 20px;
+        }
+
+        @media (max-width: 700px) {
+            .grid {
+                grid-template-columns: 1fr;
+                /* 1 coluna em telas pequenas */
+            }
+        }
+
+
+        .thumb-card {
+            background: #fff;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .thumb-card img {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .thumb-card button {
+            background: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 12px;
+            font-size: 14px;
+        }
+
+        .thumb-card button:hover {
+            background: #0056b3;
+        }
+
+        @media (max-width: 700px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Gerador de Thumbnails de Vídeo</h1>
+    <form>
+        <input type="file" id="videoInput" accept="video/*" required>
+    </form>
+
+    <div id="thumbnails" class="grid"></div>
+
+    <script>
+        const videoInput = document.getElementById("videoInput");
+        const thumbsDiv = document.getElementById("thumbnails");
+
+        videoInput.addEventListener("change", async () => {
+            const file = videoInput.files[0];
+            if (!file) return;
+
+            thumbsDiv.innerHTML = "";
+            const url = URL.createObjectURL(file);
+            const video = document.createElement("video");
+            video.src = url;
+            video.preload = "metadata";
+            video.muted = true;
+
+            await new Promise(resolve => video.addEventListener("loadedmetadata", resolve));
+            const duration = video.duration;
+            const interval = 30; // a cada 30s
+
+            for (let t = 0; t < duration; t += interval) {
+                await captureFrame(video, t, file.name);
+            }
+        });
+
+        function captureFrame(video, time, videoName) {
+            return new Promise(resolve => {
+                video.currentTime = time;
+                video.addEventListener("seeked", function handler() {
+                    const canvas = document.createElement("canvas");
+                    canvas.width = video.videoWidth / 2; // reduz resolução
+                    canvas.height = video.videoHeight / 2;
+                    const ctx = canvas.getContext("2d");
+                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                    const dataURL = canvas.toDataURL("image/png");
+
+                    // Cria card para cada thumbnail
+                    const card = document.createElement("div");
+                    card.className = "thumb-card";
+
+                    const img = document.createElement("img");
+                    img.src = dataURL;
+
+                    const btn = document.createElement("button");
+                    btn.textContent = "Salvar";
+                    btn.onclick = () => {
+                        const link = document.createElement("a");
+                        link.href = dataURL;
+                        link.download = videoName.replace(/\.[^/.]+$/, "") + ".jpg";
+                        link.click();
+                    };
+
+                    card.appendChild(img);
+                    card.appendChild(btn);
+                    thumbsDiv.appendChild(card);
+
+                    video.removeEventListener("seeked", handler);
+                    resolve();
+                });
+            });
+        }
+    </script>
+</body>
+
+</html>

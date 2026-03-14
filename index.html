@@ -41,6 +41,18 @@
         }
         
         img { content-visibility: auto; }
+
+        /* Custom scrollbar for the modal */
+        .custom-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: rgba(236, 72, 153, 0.5);
+            border-radius: 10px;
+        }
     </style>
 </head>
 
@@ -70,14 +82,15 @@
         };
 
         function parseCSV(csvText) {
-            // LISTA DE NOMES PARA ESCONDER: Adicione aqui qualquer nome que queira ignorar
             const NOMES_IGNORADOS = ["NOME", "TESTE", "MODELO", "VAZIO"];
 
             const lines = csvText.trim().split('\n');
             if (lines.length < 2) return [];
             
             const parsedData = lines.slice(1).map(line => {
+                // Regex para lidar com vírgulas dentro de aspas (comum em CSVs)
                 const values = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                
                 let embedUrl = values[6]?.trim() || "";
                 if (embedUrl.includes("doodstream") || embedUrl.includes("dood.")) {
                     embedUrl = fixDoodUrl(embedUrl);
@@ -86,11 +99,11 @@
                 const nome = values[2]?.trim() || '';
 
                 return {
-                    Thumbnail: values[14]?.trim() || values[0]?.trim() || '', 
+                    Thumbnail: values[0]?.trim() || '', 
                     NomeModelo: nome,
-                    Link1: values[3]?.trim() || '',
-                    Link2: values[4]?.trim() || '',
-                    Link3: values[5]?.trim() || '',
+                    Link1: values[3]?.trim() || '', // Coluna D
+                    Link2: values[4]?.trim() || '', // Coluna E
+                    Link3: values[5]?.trim() || '', // Coluna F
                     EmbedVideo: embedUrl,
                     Convidadas: values[7]?.trim() || '',
                     Categoria: values[8]?.trim() || '',
@@ -99,7 +112,6 @@
                 };
             }).filter(item => {
                 const nomeLimpo = item.NomeModelo.toUpperCase().trim();
-                // Verifica se o nome está vazio OU se está na lista de ignorados
                 return nomeLimpo !== "" && !NOMES_IGNORADOS.includes(nomeLimpo);
             });
 
@@ -237,21 +249,45 @@
                             <div className="bg-slate-900 w-full max-w-5xl rounded-3xl overflow-hidden shadow-2xl border border-white/10 flex flex-col md:flex-row max-h-[95vh] animate-in">
                                 <div className="flex-[2] bg-black aspect-video md:aspect-auto relative">
                                     <iframe src={selectedVideo.EmbedVideo} className="w-full h-full" frameBorder="0" allowFullScreen></iframe>
-                                    <button onClick={() => setSelectedVideo(null)} className="absolute top-4 right-4 md:hidden bg-black/50 p-2 rounded-full text-white"><i data-lucide="x"></i></button>
+                                    <button onClick={() => setSelectedVideo(null)} className="absolute top-4 right-4 md:hidden bg-black/50 p-2 rounded-full text-white">
+                                        <i data-lucide="x"></i>
+                                    </button>
                                 </div>
-                                <div className="flex-1 p-6 md:p-8 flex flex-col justify-between overflow-y-auto">
+                                <div className="flex-1 p-6 md:p-8 flex flex-col justify-between overflow-y-auto custom-scroll">
                                     <div>
                                         <div className="hidden md:flex justify-end mb-4">
-                                            <button onClick={() => setSelectedVideo(null)} className="text-slate-500 hover:text-white transition-colors"><i data-lucide="x" className="w-6 h-6"></i></button>
+                                            <button onClick={() => setSelectedVideo(null)} className="text-slate-500 hover:text-white transition-colors">
+                                                <i data-lucide="x" className="w-6 h-6"></i>
+                                            </button>
                                         </div>
                                         <h2 className="text-2xl font-black uppercase italic leading-none mb-2 text-white">{selectedVideo.NomeModelo}</h2>
                                         <p className="text-pink-600 font-black text-xs mb-8 tracking-widest uppercase">
                                             {selectedVideo.Convidadas ? `PARTICIPAÇÃO: ${selectedVideo.Convidadas}` : selectedVideo.Categoria}
                                         </p>
+                                        
                                         <div className="space-y-2">
                                             <p className="text-[10px] font-bold text-slate-500 uppercase mb-2">Opções de Acesso</p>
-                                            {selectedVideo.Link1 && <a href={selectedVideo.Link1} target="_blank" className="flex items-center justify-between w-full bg-slate-800 hover:bg-pink-700 p-4 rounded-xl transition-all font-bold text-xs uppercase text-white">Servidor 01 <i data-lucide="external-link" className="w-4 h-4 text-white/50"></i></a>}
-                                            {selectedVideo.Link2 && <a href={selectedVideo.Link2} target="_blank" className="flex items-center justify-between w-full bg-slate-800 hover:bg-slate-700 p-4 rounded-xl transition-all font-bold text-xs uppercase text-white">Servidor 02 <i data-lucide="external-link" className="w-4 h-4 text-white/50"></i></a>}
+                                            
+                                            {/* MAPEAMENTO DINÂMICO DE LINKS (Colunas D, E e F) */}
+                                            {[
+                                                { url: selectedVideo.Link1, label: "Servidor 01", color: "bg-slate-800 hover:bg-pink-700" },
+                                                { url: selectedVideo.Link2, label: "Servidor 02", color: "bg-slate-800 hover:bg-slate-700" },
+                                                { url: selectedVideo.Link3, label: "Servidor 03", color: "bg-slate-800 hover:bg-slate-700" }
+                                            ].map((link, idx) => link.url && link.url.length > 5 ? (
+                                                <a 
+                                                    key={idx}
+                                                    href={link.url} 
+                                                    target="_blank" 
+                                                    className={`flex items-center justify-between w-full p-4 rounded-xl transition-all font-bold text-xs uppercase text-white ${link.color}`}
+                                                >
+                                                    {link.label} 
+                                                    <i data-lucide="external-link" className="w-4 h-4 text-white/50"></i>
+                                                </a>
+                                            ) : null)}
+                                            
+                                            {(!selectedVideo.Link1 && !selectedVideo.Link2 && !selectedVideo.Link3) && (
+                                                <p className="text-xs text-slate-600 italic">Nenhum link adicional disponível.</p>
+                                            )}
                                         </div>
                                     </div>
                                     <div className="mt-8 flex flex-wrap gap-1">

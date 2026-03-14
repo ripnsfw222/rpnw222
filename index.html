@@ -51,8 +51,6 @@
         const { useState, useEffect, useMemo } = React;
 
         const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSs1GhZQnhVZLayT56Ik4zsE2GaWyVV6A0IeUz6YSMKGSN9jnmXjpWtIVbfUsXH1_Os17RG_oju8Ba3/pub?gid=0&single=true&output=csv";
-        
-        // Ajustado para o caminho relativo da sua pasta local
         const MODEL_PHOTOS_PATH = "./imgs/";
 
         const fixDoodUrl = (url) => {
@@ -60,25 +58,26 @@
             return url.replace("/d/", "/e/");
         };
 
-        // Função para converter "Addison Vodka" em "addison-vodka.jpg"
         const formatImageFileName = (name) => {
             if (!name) return "";
             return name
                 .toLowerCase()
                 .trim()
                 .normalize("NFD")
-                .replace(/[\u0300-\u036f]/g, "") // Remove acentos
-                .replace(/\s+/g, '-')             // Troca espaços por hífens
+                .replace(/[\u0300-\u036f]/g, "")
+                .replace(/\s+/g, '-')
                 + ".jpg";
         };
 
         function parseCSV(csvText) {
+            // LISTA DE NOMES PARA ESCONDER: Adicione aqui qualquer nome que queira ignorar
+            const NOMES_IGNORADOS = ["NOME", "TESTE", "MODELO", "VAZIO"];
+
             const lines = csvText.trim().split('\n');
             if (lines.length < 2) return [];
             
             const parsedData = lines.slice(1).map(line => {
                 const values = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-                
                 let embedUrl = values[6]?.trim() || "";
                 if (embedUrl.includes("doodstream") || embedUrl.includes("dood.")) {
                     embedUrl = fixDoodUrl(embedUrl);
@@ -100,7 +99,8 @@
                 };
             }).filter(item => {
                 const nomeLimpo = item.NomeModelo.toUpperCase().trim();
-                return nomeLimpo !== "" && nomeLimpo !== "NOME";
+                // Verifica se o nome está vazio OU se está na lista de ignorados
+                return nomeLimpo !== "" && !NOMES_IGNORADOS.includes(nomeLimpo);
             });
 
             return parsedData.reverse();
@@ -145,7 +145,7 @@
                     }
                     map.get(name).videoCount++;
                 });
-                return Array.from(map.values());
+                return Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name));
             }, [data]);
 
             const currentVideos = useMemo(() => {
@@ -156,7 +156,7 @@
                 <div className="flex h-screen items-center justify-center bg-slate-950">
                     <div className="flex flex-col items-center gap-4">
                         <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-pink-500"></div>
-                        <span className="text-slate-500 text-[10px] font-black uppercase tracking-widest">Localizando Fotos...</span>
+                        <span className="text-slate-500 text-[10px] font-black uppercase tracking-widest">Carregando Galeria...</span>
                     </div>
                 </div>
             );
@@ -190,7 +190,6 @@
                                                 loading="lazy"
                                                 onError={(e) => {
                                                     e.target.onerror = null;
-                                                    // Se não achar na pasta imgs/, usa um avatar colorido de backup
                                                     e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(model.name)}&background=1e293b&color=fff&size=512`;
                                                 }} 
                                             />

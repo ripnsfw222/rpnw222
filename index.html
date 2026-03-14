@@ -13,25 +13,25 @@
 
     <style>
         body {
-            background-color: #0f172a;
+            background-color: #020617;
             color: white;
             font-family: sans-serif;
             overflow-x: hidden;
         }
 
         .modal-overlay {
-            background-color: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(8px);
+            background-color: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(12px);
         }
 
         .animate-in {
-            animation: fadeIn 0.4s ease-out;
+            animation: fadeIn 0.3s ease-out;
         }
 
         @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(10px);
+                transform: translateY(8px);
             }
 
             to {
@@ -39,6 +39,9 @@
                 transform: translateY(0);
             }
         }
+        
+        /* Otimização para navegadores modernos */
+        img { content-visibility: auto; }
     </style>
 </head>
 
@@ -51,27 +54,34 @@
         // ==========================================================
         // CONFIGURAÇÕES MANUAIS
         // ==========================================================
-
-        // 1. Coloque aqui o link do seu CSV publicado no Google Sheets
         const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSs1GhZQnhVZLayT56Ik4zsE2GaWyVV6A0IeUz6YSMKGSN9jnmXjpWtIVbfUsXH1_Os17RG_oju8Ba3/pub?gid=0&single=true&output=csv";
-
-        // 2. Base da URL onde você salvará as fotos das modelos no GitHub
-        // Exemplo: "https://raw.githubusercontent.com/seu-usuario/seu-repo/main/fotos/"
         const MODEL_PHOTOS_BASE_URL = "https://ripnsfw222.github.io/rpnw222/imgs/";
+
+        // Função para corrigir links do Doodstream (/d/ para /e/)
+        const fixDoodUrl = (url) => {
+            if (!url) return "";
+            return url.replace("/d/", "/e/");
+        };
 
         function parseCSV(csvText) {
             const lines = csvText.trim().split('\n');
             if (lines.length < 2) return [];
             return lines.slice(1).map(line => {
-                // Regex para separar vírgulas ignorando as que estão dentro de aspas
                 const values = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                
+                // Correção automática do link de embed
+                let embedUrl = values[6]?.trim() || "";
+                if (embedUrl.includes("doodstream") || embedUrl.includes("dood.")) {
+                    embedUrl = fixDoodUrl(embedUrl);
+                }
+
                 return {
-                    Thumbnail: values[14]?.trim() || values[0]?.trim() || '', // Coluna O (índice 14) ou Coluna A
+                    Thumbnail: values[14]?.trim() || values[0]?.trim() || '', 
                     NomeModelo: values[2]?.trim() || '',
                     Link1: values[3]?.trim() || '',
                     Link2: values[4]?.trim() || '',
                     Link3: values[5]?.trim() || '',
-                    EmbedVideo: values[6]?.trim() || '',
+                    EmbedVideo: embedUrl,
                     Convidadas: values[7]?.trim() || '',
                     Categoria: values[8]?.trim() || '',
                     ID: values[10]?.trim() || '',
@@ -89,17 +99,9 @@
             useEffect(() => {
                 const fetchData = async () => {
                     try {
-                        // Se SHEET_CSV_URL não estiver configurada, não faz nada
-                        if (SHEET_CSV_URL === "SUA_URL_DO_GOOGLE_SHEETS_AQUI") {
-                            console.warn("URL da planilha não configurada. Usando dados locais para teste.");
-                            // Simulador para você ver funcionando antes de por a URL
-                            const mockData = `A,B,C,D,E,F,G,H,I,J,K,L,M,N,O\nthumb.jpg,,Addison Vodka,http://dood.com,,,,,Onlyfans,,47359261,"#Hardcore",,,https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800`;
-                            setData(parseCSV(mockData));
-                        } else {
-                            const response = await fetch(SHEET_CSV_URL);
-                            const text = await response.text();
-                            setData(parseCSV(text));
-                        }
+                        const response = await fetch(SHEET_CSV_URL);
+                        const text = await response.text();
+                        setData(parseCSV(text));
                     } catch (error) {
                         console.error("Erro ao carregar dados:", error);
                     } finally {
@@ -109,6 +111,7 @@
                 fetchData();
             }, []);
 
+            // Carregamento de ícones otimizado
             useEffect(() => {
                 if (!loading) lucide.createIcons();
             }, [loading, selectedModel, selectedVideo]);
@@ -118,13 +121,10 @@
                 data.forEach(item => {
                     const name = item.NomeModelo;
                     if (!map.has(name)) {
-                        // Lógica de Imagem: Se você subir fotos com o nome exato da modelo (ex: Addison Vodka.jpg)
                         const fileName = name.trim() + ".jpg";
                         map.set(name, {
                             name: name,
-                            image: MODEL_PHOTOS_BASE_URL !== "CAMINHO_DO_SEU_GITHUB_PARA_FOTOS/"
-                                ? MODEL_PHOTOS_BASE_URL + encodeURIComponent(fileName)
-                                : `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random&color=fff&size=400`,
+                            image: MODEL_PHOTOS_BASE_URL + encodeURIComponent(fileName),
                             videoCount: 0
                         });
                     }
@@ -139,21 +139,24 @@
 
             if (loading) return (
                 <div className="flex h-screen items-center justify-center bg-slate-950">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-pink-500"></div>
+                    <div className="flex flex-col items-center gap-4">
+                        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-pink-500"></div>
+                        <span className="text-slate-500 text-[10px] font-black uppercase tracking-widest">Carregando...</span>
+                    </div>
                 </div>
             );
 
             return (
                 <div className="min-h-screen pb-10 bg-slate-950">
-                    <header className="bg-slate-900/80 backdrop-blur-md p-4 sticky top-0 z-40 border-b border-white/10">
+                    <header className="bg-slate-900/40 backdrop-blur-xl p-4 sticky top-0 z-40 border-b border-white/5">
                         <div className="max-w-7xl mx-auto flex items-center justify-between">
                             <div className="flex items-center gap-4">
                                 {selectedModel && (
-                                    <button onClick={() => setSelectedModel(null)} className="p-2 hover:bg-slate-800 rounded-full transition-colors">
-                                        <i data-lucide="arrow-left" className="w-6 h-6"></i>
+                                    <button onClick={() => setSelectedModel(null)} className="p-2 hover:bg-white/10 rounded-full transition-colors">
+                                        <i data-lucide="arrow-left" className="w-5 h-5"></i>
                                     </button>
                                 )}
-                                <h1 className="text-xl md:text-2xl font-black italic uppercase tracking-tighter text-white">
+                                <h1 className="text-xl font-black italic uppercase tracking-tighter text-white">
                                     {selectedModel ? selectedModel.name : 'Exclusive Portal'}
                                 </h1>
                             </div>
@@ -162,42 +165,47 @@
 
                     <main className="max-w-7xl mx-auto p-4 md:p-8">
                         {!selectedModel ? (
-                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
+                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 animate-in">
                                 {models.map((model, idx) => (
                                     <div key={idx} onClick={() => setSelectedModel(model)} className="group cursor-pointer">
-                                        <div className="relative aspect-[3/4] rounded-2xl overflow-hidden mb-3 ring-1 ring-white/10 group-hover:ring-pink-500 transition-all shadow-2xl">
-                                            <img src={model.image} alt={model.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                                                onError={(e) => e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(model.name)}&background=333&color=fff`} />
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60"></div>
+                                        <div className="relative aspect-[3/4] rounded-2xl overflow-hidden mb-3 ring-1 ring-white/10 group-hover:ring-pink-500 transition-all shadow-2xl bg-slate-900">
+                                            <img 
+                                                src={model.image} 
+                                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                                loading="lazy"
+                                                onError={(e) => e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(model.name)}&background=333&color=fff&size=400`} 
+                                            />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-80"></div>
                                             <div className="absolute bottom-3 left-3">
-                                                <p className="text-xs font-bold text-pink-500 uppercase tracking-widest">{model.videoCount} Vídeos</p>
+                                                <p className="text-[10px] font-black text-pink-500 uppercase tracking-widest">{model.videoCount} Vídeos</p>
                                             </div>
                                         </div>
-                                        <h3 className="text-center font-bold text-sm md:text-base text-slate-200">{model.name}</h3>
+                                        <h3 className="text-center font-bold text-sm text-slate-300 group-hover:text-white transition-colors">{model.name}</h3>
                                     </div>
                                 ))}
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-in">
                                 {currentVideos.map((video, idx) => (
-                                    <div key={idx} onClick={() => setSelectedVideo(video)} className="bg-slate-900 rounded-2xl overflow-hidden cursor-pointer hover:scale-[1.02] transition-all border border-white/5 hover:border-pink-500/50 group">
-                                        <div className="relative aspect-video">
-                                            <img src={video.Thumbnail} alt="Thumbnail" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" />
-                                            <div className="absolute inset-0 flex items-center justify-center">
-                                                <div className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center group-hover:bg-pink-600 transition-colors">
-                                                    <i data-lucide="play" className="w-6 h-6 fill-white text-white"></i>
+                                    <div key={idx} onClick={() => setSelectedVideo(video)} className="bg-slate-900/50 rounded-2xl overflow-hidden cursor-pointer hover:bg-slate-900 transition-all border border-white/5 group">
+                                        <div className="relative aspect-video bg-slate-800">
+                                            {/* Removida a classe grayscale */}
+                                            <img src={video.Thumbnail} className="w-full h-full object-cover transition-all duration-300" loading="lazy" />
+                                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <div className="w-12 h-12 bg-pink-600 rounded-full flex items-center justify-center shadow-lg">
+                                                    <i data-lucide="play" className="w-5 h-5 fill-white text-white"></i>
                                                 </div>
                                             </div>
-                                            <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-md px-2 py-1 rounded text-[10px] font-bold uppercase">
+                                            <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-2 py-1 rounded text-[9px] font-bold uppercase border border-white/10">
                                                 {video.Categoria}
                                             </div>
                                         </div>
                                         <div className="p-4">
-                                            <h4 className="font-bold text-slate-100 mb-1">ID: {video.ID}</h4>
-                                            {video.Convidadas && <p className="text-xs text-pink-400 font-medium uppercase mb-2">feat. {video.Convidadas}</p>}
+                                            <h4 className="font-bold text-slate-200 text-sm mb-1 truncate">ID: {video.ID}</h4>
+                                            {video.Convidadas && <p className="text-[10px] text-pink-400 font-bold uppercase mb-2 truncate">w/ {video.Convidadas}</p>}
                                             <div className="flex flex-wrap gap-1">
-                                                {video.Tags.split(',').slice(0, 3).map((tag, i) => (
-                                                    <span key={i} className="text-[9px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded uppercase">{tag.trim()}</span>
+                                                {video.Tags && video.Tags.split(',').slice(0, 2).map((tag, i) => (
+                                                    <span key={i} className="text-[8px] bg-slate-800 text-slate-500 px-1.5 py-0.5 rounded uppercase font-bold">{tag.trim()}</span>
                                                 ))}
                                             </div>
                                         </div>
@@ -209,28 +217,29 @@
 
                     {selectedVideo && (
                         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay overflow-y-auto">
-                            <div className="bg-slate-900 w-full max-w-5xl rounded-3xl overflow-hidden shadow-2xl border border-white/10 flex flex-col md:flex-row max-h-[90vh]">
-                                <div className="flex-[2] bg-black aspect-video md:aspect-auto">
+                            <div className="bg-slate-900 w-full max-w-5xl rounded-3xl overflow-hidden shadow-2xl border border-white/10 flex flex-col md:flex-row max-h-[95vh] animate-in">
+                                <div className="flex-[2] bg-black aspect-video md:aspect-auto relative">
                                     <iframe src={selectedVideo.EmbedVideo} className="w-full h-full" frameBorder="0" allowFullScreen></iframe>
+                                    <button onClick={() => setSelectedVideo(null)} className="absolute top-4 right-4 md:hidden bg-black/50 p-2 rounded-full"><i data-lucide="x"></i></button>
                                 </div>
                                 <div className="flex-1 p-6 md:p-8 flex flex-col justify-between overflow-y-auto">
                                     <div>
-                                        <div className="flex justify-end mb-4">
-                                            <button onClick={() => setSelectedVideo(null)} className="text-slate-500 hover:text-white"><i data-lucide="x"></i></button>
+                                        <div className="hidden md:flex justify-end mb-4">
+                                            <button onClick={() => setSelectedVideo(null)} className="text-slate-500 hover:text-white transition-colors"><i data-lucide="x" className="w-6 h-6"></i></button>
                                         </div>
-                                        <h2 className="text-2xl font-black uppercase italic mb-1">{selectedVideo.NomeModelo}</h2>
-                                        <p className="text-pink-500 font-bold text-sm mb-6 uppercase">
-                                            {selectedVideo.Convidadas ? `PART. ${selectedVideo.Convidadas}` : selectedVideo.Categoria}
+                                        <h2 className="text-2xl font-black uppercase italic leading-none mb-2">{selectedVideo.NomeModelo}</h2>
+                                        <p className="text-pink-600 font-black text-xs mb-8 tracking-widest uppercase">
+                                            {selectedVideo.Convidadas ? `PARTICIPAÇÃO: ${selectedVideo.Convidadas}` : selectedVideo.Categoria}
                                         </p>
-                                        <div className="space-y-3">
-                                            {selectedVideo.Link1 && <a href={selectedVideo.Link1} target="_blank" className="flex items-center justify-between w-full bg-slate-800 hover:bg-green-600 p-4 rounded-xl transition-colors font-bold text-sm">SERVER 01 <i data-lucide="download"></i></a>}
-                                            {selectedVideo.Link2 && <a href={selectedVideo.Link2} target="_blank" className="flex items-center justify-between w-full bg-slate-800 hover:bg-blue-600 p-4 rounded-xl transition-colors font-bold text-sm">SERVER 02 <i data-lucide="download"></i></a>}
-                                            {selectedVideo.Link3 && <a href={selectedVideo.Link3} target="_blank" className="flex items-center justify-between w-full bg-slate-800 hover:bg-purple-600 p-4 rounded-xl transition-colors font-bold text-sm">SERVER 03 <i data-lucide="download"></i></a>}
+                                        <div className="space-y-2">
+                                            <p className="text-[10px] font-bold text-slate-500 uppercase mb-2">Opções de Acesso</p>
+                                            {selectedVideo.Link1 && <a href={selectedVideo.Link1} target="_blank" className="flex items-center justify-between w-full bg-slate-800 hover:bg-pink-700 p-4 rounded-xl transition-all font-bold text-xs uppercase">Servidor 01 <i data-lucide="external-link" className="w-4 h-4 text-white/50"></i></a>}
+                                            {selectedVideo.Link2 && <a href={selectedVideo.Link2} target="_blank" className="flex items-center justify-between w-full bg-slate-800 hover:bg-slate-700 p-4 rounded-xl transition-all font-bold text-xs uppercase">Servidor 02 <i data-lucide="external-link" className="w-4 h-4 text-white/50"></i></a>}
                                         </div>
                                     </div>
-                                    <div className="mt-8 flex flex-wrap gap-1.5">
-                                        {selectedVideo.Tags.split(',').map((tag, i) => (
-                                            <span key={i} className="text-[9px] border border-white/10 text-slate-400 px-2 py-1 rounded">{tag.trim()}</span>
+                                    <div className="mt-8 flex flex-wrap gap-1">
+                                        {selectedVideo.Tags && selectedVideo.Tags.split(',').map((tag, i) => (
+                                            <span key={i} className="text-[8px] border border-white/5 bg-white/5 text-slate-400 px-2 py-1 rounded font-bold uppercase">{tag.trim()}</span>
                                         ))}
                                     </div>
                                 </div>

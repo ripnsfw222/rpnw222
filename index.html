@@ -51,11 +51,25 @@
         const { useState, useEffect, useMemo } = React;
 
         const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSs1GhZQnhVZLayT56Ik4zsE2GaWyVV6A0IeUz6YSMKGSN9jnmXjpWtIVbfUsXH1_Os17RG_oju8Ba3/pub?gid=0&single=true&output=csv";
-        const MODEL_PHOTOS_BASE_URL = "https://ripnsfw222.github.io/rpnw222/imgs";
+        
+        // Ajustado para o caminho relativo da sua pasta local
+        const MODEL_PHOTOS_PATH = "./imgs/";
 
         const fixDoodUrl = (url) => {
             if (!url) return "";
             return url.replace("/d/", "/e/");
+        };
+
+        // Função para converter "Addison Vodka" em "addison-vodka.jpg"
+        const formatImageFileName = (name) => {
+            if (!name) return "";
+            return name
+                .toLowerCase()
+                .trim()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "") // Remove acentos
+                .replace(/\s+/g, '-')             // Troca espaços por hífens
+                + ".jpg";
         };
 
         function parseCSV(csvText) {
@@ -85,12 +99,10 @@
                     Tags: values[11]?.replace(/"/g, '').trim() || ''
                 };
             }).filter(item => {
-                // FILTRO: Remove itens onde o nome é "NOME", está vazio ou é apenas pontuação/espaço
                 const nomeLimpo = item.NomeModelo.toUpperCase().trim();
                 return nomeLimpo !== "" && nomeLimpo !== "NOME";
             });
 
-            // Inverte para mostrar as atualizações mais recentes primeiro
             return parsedData.reverse();
         }
 
@@ -124,10 +136,10 @@
                 data.forEach(item => {
                     const name = item.NomeModelo;
                     if (!map.has(name)) {
-                        const fileName = name.trim() + ".jpg";
+                        const fileName = formatImageFileName(name);
                         map.set(name, {
                             name: name,
-                            image: MODEL_PHOTOS_BASE_URL + encodeURIComponent(fileName),
+                            image: MODEL_PHOTOS_PATH + fileName,
                             videoCount: 0
                         });
                     }
@@ -143,8 +155,8 @@
             if (loading) return (
                 <div className="flex h-screen items-center justify-center bg-slate-950">
                     <div className="flex flex-col items-center gap-4">
-                        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-pink-500"></div>
-                        <span className="text-slate-500 text-[10px] font-black uppercase tracking-widest">Sincronizando Planilha...</span>
+                        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-pink-500"></div>
+                        <span className="text-slate-500 text-[10px] font-black uppercase tracking-widest">Localizando Fotos...</span>
                     </div>
                 </div>
             );
@@ -178,6 +190,7 @@
                                                 loading="lazy"
                                                 onError={(e) => {
                                                     e.target.onerror = null;
+                                                    // Se não achar na pasta imgs/, usa um avatar colorido de backup
                                                     e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(model.name)}&background=1e293b&color=fff&size=512`;
                                                 }} 
                                             />

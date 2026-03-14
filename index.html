@@ -40,7 +40,6 @@
             }
         }
         
-        /* Otimização para navegadores modernos */
         img { content-visibility: auto; }
     </style>
 </head>
@@ -51,13 +50,9 @@
     <script type="text/babel">
         const { useState, useEffect, useMemo } = React;
 
-        // ==========================================================
-        // CONFIGURAÇÕES MANUAIS
-        // ==========================================================
         const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSs1GhZQnhVZLayT56Ik4zsE2GaWyVV6A0IeUz6YSMKGSN9jnmXjpWtIVbfUsXH1_Os17RG_oju8Ba3/pub?gid=0&single=true&output=csv";
         const MODEL_PHOTOS_BASE_URL = "https://ripnsfw222.github.io/rpnw222/imgs/";
 
-        // Função para corrigir links do Doodstream (/d/ para /e/)
         const fixDoodUrl = (url) => {
             if (!url) return "";
             return url.replace("/d/", "/e/");
@@ -66,18 +61,20 @@
         function parseCSV(csvText) {
             const lines = csvText.trim().split('\n');
             if (lines.length < 2) return [];
-            return lines.slice(1).map(line => {
+            
+            const parsedData = lines.slice(1).map(line => {
                 const values = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                 
-                // Correção automática do link de embed
                 let embedUrl = values[6]?.trim() || "";
                 if (embedUrl.includes("doodstream") || embedUrl.includes("dood.")) {
                     embedUrl = fixDoodUrl(embedUrl);
                 }
 
+                const nome = values[2]?.trim() || '';
+
                 return {
                     Thumbnail: values[14]?.trim() || values[0]?.trim() || '', 
-                    NomeModelo: values[2]?.trim() || '',
+                    NomeModelo: nome,
                     Link1: values[3]?.trim() || '',
                     Link2: values[4]?.trim() || '',
                     Link3: values[5]?.trim() || '',
@@ -87,7 +84,14 @@
                     ID: values[10]?.trim() || '',
                     Tags: values[11]?.replace(/"/g, '').trim() || ''
                 };
-            }).filter(item => item.NomeModelo);
+            }).filter(item => {
+                // FILTRO: Remove itens onde o nome é "NOME", está vazio ou é apenas pontuação/espaço
+                const nomeLimpo = item.NomeModelo.toUpperCase().trim();
+                return nomeLimpo !== "" && nomeLimpo !== "NOME";
+            });
+
+            // Inverte para mostrar as atualizações mais recentes primeiro
+            return parsedData.reverse();
         }
 
         const App = () => {
@@ -111,7 +115,6 @@
                 fetchData();
             }, []);
 
-            // Carregamento de ícones otimizado
             useEffect(() => {
                 if (!loading) lucide.createIcons();
             }, [loading, selectedModel, selectedVideo]);
@@ -141,18 +144,18 @@
                 <div className="flex h-screen items-center justify-center bg-slate-950">
                     <div className="flex flex-col items-center gap-4">
                         <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-pink-500"></div>
-                        <span className="text-slate-500 text-[10px] font-black uppercase tracking-widest">Carregando...</span>
+                        <span className="text-slate-500 text-[10px] font-black uppercase tracking-widest">Sincronizando Planilha...</span>
                     </div>
                 </div>
             );
 
             return (
-                <div className="min-h-screen pb-10 bg-slate-950">
-                    <header className="bg-slate-900/40 backdrop-blur-xl p-4 sticky top-0 z-40 border-b border-white/5">
+                <div className="min-h-screen pb-10 bg-slate-950 text-slate-200">
+                    <header className="bg-slate-900/60 backdrop-blur-xl p-4 sticky top-0 z-40 border-b border-white/5">
                         <div className="max-w-7xl mx-auto flex items-center justify-between">
                             <div className="flex items-center gap-4">
                                 {selectedModel && (
-                                    <button onClick={() => setSelectedModel(null)} className="p-2 hover:bg-white/10 rounded-full transition-colors">
+                                    <button onClick={() => setSelectedModel(null)} className="p-2 hover:bg-white/10 rounded-full transition-colors text-white">
                                         <i data-lucide="arrow-left" className="w-5 h-5"></i>
                                     </button>
                                 )}
@@ -173,7 +176,10 @@
                                                 src={model.image} 
                                                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                                                 loading="lazy"
-                                                onError={(e) => e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(model.name)}&background=333&color=fff&size=400`} 
+                                                onError={(e) => {
+                                                    e.target.onerror = null;
+                                                    e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(model.name)}&background=1e293b&color=fff&size=512`;
+                                                }} 
                                             />
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-80"></div>
                                             <div className="absolute bottom-3 left-3">
@@ -189,14 +195,13 @@
                                 {currentVideos.map((video, idx) => (
                                     <div key={idx} onClick={() => setSelectedVideo(video)} className="bg-slate-900/50 rounded-2xl overflow-hidden cursor-pointer hover:bg-slate-900 transition-all border border-white/5 group">
                                         <div className="relative aspect-video bg-slate-800">
-                                            {/* Removida a classe grayscale */}
                                             <img src={video.Thumbnail} className="w-full h-full object-cover transition-all duration-300" loading="lazy" />
-                                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <div className="w-12 h-12 bg-pink-600 rounded-full flex items-center justify-center shadow-lg">
+                                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 backdrop-blur-[2px]">
+                                                <div className="w-12 h-12 bg-pink-600 rounded-full flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-transform">
                                                     <i data-lucide="play" className="w-5 h-5 fill-white text-white"></i>
                                                 </div>
                                             </div>
-                                            <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-2 py-1 rounded text-[9px] font-bold uppercase border border-white/10">
+                                            <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-2 py-1 rounded text-[9px] font-bold uppercase border border-white/10 text-white">
                                                 {video.Categoria}
                                             </div>
                                         </div>
@@ -220,21 +225,21 @@
                             <div className="bg-slate-900 w-full max-w-5xl rounded-3xl overflow-hidden shadow-2xl border border-white/10 flex flex-col md:flex-row max-h-[95vh] animate-in">
                                 <div className="flex-[2] bg-black aspect-video md:aspect-auto relative">
                                     <iframe src={selectedVideo.EmbedVideo} className="w-full h-full" frameBorder="0" allowFullScreen></iframe>
-                                    <button onClick={() => setSelectedVideo(null)} className="absolute top-4 right-4 md:hidden bg-black/50 p-2 rounded-full"><i data-lucide="x"></i></button>
+                                    <button onClick={() => setSelectedVideo(null)} className="absolute top-4 right-4 md:hidden bg-black/50 p-2 rounded-full text-white"><i data-lucide="x"></i></button>
                                 </div>
                                 <div className="flex-1 p-6 md:p-8 flex flex-col justify-between overflow-y-auto">
                                     <div>
                                         <div className="hidden md:flex justify-end mb-4">
                                             <button onClick={() => setSelectedVideo(null)} className="text-slate-500 hover:text-white transition-colors"><i data-lucide="x" className="w-6 h-6"></i></button>
                                         </div>
-                                        <h2 className="text-2xl font-black uppercase italic leading-none mb-2">{selectedVideo.NomeModelo}</h2>
+                                        <h2 className="text-2xl font-black uppercase italic leading-none mb-2 text-white">{selectedVideo.NomeModelo}</h2>
                                         <p className="text-pink-600 font-black text-xs mb-8 tracking-widest uppercase">
                                             {selectedVideo.Convidadas ? `PARTICIPAÇÃO: ${selectedVideo.Convidadas}` : selectedVideo.Categoria}
                                         </p>
                                         <div className="space-y-2">
                                             <p className="text-[10px] font-bold text-slate-500 uppercase mb-2">Opções de Acesso</p>
-                                            {selectedVideo.Link1 && <a href={selectedVideo.Link1} target="_blank" className="flex items-center justify-between w-full bg-slate-800 hover:bg-pink-700 p-4 rounded-xl transition-all font-bold text-xs uppercase">Servidor 01 <i data-lucide="external-link" className="w-4 h-4 text-white/50"></i></a>}
-                                            {selectedVideo.Link2 && <a href={selectedVideo.Link2} target="_blank" className="flex items-center justify-between w-full bg-slate-800 hover:bg-slate-700 p-4 rounded-xl transition-all font-bold text-xs uppercase">Servidor 02 <i data-lucide="external-link" className="w-4 h-4 text-white/50"></i></a>}
+                                            {selectedVideo.Link1 && <a href={selectedVideo.Link1} target="_blank" className="flex items-center justify-between w-full bg-slate-800 hover:bg-pink-700 p-4 rounded-xl transition-all font-bold text-xs uppercase text-white">Servidor 01 <i data-lucide="external-link" className="w-4 h-4 text-white/50"></i></a>}
+                                            {selectedVideo.Link2 && <a href={selectedVideo.Link2} target="_blank" className="flex items-center justify-between w-full bg-slate-800 hover:bg-slate-700 p-4 rounded-xl transition-all font-bold text-xs uppercase text-white">Servidor 02 <i data-lucide="external-link" className="w-4 h-4 text-white/50"></i></a>}
                                         </div>
                                     </div>
                                     <div className="mt-8 flex flex-wrap gap-1">

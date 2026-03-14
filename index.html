@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galeria de Modelos e Vídeos</title>
+    <title>Exclusive Portal - Galeria</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
@@ -33,7 +33,6 @@
                 opacity: 0;
                 transform: translateY(8px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -42,7 +41,6 @@
         
         img { content-visibility: auto; }
 
-        /* Custom scrollbar for the modal */
         .custom-scroll::-webkit-scrollbar {
             width: 4px;
         }
@@ -83,12 +81,11 @@
 
         function parseCSV(csvText) {
             const NOMES_IGNORADOS = ["NOME", "TESTE", "MODELO", "VAZIO"];
-
             const lines = csvText.trim().split('\n');
             if (lines.length < 2) return [];
             
             const parsedData = lines.slice(1).map(line => {
-                // Regex para lidar com vírgulas dentro de aspas (comum em CSVs)
+                // Regex para lidar com vírgulas dentro de aspas
                 const values = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                 
                 let embedUrl = values[6]?.trim() || "";
@@ -97,18 +94,20 @@
                 }
 
                 const nome = values[2]?.trim() || '';
-
+                
+                // Mapeamento das colunas baseado no seu relato (Coluna O = Índice 14)
                 return {
-                    Thumbnail: values[0]?.trim() || '', 
-                    NomeModelo: nome,
-                    Link1: values[3]?.trim() || '', // Coluna D
-                    Link2: values[4]?.trim() || '', // Coluna E
-                    Link3: values[5]?.trim() || '', // Coluna F
-                    EmbedVideo: embedUrl,
-                    Convidadas: values[7]?.trim() || '',
-                    Categoria: values[8]?.trim() || '',
-                    ID: values[10]?.trim() || '',
-                    Tags: values[11]?.replace(/"/g, '').trim() || ''
+                    FotoModelo: values[0]?.trim() || '',  // Coluna A (Geralmente a foto da modelo)
+                    NomeModelo: nome,                     // Coluna C
+                    Link1: values[3]?.trim() || '',       // Coluna D
+                    Link2: values[4]?.trim() || '',       // Coluna E
+                    Link3: values[5]?.trim() || '',       // Coluna F
+                    EmbedVideo: embedUrl,                // Coluna G
+                    Convidadas: values[7]?.trim() || '',   // Coluna H
+                    Categoria: values[8]?.trim() || '',    // Coluna I
+                    ID: values[10]?.trim() || '',          // Coluna K
+                    Tags: values[11]?.replace(/"/g, '').trim() || '', // Coluna L
+                    ThumbnailVideo: values[14]?.trim() || '' // Coluna O (A que estava quebrada)
                 };
             }).filter(item => {
                 const nomeLimpo = item.NomeModelo.toUpperCase().trim();
@@ -140,7 +139,9 @@
             }, []);
 
             useEffect(() => {
-                if (!loading) lucide.createIcons();
+                if (!loading) {
+                    if (window.lucide) lucide.createIcons();
+                }
             }, [loading, selectedModel, selectedVideo]);
 
             const models = useMemo(() => {
@@ -219,7 +220,16 @@
                                 {currentVideos.map((video, idx) => (
                                     <div key={idx} onClick={() => setSelectedVideo(video)} className="bg-slate-900/50 rounded-2xl overflow-hidden cursor-pointer hover:bg-slate-900 transition-all border border-white/5 group">
                                         <div className="relative aspect-video bg-slate-800">
-                                            <img src={video.Thumbnail} className="w-full h-full object-cover transition-all duration-300" loading="lazy" />
+                                            {/* AQUI USAMOS A COLUNA O (ThumbnailVideo) */}
+                                            <img 
+                                                src={video.ThumbnailVideo || video.FotoModelo} 
+                                                className="w-full h-full object-cover transition-all duration-300" 
+                                                loading="lazy"
+                                                onError={(e) => {
+                                                    e.target.onerror = null;
+                                                    e.target.src = "https://placehold.co/600x400/1e293b/white?text=Video+Thumbnail";
+                                                }}
+                                            />
                                             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 backdrop-blur-[2px]">
                                                 <div className="w-12 h-12 bg-pink-600 rounded-full flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-transform">
                                                     <i data-lucide="play" className="w-5 h-5 fill-white text-white"></i>
@@ -268,7 +278,6 @@
                                         <div className="space-y-2">
                                             <p className="text-[10px] font-bold text-slate-500 uppercase mb-2">Opções de Acesso</p>
                                             
-                                            {/* MAPEAMENTO DINÂMICO DE LINKS (Colunas D, E e F) */}
                                             {[
                                                 { url: selectedVideo.Link1, label: "Servidor 01", color: "bg-slate-800 hover:bg-pink-700" },
                                                 { url: selectedVideo.Link2, label: "Servidor 02", color: "bg-slate-800 hover:bg-slate-700" },
@@ -284,10 +293,6 @@
                                                     <i data-lucide="external-link" className="w-4 h-4 text-white/50"></i>
                                                 </a>
                                             ) : null)}
-                                            
-                                            {(!selectedVideo.Link1 && !selectedVideo.Link2 && !selectedVideo.Link3) && (
-                                                <p className="text-xs text-slate-600 italic">Nenhum link adicional disponível.</p>
-                                            )}
                                         </div>
                                     </div>
                                     <div className="mt-8 flex flex-wrap gap-1">

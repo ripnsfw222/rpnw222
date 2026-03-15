@@ -55,6 +55,10 @@
         .aspect-video-box {
             aspect-ratio: 16/9;
         }
+
+        .search-input:focus {
+            box-shadow: 0 0 0 2px rgba(236, 72, 153, 0.3);
+        }
     </style>
 </head>
 
@@ -64,7 +68,6 @@
     <script type="text/babel">
         const { useState, useEffect, useMemo } = React;
 
-        // Replace with your raw GitHub CSV URL for better performance
         const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSs1GhZQnhVZLayT56Ik4zsE2GaWyVV6A0IeUz6YSMKGSN9jnmXjpWtIVbfUsXH1_Os17RG_oju8Ba3/pub?gid=0&single=true&output=csv";
         const MODEL_PHOTOS_PATH = "./imgs/";
 
@@ -84,10 +87,8 @@
                 + ".jpg";
         };
 
-        // NEW: Improved tag cleaner to handle glued hashtags or comma-separated values
         const processTags = (tagString) => {
             if (!tagString) return [];
-            // Replace commas with spaces, then split by # or space
             return tagString
                 .replace(/,/g, ' ')
                 .split(/[#\s]+/)
@@ -125,11 +126,10 @@
                     Guests: values[7]?.trim() || '',
                     Category: values[8]?.trim() || '',
                     ID: values[10]?.trim() || '',
-                    Tags: processTags(values[11]?.replace(/"/g, '').trim()), // Pre-processing tags
+                    Tags: processTags(values[11]?.replace(/"/g, '').trim()),
                     VideoThumbnail: values[14]?.trim() || ''
                 });
             }
-
             return parsedData.reverse();
         }
 
@@ -138,6 +138,7 @@
             const [selectedModel, setSelectedModel] = useState(null);
             const [selectedVideo, setSelectedVideo] = useState(null);
             const [loading, setLoading] = useState(true);
+            const [searchQuery, setSearchQuery] = useState("");
 
             useEffect(() => {
                 const fetchData = async () => {
@@ -156,7 +157,7 @@
 
             useEffect(() => {
                 if (!loading && window.lucide) lucide.createIcons();
-            }, [loading, selectedModel, selectedVideo]);
+            }, [loading, selectedModel, selectedVideo, searchQuery]);
 
             const models = useMemo(() => {
                 const map = new Map();
@@ -172,14 +173,38 @@
                     map.get(name).videoCount++;
                 });
 
-                return Array.from(map.values())
+                let results = Array.from(map.values())
                     .filter(model => model.videoCount > 1) 
                     .sort((a, b) => a.name.localeCompare(b.name));
-            }, [data]);
+
+                if (searchQuery) {
+                    const q = searchQuery.toLowerCase();
+                    results = results.filter(m => m.name.toLowerCase().includes(q));
+                }
+
+                return results;
+            }, [data, searchQuery]);
 
             const currentVideos = useMemo(() => {
-                return selectedModel ? data.filter(v => v.ModelName === selectedModel.name) : [];
-            }, [selectedModel, data]);
+                if (!selectedModel) return [];
+                let filtered = data.filter(v => v.ModelName === selectedModel.name);
+                
+                if (searchQuery) {
+                    const q = searchQuery.toLowerCase();
+                    filtered = filtered.filter(v => 
+                        v.ID.toLowerCase().includes(q) || 
+                        v.Guests.toLowerCase().includes(q) ||
+                        v.Category.toLowerCase().includes(q) ||
+                        v.Tags.some(t => t.toLowerCase().includes(q))
+                    );
+                }
+                return filtered;
+            }, [selectedModel, data, searchQuery]);
+
+            const handleBack = () => {
+                setSelectedModel(null);
+                setSearchQuery("");
+            };
 
             if (loading) return (
                 <div className="flex h-screen items-center justify-center bg-slate-950">
@@ -192,20 +217,42 @@
 
             return (
                 <div className="min-h-screen pb-10 bg-slate-950 text-slate-200">
-                    <header className="bg-slate-900/40 backdrop-blur-2xl p-4 sticky top-0 z-40 border-b border-white/5">
-                        <div className="max-w-7xl mx-auto flex items-center justify-between">
+                    <header className="bg-slate-900/60 backdrop-blur-2xl sticky top-0 z-40 border-b border-white/5 px-4 py-3">
+                        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
                             <div className="flex items-center gap-4">
                                 {selectedModel && (
-                                    <button onClick={() => setSelectedModel(null)} className="p-2 hover:bg-white/10 rounded-full transition-all text-white active:scale-90">
+                                    <button onClick={handleBack} className="p-2 hover:bg-white/10 rounded-full transition-all text-white active:scale-90">
                                         <i data-lucide="arrow-left" className="w-5 h-5"></i>
                                     </button>
                                 )}
-                                <h1 className="text-xl font-black italic uppercase tracking-tighter text-white">
+                                <h1 className="text-xl font-black italic uppercase tracking-tighter text-white whitespace-nowrap">
                                     {selectedModel ? selectedModel.name : 'Exclusive Portal'}
                                 </h1>
                             </div>
+
+                            <div className="relative flex-1 max-w-md">
+                                <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                                    <i data-lucide="search" className="w-4 h-4 text-slate-500"></i>
+                                </div>
+                                <input 
+                                    type="text" 
+                                    placeholder={selectedModel ? `Search in ${selectedModel.name}...` : "Search models..."}
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    className="search-input w-full bg-slate-950/50 border border-white/10 rounded-xl py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-pink-500/50 transition-all placeholder:text-slate-600"
+                                />
+                                {searchQuery && (
+                                    <button 
+                                        onClick={() => setSearchQuery("")}
+                                        className="absolute inset-y-0 right-3 flex items-center text-slate-500 hover:text-white"
+                                    >
+                                        <i data-lucide="circle-x" className="w-4 h-4"></i>
+                                    </button>
+                                )}
+                            </div>
+
                             {!selectedModel && (
-                                <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest bg-white/5 px-3 py-1 rounded-full border border-white/5">
+                                <div className="hidden md:block text-[10px] font-bold text-slate-500 uppercase tracking-widest bg-white/5 px-3 py-1 rounded-full border border-white/5">
                                     {models.length} Models
                                 </div>
                             )}
@@ -214,64 +261,80 @@
 
                     <main className="max-w-7xl mx-auto p-4 md:p-8">
                         {!selectedModel ? (
-                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 animate-in">
-                                {models.map((model, idx) => (
-                                    <div key={idx} onClick={() => setSelectedModel(model)} className="group cursor-pointer">
-                                        <div className="relative aspect-card rounded-2xl overflow-hidden mb-3 ring-1 ring-white/10 group-hover:ring-pink-500 transition-all duration-500 shadow-2xl bg-slate-900">
-                                            <img 
-                                                src={model.image} 
-                                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                                                loading="lazy"
-                                                alt={model.name}
-                                                onError={(e) => {
-                                                    e.target.onerror = null;
-                                                    e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(model.name)}&background=1e293b&color=fff&size=512`;
-                                                }} 
-                                            />
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-transparent to-transparent opacity-80 group-hover:opacity-90 transition-opacity"></div>
-                                            <div className="absolute bottom-3 left-3">
-                                                <p className="text-[9px] font-black text-pink-500 uppercase tracking-widest">{model.videoCount} Videos</p>
+                            <>
+                                {models.length > 0 ? (
+                                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 animate-in">
+                                        {models.map((model, idx) => (
+                                            <div key={idx} onClick={() => setSelectedModel(model)} className="group cursor-pointer">
+                                                <div className="relative aspect-card rounded-2xl overflow-hidden mb-3 ring-1 ring-white/10 group-hover:ring-pink-500 transition-all duration-500 shadow-2xl bg-slate-900">
+                                                    <img 
+                                                        src={model.image} 
+                                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                                        loading="lazy"
+                                                        alt={model.name}
+                                                        onError={(e) => {
+                                                            e.target.onerror = null;
+                                                            e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(model.name)}&background=1e293b&color=fff&size=512`;
+                                                        }} 
+                                                    />
+                                                    <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-transparent to-transparent opacity-80 group-hover:opacity-90 transition-opacity"></div>
+                                                    <div className="absolute bottom-3 left-3">
+                                                        <p className="text-[9px] font-black text-pink-500 uppercase tracking-widest">{model.videoCount} Videos</p>
+                                                    </div>
+                                                </div>
+                                                <h3 className="text-center font-bold text-sm text-slate-400 group-hover:text-white transition-colors">{model.name}</h3>
                                             </div>
-                                        </div>
-                                        <h3 className="text-center font-bold text-sm text-slate-400 group-hover:text-white transition-colors">{model.name}</h3>
+                                        ))}
                                     </div>
-                                ))}
-                            </div>
+                                ) : (
+                                    <div className="py-20 text-center">
+                                        <p className="text-slate-500 uppercase font-black tracking-widest text-xs">No models found for "{searchQuery}"</p>
+                                    </div>
+                                )}
+                            </>
                         ) : (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-in">
-                                {currentVideos.map((video, idx) => (
-                                    <div key={idx} onClick={() => setSelectedVideo(video)} className="bg-slate-900/30 rounded-2xl overflow-hidden cursor-pointer hover:bg-slate-900/60 transition-all border border-white/5 group">
-                                        <div className="relative aspect-video-box bg-slate-800">
-                                            <img 
-                                                src={video.VideoThumbnail || video.ModelPhoto} 
-                                                className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" 
-                                                loading="lazy"
-                                                onError={(e) => {
-                                                    e.target.onerror = null;
-                                                    e.target.src = "https://placehold.co/600x400/1e293b/white?text=Video+Thumbnail";
-                                                }}
-                                            />
-                                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 bg-black/50 backdrop-blur-[2px]">
-                                                <div className="w-14 h-14 bg-pink-600 rounded-full flex items-center justify-center shadow-2xl transform scale-75 group-hover:scale-100 transition-transform">
-                                                    <i data-lucide="play" className="w-6 h-6 fill-white text-white"></i>
+                            <>
+                                {currentVideos.length > 0 ? (
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-in">
+                                        {currentVideos.map((video, idx) => (
+                                            <div key={idx} onClick={() => setSelectedVideo(video)} className="bg-slate-900/30 rounded-2xl overflow-hidden cursor-pointer hover:bg-slate-900/60 transition-all border border-white/5 group">
+                                                <div className="relative aspect-video-box bg-slate-800">
+                                                    <img 
+                                                        src={video.VideoThumbnail || video.ModelPhoto} 
+                                                        className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" 
+                                                        loading="lazy"
+                                                        onError={(e) => {
+                                                            e.target.onerror = null;
+                                                            e.target.src = "https://placehold.co/600x400/1e293b/white?text=Video+Thumbnail";
+                                                        }}
+                                                    />
+                                                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 bg-black/50 backdrop-blur-[2px]">
+                                                        <div className="w-14 h-14 bg-pink-600 rounded-full flex items-center justify-center shadow-2xl transform scale-75 group-hover:scale-100 transition-transform">
+                                                            <i data-lucide="play" className="w-6 h-6 fill-white text-white"></i>
+                                                        </div>
+                                                    </div>
+                                                    <div className="absolute top-3 right-3 bg-black/70 backdrop-blur-md px-2 py-1 rounded text-[9px] font-bold uppercase border border-white/10 text-white tracking-tighter">
+                                                        {video.Category}
+                                                    </div>
+                                                </div>
+                                                <div className="p-5">
+                                                    <h4 className="font-bold text-slate-100 text-sm mb-1 truncate">ID: {video.ID}</h4>
+                                                    {video.Guests && <p className="text-[10px] text-pink-500 font-bold uppercase mb-3 tracking-wide">w/ {video.Guests}</p>}
+                                                    <div className="flex flex-wrap gap-1.5">
+                                                        {video.Tags.slice(0, 3).map((tag, i) => (
+                                                            <span key={i} className="text-[8px] bg-white/5 text-slate-500 px-2 py-0.5 rounded uppercase font-bold border border-white/5 truncate max-w-[80px]">#{tag}</span>
+                                                        ))}
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div className="absolute top-3 right-3 bg-black/70 backdrop-blur-md px-2 py-1 rounded text-[9px] font-bold uppercase border border-white/10 text-white tracking-tighter">
-                                                {video.Category}
-                                            </div>
-                                        </div>
-                                        <div className="p-5">
-                                            <h4 className="font-bold text-slate-100 text-sm mb-1 truncate">ID: {video.ID}</h4>
-                                            {video.Guests && <p className="text-[10px] text-pink-500 font-bold uppercase mb-3 tracking-wide">w/ {video.Guests}</p>}
-                                            <div className="flex flex-wrap gap-1.5">
-                                                {video.Tags.slice(0, 3).map((tag, i) => (
-                                                    <span key={i} className="text-[8px] bg-white/5 text-slate-500 px-2 py-0.5 rounded uppercase font-bold border border-white/5 truncate max-w-[80px]">#{tag}</span>
-                                                ))}
-                                            </div>
-                                        </div>
+                                        ))}
                                     </div>
-                                ))}
-                            </div>
+                                ) : (
+                                    <div className="py-20 text-center">
+                                        <p className="text-slate-500 uppercase font-black tracking-widest text-xs">No videos found matching "{searchQuery}"</p>
+                                    </div>
+                                )}
+                            </>
                         )}
                     </main>
 

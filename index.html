@@ -175,7 +175,9 @@ body{margin:0;background:#020617;color:#e2e8f0;font-family:system-ui,-apple-syst
 
 <script>
 // ── Config ────────────────────────────────────────────────────────────────────
-const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSs1GhZQnhVZLayT56Ik4zsE2GaWyVV6A0IeUz6YSMKGSN9jnmXjpWtIVbfUsXH1_Os17RG_oju8Ba3/pub?gid=0&single=true&output=csv";
+// /pub endpoint has no HTTP cache; export URL is served via Google's CDN with proper caching
+const SHEET_ID  = "2PACX-1vSs1GhZQnhVZLayT56Ik4zsE2GaWyVV6A0IeUz6YSMKGSN9jnmXjpWtIVbfUsXH1_Os17RG_oju8Ba3";
+const SHEET_URL = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pub?gid=0&single=true&output=csv`;
 const IMGS_PATH = "./imgs/";
 
 const IGNORED = new Set(["NAME","TEST","MODEL","EMPTY","ALINA","ANNA","BANANAPOTATO333","ERIN","IZZY","JUNIPER","KATERINA","LUCY","MISTY","NAKEDBARBIEDOLL","NINA","NIKOLETTA QUEEN","RAINI","SCARLETT","SCARLETT HAMPTOM","SHYLA","TESSA","THEODORA","VIOLET RAY","WILD HALLI","YUIWOO"]);
@@ -278,133 +280,169 @@ function lazyImg(src, alt, fallback) {
     return img;
 }
 
-// ── Render model grid ─────────────────────────────────────────────────────────
+// ── Build a single model card element ────────────────────────────────────────
+function makeModelCard(m) {
+    const card = document.createElement('div');
+    card.className = 'mcard';
+    card.onclick = () => openModel(m);
+    const imgWrap = document.createElement('div');
+    imgWrap.className = 'mcard-img';
+    const img = lazyImg(
+        IMGS_PATH + m.slug, m.name,
+        `https://ui-avatars.com/api/?name=${encodeURIComponent(m.name)}&background=1e293b&color=fff&size=400`
+    );
+    imgWrap.appendChild(img);
+    const grad = document.createElement('div');
+    grad.className = 'mcard-grad';
+    imgWrap.appendChild(grad);
+    const cnt = document.createElement('span');
+    cnt.className = 'mcard-count';
+    cnt.textContent = m.count + ' vídeos';
+    imgWrap.appendChild(cnt);
+    const lbl = document.createElement('p');
+    lbl.className = 'mcard-name';
+    lbl.textContent = m.name;
+    card.appendChild(imgWrap);
+    card.appendChild(lbl);
+    return card;
+}
+
+// ── Render model grid in idle chunks (never blocks main thread) ───────────────
+let _renderModelToken = 0;
 function renderModels() {
+    const token = ++_renderModelToken;
     const q = searchQ.toLowerCase();
-    const frag = document.createDocumentFragment();
-    let count = 0;
+    const items = [];
     for (const [, m] of modelMap) {
-        if (q && !m.name.toLowerCase().includes(q)) continue;
-        count++;
-
-        const card = document.createElement('div');
-        card.className = 'mcard';
-        card.onclick = () => openModel(m);
-
-        const imgWrap = document.createElement('div');
-        imgWrap.className = 'mcard-img';
-
-        const img = lazyImg(
-            IMGS_PATH + m.slug,
-            m.name,
-            `https://ui-avatars.com/api/?name=${encodeURIComponent(m.name)}&background=1e293b&color=fff&size=400`
-        );
-        imgWrap.appendChild(img);
-
-        const grad = document.createElement('div');
-        grad.className = 'mcard-grad';
-        imgWrap.appendChild(grad);
-
-        const cnt = document.createElement('span');
-        cnt.className = 'mcard-count';
-        cnt.textContent = m.count + ' vídeos';
-        imgWrap.appendChild(cnt);
-
-        const lbl = document.createElement('p');
-        lbl.className = 'mcard-name';
-        lbl.textContent = m.name;
-
-        card.appendChild(imgWrap);
-        card.appendChild(lbl);
-        frag.appendChild(card);
+        if (!q || m.name.toLowerCase().includes(q)) items.push(m);
     }
-    if (!count) {
+
+    modelGrid.innerHTML = '';
+
+    if (items.length === 0) {
         const empty = document.createElement('p');
         empty.className = 'empty';
         empty.textContent = 'Nenhum modelo encontrado.';
-        frag.appendChild(empty);
+        modelGrid.appendChild(empty);
+        return;
     }
-    modelGrid.innerHTML = '';
-    modelGrid.appendChild(frag);
+
+    const CHUNK = 12;
+    let idx = 0;
+
+    function flush(deadline) {
+        if (token !== _renderModelToken) return; // stale render, abort
+        const frag = document.createDocumentFragment();
+        const limit = Math.min(idx + CHUNK, items.length);
+        while (idx < limit) frag.appendChild(makeModelCard(items[idx++]));
+        modelGrid.appendChild(frag);
+        if (idx < items.length) {
+            const schedule = typeof requestIdleCallback !== 'undefined'
+                ? requestIdleCallback
+                : (cb) => setTimeout(cb, 0);
+            schedule(flush);
+        }
+    }
+
+    // First chunk synchronously so screen shows content instantly
+    const firstFrag = document.createDocumentFragment();
+    const firstLimit = Math.min(CHUNK, items.length);
+    while (idx < firstLimit) firstFrag.appendChild(makeModelCard(items[idx++]));
+    modelGrid.appendChild(firstFrag);
     modelGrid.classList.add('fade-in');
-    void modelGrid.offsetWidth; // force reflow to re-trigger animation
-    modelGrid.classList.remove('fade-in');
-    requestAnimationFrame(() => modelGrid.classList.add('fade-in'));
+
+    if (idx < items.length) {
+        const schedule = typeof requestIdleCallback !== 'undefined'
+            ? requestIdleCallback
+            : (cb) => setTimeout(cb, 16);
+        schedule(flush);
+    }
 }
 
-// ── Render video grid ─────────────────────────────────────────────────────────
-function renderVideos() {
-    const q = searchQ.toLowerCase();
-    const frag = document.createDocumentFragment();
-    let count = 0;
-    for (const v of allData) {
-        if (v.ModelName !== curModel.name) continue;
-        if (q && !(
-            v.ID.toLowerCase().includes(q) ||
-            v.Guests.toLowerCase().includes(q) ||
-            v.Category.toLowerCase().includes(q) ||
-            v.Tags.some(t => t.toLowerCase().includes(q))
-        )) continue;
-        count++;
-
-        const card = document.createElement('div');
-        card.className = 'vcard';
-        card.onclick = () => openVideo(v);
-
-        const thumb = document.createElement('div');
-        thumb.className = 'vcard-thumb';
-
-        const img = lazyImg(
-            v.Thumb || v.Photo,
-            v.ID,
-            'https://placehold.co/600x338/0f172a/1e293b?text=.'
-        );
-        thumb.appendChild(img);
-
-        const playWrap = document.createElement('div');
-        playWrap.className = 'vcard-play';
-        const circle = document.createElement('div');
-        circle.className = 'play-circle';
-        circle.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>`;
-        playWrap.appendChild(circle);
-        thumb.appendChild(playWrap);
-
-        if (v.Category) {
-            const cat = document.createElement('span');
-            cat.className = 'vcard-cat';
-            cat.textContent = v.Category;
-            thumb.appendChild(cat);
-        }
-
-        const info = document.createElement('div');
-        info.className = 'vcard-info';
-        const idEl = document.createElement('p');
-        idEl.className = 'vcard-id';
-        idEl.textContent = 'ID: ' + v.ID;
-        info.appendChild(idEl);
-        if (v.Guests) {
-            const g = document.createElement('p');
-            g.className = 'vcard-guests';
-            g.textContent = 'w/ ' + v.Guests;
-            info.appendChild(g);
-        }
-
-        card.appendChild(thumb);
-        card.appendChild(info);
-        frag.appendChild(card);
+// ── Build a single video card element ────────────────────────────────────────
+function makeVideoCard(v) {
+    const card = document.createElement('div');
+    card.className = 'vcard';
+    card.onclick = () => openVideo(v);
+    const thumb = document.createElement('div');
+    thumb.className = 'vcard-thumb';
+    const img = lazyImg(v.Thumb || v.Photo, v.ID, 'https://placehold.co/600x338/0f172a/1e293b?text=.');
+    thumb.appendChild(img);
+    const playWrap = document.createElement('div');
+    playWrap.className = 'vcard-play';
+    const circle = document.createElement('div');
+    circle.className = 'play-circle';
+    circle.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>`;
+    playWrap.appendChild(circle);
+    thumb.appendChild(playWrap);
+    if (v.Category) {
+        const cat = document.createElement('span');
+        cat.className = 'vcard-cat';
+        cat.textContent = v.Category;
+        thumb.appendChild(cat);
     }
-    if (!count) {
+    const info = document.createElement('div');
+    info.className = 'vcard-info';
+    const idEl = document.createElement('p');
+    idEl.className = 'vcard-id';
+    idEl.textContent = 'ID: ' + v.ID;
+    info.appendChild(idEl);
+    if (v.Guests) {
+        const g = document.createElement('p');
+        g.className = 'vcard-guests';
+        g.textContent = 'w/ ' + v.Guests;
+        info.appendChild(g);
+    }
+    card.appendChild(thumb);
+    card.appendChild(info);
+    return card;
+}
+
+// ── Render video grid in idle chunks ──────────────────────────────────────────
+let _renderVideoToken = 0;
+function renderVideos() {
+    const token = ++_renderVideoToken;
+    const q = searchQ.toLowerCase();
+    const modelName = curModel.name;
+    const items = allData.filter(v => {
+        if (v.ModelName !== modelName) return false;
+        if (!q) return true;
+        return v.ID.toLowerCase().includes(q) ||
+               v.Guests.toLowerCase().includes(q) ||
+               v.Category.toLowerCase().includes(q) ||
+               v.Tags.some(t => t.toLowerCase().includes(q));
+    });
+
+    videoGrid.innerHTML = '';
+
+    if (items.length === 0) {
         const empty = document.createElement('p');
         empty.className = 'empty';
         empty.textContent = 'Nenhum vídeo encontrado.';
-        frag.appendChild(empty);
+        videoGrid.appendChild(empty);
+        return;
     }
-    videoGrid.innerHTML = '';
-    videoGrid.appendChild(frag);
+
+    const CHUNK = 9;
+    let idx = 0;
+
+    function flush() {
+        if (token !== _renderVideoToken) return;
+        const frag = document.createDocumentFragment();
+        const limit = Math.min(idx + CHUNK, items.length);
+        while (idx < limit) frag.appendChild(makeVideoCard(items[idx++]));
+        videoGrid.appendChild(frag);
+        if (idx < items.length) setTimeout(flush, 0);
+    }
+
+    // First chunk sync
+    const firstFrag = document.createDocumentFragment();
+    const firstLimit = Math.min(CHUNK, items.length);
+    while (idx < firstLimit) firstFrag.appendChild(makeVideoCard(items[idx++]));
+    videoGrid.appendChild(firstFrag);
     videoGrid.classList.add('fade-in');
-    void videoGrid.offsetWidth;
-    videoGrid.classList.remove('fade-in');
-    requestAnimationFrame(() => videoGrid.classList.add('fade-in'));
+
+    if (idx < items.length) setTimeout(flush, 0);
 }
 
 // ── Navigation ────────────────────────────────────────────────────────────────
@@ -537,32 +575,67 @@ modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && curVideo) closeModal(); });
 
 // ── Init ──────────────────────────────────────────────────────────────────────
-fetch(SHEET_URL)
-    .then(r => r.text())
-    .then(csv => {
-        allData = parseCSV(csv);
+const CACHE_KEY = 'ep_csv_v2';
+const CACHE_TTL = 30 * 60 * 1000; // 30 min — show cached instantly, refresh in bg
 
-        // Build model map (preserves insertion order = already sorted later)
-        const tempMap = new Map();
-        for (const row of allData) {
-            const n = row.ModelName;
-            if (!tempMap.has(n)) tempMap.set(n, { name:n, slug:toSlug(n), count:0 });
-            tempMap.get(n).count++;
+function saveCache(csv) {
+    try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), csv })); } catch {}
+}
+
+function fetchFresh(onDone) {
+    // Use 'force-cache' hint so browser reuses any HTTP cache entry from Google CDN
+    fetch(SHEET_URL, { cache: 'force-cache' })
+        .then(r => r.text())
+        .then(csv => { saveCache(csv); onDone && onDone(csv); })
+        .catch(err => {
+            if (onDone) {
+                // fallback: try without cache hint
+                fetch(SHEET_URL).then(r => r.text()).then(onDone).catch(() => {
+                    $('spinner').innerHTML = '<p style="color:#ef4444;font-size:.85rem">Erro ao carregar dados.</p>';
+                });
+            }
+        });
+}
+
+function processCSV(csv) {
+    allData = parseCSV(csv);
+    const tempMap = new Map();
+    for (const row of allData) {
+        const n = row.ModelName;
+        if (!tempMap.has(n)) tempMap.set(n, { name:n, slug:toSlug(n), count:0 });
+        tempMap.get(n).count++;
+    }
+    const sorted = [...tempMap.values()]
+        .filter(m => m.count > 1)
+        .sort((a,b) => a.name.localeCompare(b.name));
+    modelMap = new Map(sorted.map(m => [m.name, m]));
+    $('spinner').style.display = 'none';
+    $('app').style.display = '';
+    renderModels();
+}
+
+// Stale-while-revalidate: show cache instantly, always refresh in background
+(function init() {
+    let served = false;
+    try {
+        const raw = localStorage.getItem(CACHE_KEY);
+        if (raw) {
+            const { ts, csv } = JSON.parse(raw);
+            // Show immediately regardless of age
+            served = true;
+            processCSV(csv);
+            // If stale, also refresh in background
+            if (Date.now() - ts > CACHE_TTL) {
+                fetchFresh(null); // silent background refresh, no re-render
+            }
         }
-        // Sort alphabetically, keep only models with >1 video
-        const sorted = [...tempMap.values()]
-            .filter(m => m.count > 1)
-            .sort((a,b) => a.name.localeCompare(b.name));
-        modelMap = new Map(sorted.map(m => [m.name, m]));
+    } catch {}
 
-        $('spinner').style.display = 'none';
-        $('app').style.display = '';
-        renderModels();
-    })
-    .catch(err => {
-        console.error(err);
-        $('spinner').innerHTML = '<p style="color:#ef4444;font-size:.85rem">Erro ao carregar dados.</p>';
-    });
+    if (!served) {
+        // No cache at all — must fetch
+        fetchFresh(csv => processCSV(csv));
+    }
+})();
 </script>
 </body>
 </html>

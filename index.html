@@ -628,12 +628,8 @@ function renderVideos() {
 
 // ── Routing helpers ───────────────────────────────────────────────────────────
 // Detect GitHub Pages repo prefix (e.g. /repo-name) vs root deployment
-const BASE = (() => {
-    const p = location.pathname;
-    // If served from a subpath like /myrepo/model/... the base is /myrepo
-    const m = p.match(/^(\/[^\/]+)\/model\//);
-    return m ? m[1] : '';
-})();
+// Hardcoded repo base — works correctly on both root and subpath deployments
+const BASE = ''; // custom domain at root
 
 function modelUrl(m) {
     return BASE + '/model/' + nameToSlug(m.name);
@@ -851,9 +847,9 @@ function processCSV(csv) {
         if (!tempMap.has(n)) tempMap.set(n, { name:n, slug:toSlug(n), count:0 });
         tempMap.get(n).count++;
     }
-    const sorted = [...tempMap.values()]
-        .filter(m => m.count > 1)
-        .sort((a,b) => a.name.localeCompare(b.name));
+    // Order by most recent activity — first appearance in data (already reversed = newest first)
+    // Build ordered list preserving insertion order from the CSV
+    const sorted = [...tempMap.values()].filter(m => m.count > 1);
     modelMap = new Map(sorted.map(m => [m.name, m]));
     buildSlugMap();
 

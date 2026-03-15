@@ -97,6 +97,23 @@
         if (!s) return [];
         return s.replace(/,/g,' ').split(/[#\s]+/).map(t=>t.trim()).filter(Boolean);
     }
+    // Converts any download URL to its embeddable form automatically
+    function toEmbedUrl(url) {
+        if (!url) return '';
+        try {
+            const u = new URL(url);
+            const host = u.hostname;
+            if (host.includes('doodstream') || host.includes('lulustream')) {
+                return url.replace(/\/d\//, '/e/');
+            }
+            if (host.includes('vidnest')) {
+                const id = u.pathname.replace(/^\//, '');
+                return u.origin + '/embed-' + id + '.html';
+            }
+            return url; // unknown platform — try as-is
+        } catch(e) { return url; }
+    }
+
     function parseCSV(csv) {
         const lines = csv.trim().split('\n');
         const out = [];
@@ -105,14 +122,15 @@
             if (!v[2]) continue;
             const name = v[2].trim();
             if (IGNORED.has(name.toUpperCase())) continue;
-            let embed = v[6]?.trim() || "";
-            if (embed.includes("dood")) embed = embed.replace("/d/","/e/");
+            const l1 = v[3]?.trim() || '';
+            const l2 = v[4]?.trim() || '';
+            const l3 = v[5]?.trim() || '';
             out.push({
                 ModelName: name,
-                Link1: v[3]?.trim() || '',
-                Link2: v[4]?.trim() || '',
-                Link3: v[5]?.trim() || '',
-                EmbedVideo: embed,
+                Link1: l1, Link2: l2, Link3: l3,
+                Embed1: toEmbedUrl(l1),
+                Embed2: toEmbedUrl(l2),
+                Embed3: toEmbedUrl(l3),
                 Guests: v[7]?.trim() || '',
                 Category: v[8]?.trim() || '',
                 ID: v[10]?.trim() || '',
@@ -187,12 +205,12 @@
         </div>
     ));
 
-    const LINK_STYLES = [
-        'bg-pink-600 hover:bg-pink-700',
-        'bg-slate-800 hover:bg-slate-700',
-        'bg-slate-800 hover:bg-slate-700',
+    // Pairs each player tab with its embed URL and download link
+    const PLAYERS = [
+        { key: 'p1', label: 'Player 1' },
+        { key: 'p2', label: 'Player 2' },
+        { key: 'p3', label: 'Player 3' },
     ];
-    const LINK_LABELS = ['Primary Server', 'Backup Mirror', 'Mirror 2'];
 
     const VideoModal = React.memo(({ video, onClose }) => {
         const onBg = useCallback(e => { if (e.target === e.currentTarget) onClose(); }, [onClose]);
@@ -202,31 +220,73 @@
             return () => window.removeEventListener('keydown', h);
         }, [onClose]);
 
-        const links = [video.Link1, video.Link2, video.Link3].map((href, i) => ({ href, label: LINK_LABELS[i], style: LINK_STYLES[i] })).filter(l => l.href);
+        // Build available players (only those with an embed URL)
+        const players = useMemo(() => {
+            const embeds = [video.Embed1, video.Embed2, video.Embed3];
+            const dls    = [video.Link1,  video.Link2,  video.Link3];
+            return PLAYERS.map((p, i) => ({ ...p, embed: embeds[i], dl: dls[i] })).filter(p => p.embed);
+        }, [video]);
+
+        const [activeIdx, setActiveIdx] = useState(0);
+
+        // Reset to first player when video changes
+        useEffect(() => { setActiveIdx(0); }, [video]);
+
+        const active = players[activeIdx] || players[0];
 
         return (
             <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center modal-bg animate-in" onClick={onBg}>
                 <div className="modal-inner shadow-2xl">
+                    {/* Video side */}
                     <div className="modal-video-side">
-                        <iframe src={video.EmbedVideo} allowFullScreen/>
+                        {active
+                            ? <iframe key={active.embed} src={active.embed} allowFullScreen/>
+                            : <div className="absolute inset-0 flex items-center justify-center text-slate-600 text-sm">Sem embed disponível</div>
+                        }
                         <button onClick={onClose} className="absolute top-3 right-3 md:hidden bg-black/60 rounded-full p-1.5">{ICx18}</button>
                     </div>
+
+                    {/* Info side */}
                     <div className="modal-info-side custom-scroll">
-                        <div className="flex items-start justify-between gap-2 mb-4">
+                        <div className="flex items-start justify-between gap-2 mb-3">
                             <div className="min-w-0">
                                 <h2 className="text-base font-black uppercase italic text-white leading-tight truncate">{video.ModelName}</h2>
                                 {video.Category && <p className="text-pink-500 font-bold text-[9px] tracking-widest uppercase mt-0.5">{video.Category}</p>}
-                                {video.Guests  && <p className="text-slate-400 text-[10px] mt-1">w/ {video.Guests}</p>}
+                                {video.Guests   && <p className="text-slate-400 text-[10px] mt-1">w/ {video.Guests}</p>}
                                 <p className="text-slate-600 text-[9px] mt-1 font-mono">ID: {video.ID}</p>
                             </div>
                             <button onClick={onClose} className="hidden md:flex flex-shrink-0 text-slate-500 hover:text-white transition-colors p-1">{ICx20}</button>
                         </div>
+
+                        {/* Player tabs */}
+                        {players.length > 1 && (
+                            <div className="flex gap-1.5 mb-4">
+                                {players.map((p, i) => (
+                                    <button
+                                        key={p.key}
+                                        onClick={() => setActiveIdx(i)}
+                                        className={`flex-1 py-1.5 rounded-lg text-[9px] font-black uppercase transition-colors ${
+                                            i === activeIdx
+                                                ? 'bg-pink-600 text-white'
+                                                : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white'
+                                        }`}
+                                    >
+                                        {p.label}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+
+                        {/* Download link for active player */}
                         <div className="flex flex-col gap-2">
-                            {links.length > 0
-                                ? links.map(({ href, label, style }) => (
-                                    <a key={href} href={href} target="_blank" rel="noopener noreferrer"
-                                       className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-[10px] font-black uppercase transition-colors ${style}`}>
-                                        {label} {ICext}
+                            <p className="text-slate-500 text-[9px] uppercase font-bold tracking-wider mb-0.5">Download</p>
+                            {players.length > 0
+                                ? players.map((p, i) => p.dl && (
+                                    <a key={p.dl} href={p.dl} target="_blank" rel="noopener noreferrer"
+                                       className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-[10px] font-black uppercase transition-colors ${
+                                           i === 0 ? 'bg-pink-600 hover:bg-pink-700' : 'bg-slate-800 hover:bg-slate-700'
+                                       }`}>
+                                        {p.label} {ICext}
                                     </a>
                                 ))
                                 : <p className="text-slate-600 text-xs">Nenhum link disponível.</p>

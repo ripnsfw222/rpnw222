@@ -2,14 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RIPNSFW SXYPRN</title>
 <script>
-  // GitHub Pages SPA redirect trick:
-  // Store the full path in sessionStorage, then redirect to index.html
-  // index.html will read it and restore the correct route.
-  const path = window.location.pathname;
-  sessionStorage.setItem('spa_redirect', path);
+  sessionStorage.setItem('spa_redirect', window.location.pathname);
   window.location.replace('/');
 </script>
 </head>

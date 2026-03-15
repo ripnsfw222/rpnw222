@@ -179,8 +179,8 @@ body{margin:0;background:#020617;color:#e2e8f0;font-family:system-ui,-apple-syst
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
       </div>
       <div>
-        <p class="sec-heading">Verificando seu acesso</p>
-        <p class="sec-sub">Aguarde enquanto validamos sua sessão…</p>
+        <p class="sec-heading">Verifying your access</p>
+        <p class="sec-sub">Please wait while we validate your session…</p>
       </div>
     </div>
 
@@ -189,25 +189,25 @@ body{margin:0;background:#020617;color:#e2e8f0;font-family:system-ui,-apple-syst
         <div class="chk-dot">
           <svg class="chk-check" width="8" height="8" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg>
         </div>
-        <span>Verificando endereço IP</span>
+        <span>Verifying IP address</span>
       </div>
       <div class="chk" id="chk2">
         <div class="chk-dot">
           <svg class="chk-check" width="8" height="8" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg>
         </div>
-        <span>Validando sessão do navegador</span>
+        <span>Validating browser session</span>
       </div>
       <div class="chk" id="chk3">
         <div class="chk-dot">
           <svg class="chk-check" width="8" height="8" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg>
         </div>
-        <span>Carregando catálogo seguro</span>
+        <span>Loading secure catalog</span>
       </div>
     </div>
 
     <div class="sec-bar-wrap">
       <div class="sec-bar-label">
-        <span>Progresso</span>
+        <span>Progress</span>
         <span id="sec-pct">0%</span>
       </div>
       <div class="sec-bar-track">
@@ -215,7 +215,7 @@ body{margin:0;background:#020617;color:#e2e8f0;font-family:system-ui,-apple-syst
       </div>
     </div>
 
-    <p class="sec-notice">Isso geralmente leva <b>menos de 5 segundos</b>.<br>Não feche ou atualize esta página.</p>
+    <p class="sec-notice">This usually takes <b>less than 5 seconds</b>.<br>Do not close or refresh this page.</p>
   </div>
 </div>
 
@@ -294,16 +294,24 @@ body{margin:0;background:#020617;color:#e2e8f0;font-family:system-ui,-apple-syst
         else              { setCheck(chk1,'done');   setCheck(chk2,'done');   setCheck(chk3,'done'); }
     }
 
-    // Fake progress: fast to 85%, then crawl until real data arrives
-    function tick() {
+    // Fake progress: slow steady advance to 82%, stalls there until real data arrives
+    // Uses setTimeout (not rAF) so it advances at human-readable pace ~1% per 60ms
+    let lastTime = 0;
+    function tick(ts) {
         if (done) return;
-        const target = done ? 100 : 85;
-        const speed  = pct < 40 ? 1.8 : pct < 70 ? 0.9 : pct < 85 ? 0.3 : 0;
-        pct = Math.min(pct + speed, target);
+        if (ts - lastTime < 60) { rafId = requestAnimationFrame(tick); return; }
+        lastTime = ts;
+        // Speed slows down as it approaches 82% ceiling
+        const speed = pct < 30 ? 0.8
+                    : pct < 55 ? 0.5
+                    : pct < 72 ? 0.28
+                    : pct < 82 ? 0.1
+                    : 0; // stop at 82, wait for real data
+        pct = Math.min(pct + speed, 82);
         fill.style.width = pct + '%';
         pctEl.textContent = Math.round(pct) + '%';
         updateChecks(pct);
-        if (pct < target) rafId = requestAnimationFrame(tick);
+        if (pct < 82) rafId = requestAnimationFrame(tick);
     }
     rafId = requestAnimationFrame(tick);
 

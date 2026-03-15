@@ -744,25 +744,22 @@ modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && curVideo) closeModal(); });
 
 // ── Init ──────────────────────────────────────────────────────────────────────
-const CACHE_KEY = 'ep_csv_v2';
-const CACHE_TTL = 30 * 60 * 1000; // 30 min — show cached instantly, refresh in bg
+const CACHE_KEY = 'ep_csv_v3'; // bumped version busts all old caches automatically
+const CACHE_TTL = 30 * 60 * 1000;
+
+// Wipe any old cache keys from previous versions
+['ep_csv_cache','ep_csv_v2'].forEach(k => { try { localStorage.removeItem(k); } catch {} });
 
 function saveCache(csv) {
     try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), csv })); } catch {}
 }
 
 function fetchFresh(onDone) {
-    // Use 'force-cache' hint so browser reuses any HTTP cache entry from Google CDN
-    fetch(SHEET_URL, { cache: 'force-cache' })
+    fetch(SHEET_URL)
         .then(r => r.text())
         .then(csv => { saveCache(csv); onDone && onDone(csv); })
-        .catch(err => {
-            if (onDone) {
-                // fallback: try without cache hint
-                fetch(SHEET_URL).then(r => r.text()).then(onDone).catch(() => {
-                    $('spinner').innerHTML = '<p style="color:#ef4444;font-size:.85rem">Erro ao carregar dados.</p>';
-                });
-            }
+        .catch(() => {
+            $('spinner').innerHTML = '<p style="color:#ef4444;font-size:.85rem">Failed to load data.</p>';
         });
 }
 
@@ -784,27 +781,18 @@ function processCSV(csv) {
     });
 }
 
-// Stale-while-revalidate: show cache instantly, always refresh in background
 (function init() {
     let served = false;
     try {
         const raw = localStorage.getItem(CACHE_KEY);
         if (raw) {
             const { ts, csv } = JSON.parse(raw);
-            // Show immediately regardless of age
             served = true;
             processCSV(csv);
-            // If stale, also refresh in background
-            if (Date.now() - ts > CACHE_TTL) {
-                fetchFresh(null); // silent background refresh, no re-render
-            }
+            if (Date.now() - ts > CACHE_TTL) fetchFresh(null);
         }
     } catch {}
-
-    if (!served) {
-        // No cache at all — must fetch
-        fetchFresh(csv => processCSV(csv));
-    }
+    if (!served) fetchFresh(csv => processCSV(csv));
 })();
 </script>
 </body>

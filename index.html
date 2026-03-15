@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RIPNSFW SXYPRN</title>
+<title>Exclusive Portal - Gallery</title>
 <style>
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-behavior:auto}
@@ -170,7 +170,7 @@ body{margin:0;background:#020617;color:#e2e8f0;font-family:system-ui,-apple-syst
 <div id="spinner">
   <div class="sec-logo">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-    RIPNSFW
+    Exclusive Portal
   </div>
 
   <div class="sec-card">
@@ -226,7 +226,7 @@ body{margin:0;background:#020617;color:#e2e8f0;font-family:system-ui,-apple-syst
         <button id="back-btn" aria-label="Voltar">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
         </button>
-        <h1 id="page-title">RIPNSFW</h1>
+        <h1 id="page-title">Exclusive Portal</h1>
       </div>
       <div id="search-wrap">
         <span id="search-icon">
@@ -271,6 +271,16 @@ body{margin:0;background:#020617;color:#e2e8f0;font-family:system-ui,-apple-syst
 </div>
 
 <script>
+// ── GitHub Pages SPA redirect handler ────────────────────────────────────────
+// If we arrived via 404.html redirect, restore the original URL silently
+(function() {
+    const redir = sessionStorage.getItem('spa_redirect');
+    if (redir && redir !== '/') {
+        sessionStorage.removeItem('spa_redirect');
+        history.replaceState(null, '', redir);
+    }
+})();
+
 // ── Security screen controller ────────────────────────────────────────────────
 (function() {
     let pct = 0;
@@ -346,7 +356,7 @@ const SHEET_ID  = "2PACX-1vSs1GhZQnhVZLayT56Ik4zsE2GaWyVV6A0IeUz6YSMKGSN9jnmXjpW
 const SHEET_URL = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pub?gid=0&single=true&output=csv`;
 const IMGS_PATH = "./imgs/";
 
-const IGNORED = new Set(["NAME", "TEST", "MODEL", "EMPTY", "ALINA", "ANNA", "BANANAPOTATO333", "ERIN", "IZZY", "JUNIPER", "KATERINA", "LUCY", "MISTY", "NAKEDBARBIEDOLL", "NINA", "NIKOLETTA QUEEN", "RAINI", "SCARLETT", "SCARLETT HAMPTOM", "SHYLA", "TESSA", "THEODORA", "VIOLET RAY", "WILD HALLI", "YUIWOO", "STELLA LUXX", "REBECA FOX", "EVA NYX", "ELLIE NOVA", "BRITNEY ROSE"]);
+const IGNORED = new Set(["NAME","TEST","MODEL","EMPTY","ALINA","ANNA","BANANAPOTATO333","ERIN","IZZY","JUNIPER","KATERINA","LUCY","MISTY","NAKEDBARBIEDOLL","NINA","NIKOLETTA QUEEN","RAINI","SCARLETT","SCARLETT HAMPTOM","SHYLA","TESSA","THEODORA","VIOLET RAY","WILD HALLI","YUIWOO"]);
 
 // ── Shared IntersectionObserver ───────────────────────────────────────────────
 const imgObs = new IntersectionObserver(entries => {
@@ -359,9 +369,11 @@ const imgObs = new IntersectionObserver(entries => {
 }, { rootMargin: '250px' });
 
 // ── Utilities ─────────────────────────────────────────────────────────────────
-function toSlug(name) {
-    return name.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/\s+/g,'-') + ".jpg";
+// nameToSlug: used for both URL paths and image filenames
+function nameToSlug(name) {
+    return name.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
 }
+function toSlug(name) { return nameToSlug(name) + ".jpg"; }
 function toEmbed(url) {
     if (!url) return '';
     try {
@@ -614,40 +626,72 @@ function renderVideos() {
     if (idx < items.length) setTimeout(flush, 0);
 }
 
+// ── Routing helpers ───────────────────────────────────────────────────────────
+// Detect GitHub Pages repo prefix (e.g. /repo-name) vs root deployment
+const BASE = (() => {
+    const p = location.pathname;
+    // If served from a subpath like /myrepo/model/... the base is /myrepo
+    const m = p.match(/^(\/[^\/]+)\/model\//);
+    return m ? m[1] : '';
+})();
+
+function modelUrl(m) {
+    return BASE + '/model/' + nameToSlug(m.name);
+}
+
+// Build a reverse slug→model lookup after data loads
+let slugMap = new Map(); // slug → model object
+function buildSlugMap() {
+    slugMap.clear();
+    for (const [, m] of modelMap) slugMap.set(nameToSlug(m.name), m);
+}
+
 // ── Navigation ────────────────────────────────────────────────────────────────
-function openModel(m) {
+function openModel(m, replaceState) {
     curModel = m;
     searchQ = '';
     searchEl.value = '';
     searchEl.placeholder = `Search in ${m.name}…`;
     pageTitle.textContent = m.name;
+    document.title = m.name + ' — Exclusive Portal';
     backBtn.style.display = 'flex';
     modelGrid.style.display = 'none';
     videoGrid.style.display = 'grid';
     renderVideos();
     window.scrollTo({ top: 0, behavior: 'instant' });
-    // Push a history entry so swipe-back stays inside the app
-    history.pushState({ model: m.name }, '', '');
+    const url = modelUrl(m);
+    if (replaceState) history.replaceState({ model: m.name }, '', url);
+    else              history.pushState({ model: m.name }, '', url);
 }
 function goBack(fromPopState) {
     curModel = null;
     searchQ = '';
     searchEl.value = '';
     searchEl.placeholder = 'Search model…';
-    pageTitle.textContent = 'RIPNSFW';
+    pageTitle.textContent = 'Exclusive Portal';
+    document.title = 'Exclusive Portal';
     backBtn.style.display = 'none';
     videoGrid.style.display = 'none';
     modelGrid.style.display = 'grid';
     renderModels();
     window.scrollTo({ top: 0, behavior: 'instant' });
-    // Only call history.back() when triggered by the button, not by popstate
-    if (!fromPopState) history.back();
+    if (!fromPopState) history.pushState({}, '', BASE + '/');
 }
-// Handle browser back gesture / button
-window.addEventListener('popstate', () => {
+// Handle browser back/forward & swipe gestures
+window.addEventListener('popstate', e => {
+    const slug = getSlugFromPath();
+    if (slug) {
+        const m = slugMap.get(slug);
+        if (m) { openModel(m, true); return; }
+    }
     if (curModel) goBack(true);
     else if (curVideo) closeModal();
 });
+
+function getSlugFromPath() {
+    const m = location.pathname.match(/\/model\/([^\/]+)/);
+    return m ? m[1] : null;
+}
 
 // ── Modal ─────────────────────────────────────────────────────────────────────
 const EXT_ICON = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`;
@@ -784,9 +828,17 @@ function processCSV(csv) {
         .filter(m => m.count > 1)
         .sort((a,b) => a.name.localeCompare(b.name));
     modelMap = new Map(sorted.map(m => [m.name, m]));
+    buildSlugMap();
+
     window._secDone(() => {
         $('app').style.display = '';
-        renderModels();
+        // Check if URL already points to a model (direct link / page refresh)
+        const slug = getSlugFromPath();
+        if (slug && slugMap.has(slug)) {
+            openModel(slugMap.get(slug), true); // replaceState — keep history clean
+        } else {
+            renderModels();
+        }
     });
 }
 

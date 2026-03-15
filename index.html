@@ -1,887 +1,1608 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Exclusive Portal - Gallery</title>
-<style>
-*,*::before,*::after{box-sizing:border-box}
-html{scroll-behavior:auto}
-body{margin:0;background:#020617;color:#e2e8f0;font-family:system-ui,-apple-system,sans-serif;overflow-x:hidden}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RIPNSFW SXYPRN</title>
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box
+        }
 
-/* Layout */
-#header{position:sticky;top:0;z-index:40;background:rgba(15,23,42,0.85);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,0.06);padding:.75rem 1rem}
-#header-inner{max-width:1280px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:.75rem}
-#title-row{display:flex;align-items:center;gap:.75rem;flex-shrink:0}
-#back-btn{display:none;background:none;border:none;color:inherit;cursor:pointer;padding:.4rem;border-radius:50%;transition:background .15s}
-#back-btn:hover{background:rgba(255,255,255,.1)}
-#page-title{margin:0;font-size:1.15rem;font-weight:900;font-style:italic;text-transform:uppercase;letter-spacing:-.04em;color:#fff;white-space:nowrap}
-#search-wrap{position:relative;flex:1;min-width:180px;max-width:360px;margin-left:auto}
-#search-icon{position:absolute;left:.65rem;top:50%;transform:translateY(-50%);color:#64748b;pointer-events:none;display:flex}
-#search{width:100%;background:rgba(2,6,23,.6);border:1px solid rgba(255,255,255,.1);border-radius:.75rem;padding:.45rem .75rem .45rem 2.2rem;font-size:.85rem;color:#e2e8f0;outline:none;transition:border-color .15s}
-#search:focus{border-color:rgba(236,72,153,.5)}
-#main{max-width:1280px;margin:0 auto;padding:1.25rem .75rem 3rem}
+        html {
+            scroll-behavior: auto
+        }
 
-/* Grids */
-#model-grid,#video-grid{display:grid;gap:.85rem;contain:layout style}
-#model-grid{grid-template-columns:repeat(2,1fr)}
-#video-grid{grid-template-columns:1fr;display:none}
-@media(min-width:480px){#model-grid{grid-template-columns:repeat(3,1fr)}}
-@media(min-width:640px){#model-grid{grid-template-columns:repeat(3,1fr);gap:1rem}#video-grid{grid-template-columns:repeat(2,1fr);gap:1rem}}
-@media(min-width:900px){#model-grid{grid-template-columns:repeat(4,1fr)}}
-@media(min-width:1100px){#model-grid{grid-template-columns:repeat(5,1fr)}#video-grid{grid-template-columns:repeat(3,1fr)}}
+        body {
+            margin: 0;
+            background: #020617;
+            color: #e2e8f0;
+            font-family: system-ui, -apple-system, sans-serif;
+            overflow-x: hidden
+        }
 
-/* Model card */
-.mcard{cursor:pointer;-webkit-tap-highlight-color:transparent;contain:layout style;content-visibility:auto;contain-intrinsic-size:0 260px}
-.mcard-img{position:relative;aspect-ratio:3/4;border-radius:1rem;overflow:hidden;background:#0f172a;box-shadow:0 0 0 1px rgba(255,255,255,.06);transition:box-shadow .2s}
-.mcard:hover .mcard-img{box-shadow:0 0 0 1.5px rgba(236,72,153,.45)}
-.mcard-img img{width:100%;height:100%;object-fit:cover;display:block;transform:translateZ(0);transition:transform .4s ease,opacity .3s ease;opacity:0}
-.mcard-img img.loaded{opacity:1}
-.mcard:hover .mcard-img img{transform:scale(1.05) translateZ(0)}
-.mcard-grad{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.82) 0%,transparent 55%);pointer-events:none}
-.mcard-count{position:absolute;bottom:.5rem;left:.75rem;font-size:.5rem;font-weight:900;color:#ec4899;text-transform:uppercase;letter-spacing:.12em}
-.mcard-name{text-align:center;font-size:.7rem;font-weight:700;color:#94a3b8;margin-top:.35rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;transition:color .15s}
-.mcard:hover .mcard-name{color:#fff}
+        /* Layout */
+        #header {
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            padding: .75rem 1rem
+        }
 
-/* Video card */
-.vcard{cursor:pointer;background:rgba(15,23,42,.45);border:1px solid rgba(255,255,255,.06);border-radius:1rem;overflow:hidden;transition:background .15s;-webkit-tap-highlight-color:transparent;contain:layout style;content-visibility:auto;contain-intrinsic-size:0 220px}
-.vcard:hover{background:rgba(15,23,42,.8)}
-.vcard-thumb{position:relative;aspect-ratio:16/9;background:#1e293b;overflow:hidden}
-.vcard-thumb img{width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .3s ease}
-.vcard-thumb img.loaded{opacity:.82}
-.vcard:hover .vcard-thumb img{opacity:1}
-.vcard-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.38);opacity:0;transition:opacity .2s}
-.vcard:hover .vcard-play{opacity:1}
-.play-circle{width:2.75rem;height:2.75rem;background:#dc2626;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,.4)}
-.vcard-cat{position:absolute;top:.5rem;right:.5rem;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);padding:.15rem .45rem;border-radius:.25rem;font-size:.5rem;font-weight:700;text-transform:uppercase;color:#fff}
-.vcard-info{padding:.65rem .75rem .75rem}
-.vcard-id{font-size:.7rem;font-weight:700;color:#f1f5f9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.vcard-guests{font-size:.6rem;font-weight:700;color:#ec4899;text-transform:uppercase;margin-top:.2rem}
+        #header-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: .75rem
+        }
 
-/* Modal */
-#modal{display:none;position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.97);backdrop-filter:blur(16px);align-items:flex-end;justify-content:center}
-#modal.open{display:flex}
-@media(min-width:640px){#modal{align-items:center;padding:1rem}}
-.modal-box{display:flex;flex-direction:column;width:100%;max-width:940px;background:#080f1e;border-radius:1.25rem 1.25rem 0 0;border:1px solid rgba(255,255,255,.07);overflow:hidden;max-height:92dvh}
-@media(min-width:640px){.modal-box{border-radius:1.5rem;max-height:88dvh}}
-@media(min-width:768px){.modal-box{flex-direction:row}}
-.modal-video{position:relative;width:100%;aspect-ratio:16/9;background:#000;flex-shrink:0}
-.modal-video iframe{position:absolute;inset:0;width:100%;height:100%;border:none}
-@media(min-width:768px){.modal-video{flex:2 1 0;aspect-ratio:unset;min-height:280px}}
-.modal-info{flex:1;padding:.9rem 1.1rem 1.25rem;overflow-y:auto;min-height:0}
-@media(min-width:768px){.modal-info{width:280px;flex:none;padding:1.5rem 1.6rem}}
-@media(min-width:1024px){.modal-info{width:310px}}
+        #title-row {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            flex-shrink: 0
+        }
 
-/* Modal info */
-.modal-header{display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem;margin-bottom:.85rem}
-.modal-title{margin:0;font-size:1rem;font-weight:900;text-transform:uppercase;font-style:italic;color:#fff;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.modal-cat{font-size:.55rem;font-weight:700;color:#ec4899;text-transform:uppercase;letter-spacing:.12em;margin-top:.2rem}
-.modal-guests{font-size:.65rem;color:#94a3b8;margin-top:.2rem}
-.modal-id{font-size:.55rem;color:#334155;font-family:monospace;margin-top:.15rem}
-.close-btn{background:none;border:none;color:#64748b;cursor:pointer;padding:.2rem;flex-shrink:0;transition:color .15s;display:flex}
-.close-btn:hover{color:#fff}
-.close-btn-mob{position:absolute;top:.65rem;right:.65rem;background:rgba(0,0,0,.6);border:none;color:#fff;cursor:pointer;border-radius:50%;padding:.35rem;display:flex}
-@media(min-width:768px){.close-btn-mob{display:none}}
+        #back-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: inherit;
+            cursor: pointer;
+            padding: .4rem;
+            border-radius: 50%;
+            transition: background .15s
+        }
 
-/* Player tabs */
-.player-tabs{display:flex;gap:.35rem;margin-bottom:.85rem}
-.ptab{flex:1;padding:.35rem;border-radius:.5rem;font-size:.55rem;font-weight:900;text-transform:uppercase;border:none;cursor:pointer;transition:background .15s,color .15s;background:#1e293b;color:#64748b}
-.ptab:hover{background:#334155;color:#fff}
-.ptab.active{background:#dc2626;color:#fff}
+        #back-btn:hover {
+            background: rgba(255, 255, 255, .1)
+        }
 
-/* Download links */
-.dl-label{font-size:.55rem;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem}
-.dl-links{display:flex;flex-direction:column;gap:.4rem}
-.dl-link{display:flex;align-items:center;justify-content:space-between;padding:.55rem .75rem;border-radius:.65rem;font-size:.65rem;font-weight:900;text-transform:uppercase;text-decoration:none;color:#fff;transition:background .15s}
-.dl-link.primary{background:#dc2626}.dl-link.primary:hover{background:#b91c1c}
-.dl-link.secondary{background:#1e293b}.dl-link.secondary:hover{background:#334155}
-.no-links{font-size:.75rem;color:#334155}
+        #page-title {
+            margin: 0;
+            font-size: 1.15rem;
+            font-weight: 900;
+            font-style: italic;
+            text-transform: uppercase;
+            letter-spacing: -.04em;
+            color: #fff;
+            white-space: nowrap
+        }
 
-/* ── Security screen ─────────────────────────────────────────────────────── */
-#spinner{
-    display:flex;height:100vh;align-items:center;justify-content:center;
-    flex-direction:column;background:#020617;padding:1.5rem;
-    animation:fadeInSpin .4s ease both;
-}
-@keyframes fadeInSpin{from{opacity:0}to{opacity:1}}
+        #search-wrap {
+            position: relative;
+            flex: 1;
+            min-width: 180px;
+            max-width: 360px;
+            margin-left: auto
+        }
 
-.sec-logo{
-    display:flex;align-items:center;gap:.6rem;margin-bottom:2.5rem;
-    font-size:.7rem;font-weight:900;color:#475569;text-transform:uppercase;letter-spacing:.2em;
-}
-.sec-logo svg{flex-shrink:0}
+        #search-icon {
+            position: absolute;
+            left: .65rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+            pointer-events: none;
+            display: flex
+        }
 
-.sec-card{
-    width:100%;max-width:380px;
-    background:#0b1223;border:1px solid rgba(255,255,255,.07);
-    border-radius:1.25rem;padding:2rem 1.75rem 1.75rem;
-    display:flex;flex-direction:column;gap:1.25rem;
-}
+        #search {
+            width: 100%;
+            background: rgba(2, 6, 23, .6);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: .75rem;
+            padding: .45rem .75rem .45rem 2.2rem;
+            font-size: .85rem;
+            color: #e2e8f0;
+            outline: none;
+            transition: border-color .15s
+        }
 
-.sec-row{display:flex;align-items:center;gap:.85rem}
-.sec-icon{
-    width:2.5rem;height:2.5rem;border-radius:.6rem;flex-shrink:0;
-    background:rgba(236,72,153,.12);display:flex;align-items:center;justify-content:center;
-}
-.sec-heading{margin:0;font-size:.95rem;font-weight:800;color:#f1f5f9;line-height:1.3}
-.sec-sub{margin:.2rem 0 0;font-size:.7rem;color:#475569}
+        #search:focus {
+            border-color: rgba(236, 72, 153, .5)
+        }
 
-.sec-checks{display:flex;flex-direction:column;gap:.55rem}
-.chk{display:flex;align-items:center;gap:.6rem;font-size:.72rem;color:#64748b;transition:color .3s}
-.chk.done{color:#94a3b8}
-.chk.active{color:#e2e8f0}
-.chk-dot{
-    width:.9rem;height:.9rem;border-radius:50%;flex-shrink:0;
-    border:1.5px solid #1e293b;background:#0b1223;
-    transition:all .3s;display:flex;align-items:center;justify-content:center;
-}
-.chk.done .chk-dot{background:#10b981;border-color:#10b981}
-.chk.active .chk-dot{border-color:#ec4899;animation:pulseDot .8s ease infinite}
-@keyframes pulseDot{0%,100%{box-shadow:0 0 0 0 rgba(236,72,153,.4)}50%{box-shadow:0 0 0 5px rgba(236,72,153,0)}}
+        #main {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1.25rem .75rem 3rem
+        }
 
-.chk-check{display:none}
-.chk.done .chk-check{display:block}
-.chk.done .chk-dot-inner{display:none}
+        /* Grids */
+        #model-grid,
+        #video-grid {
+            display: grid;
+            gap: .85rem;
+            contain: layout style
+        }
 
-.sec-bar-wrap{display:flex;flex-direction:column;gap:.5rem}
-.sec-bar-label{display:flex;justify-content:space-between;align-items:center}
-.sec-bar-label span:first-child{font-size:.65rem;color:#475569;font-weight:600;text-transform:uppercase;letter-spacing:.1em}
-#sec-pct{font-size:.65rem;font-weight:800;color:#ec4899}
-.sec-bar-track{height:3px;background:#1e293b;border-radius:2px;overflow:hidden}
-#sec-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,#9333ea,#ec4899);border-radius:2px;transition:width .4s ease}
+        #model-grid {
+            grid-template-columns: repeat(2, 1fr)
+        }
 
-.sec-notice{font-size:.6rem;color:#334155;text-align:center;line-height:1.6}
-.sec-notice b{color:#475569}
+        #video-grid {
+            grid-template-columns: 1fr;
+            display: none
+        }
 
-/* Fade-in */
-.fade-in{animation:fi .22s ease-out both}
-@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+        @media(min-width:480px) {
+            #model-grid {
+                grid-template-columns: repeat(3, 1fr)
+            }
+        }
 
-/* Scrollbar */
-.modal-info::-webkit-scrollbar{width:3px}
-.modal-info::-webkit-scrollbar-thumb{background:rgba(236,72,153,.4);border-radius:4px}
+        @media(min-width:640px) {
+            #model-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1rem
+            }
 
-/* Empty state */
-.empty{grid-column:1/-1;text-align:center;color:#334155;padding:4rem 0;font-size:.85rem}
-</style>
+            #video-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem
+            }
+        }
+
+        @media(min-width:900px) {
+            #model-grid {
+                grid-template-columns: repeat(4, 1fr)
+            }
+        }
+
+        @media(min-width:1100px) {
+            #model-grid {
+                grid-template-columns: repeat(5, 1fr)
+            }
+
+            #video-grid {
+                grid-template-columns: repeat(3, 1fr)
+            }
+        }
+
+        /* Model card */
+        .mcard {
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            contain: layout style;
+            content-visibility: auto;
+            contain-intrinsic-size: 0 260px
+        }
+
+        .mcard-img {
+            position: relative;
+            aspect-ratio: 3/4;
+            border-radius: 1rem;
+            overflow: hidden;
+            background: #0f172a;
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, .06);
+            transition: box-shadow .2s
+        }
+
+        .mcard:hover .mcard-img {
+            box-shadow: 0 0 0 1.5px rgba(236, 72, 153, .45)
+        }
+
+        .mcard-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transform: translateZ(0);
+            transition: transform .4s ease, opacity .3s ease;
+            opacity: 0
+        }
+
+        .mcard-img img.loaded {
+            opacity: 1
+        }
+
+        .mcard:hover .mcard-img img {
+            transform: scale(1.05) translateZ(0)
+        }
+
+        .mcard-grad {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, .82) 0%, transparent 55%);
+            pointer-events: none
+        }
+
+        .mcard-count {
+            position: absolute;
+            bottom: .5rem;
+            left: .75rem;
+            font-size: .5rem;
+            font-weight: 900;
+            color: #ec4899;
+            text-transform: uppercase;
+            letter-spacing: .12em
+        }
+
+        .mcard-name {
+            text-align: center;
+            font-size: .7rem;
+            font-weight: 700;
+            color: #94a3b8;
+            margin-top: .35rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            transition: color .15s
+        }
+
+        .mcard:hover .mcard-name {
+            color: #fff
+        }
+
+        /* Video card */
+        .vcard {
+            cursor: pointer;
+            background: rgba(15, 23, 42, .45);
+            border: 1px solid rgba(255, 255, 255, .06);
+            border-radius: 1rem;
+            overflow: hidden;
+            transition: background .15s;
+            -webkit-tap-highlight-color: transparent;
+            contain: layout style;
+            content-visibility: auto;
+            contain-intrinsic-size: 0 220px
+        }
+
+        .vcard:hover {
+            background: rgba(15, 23, 42, .8)
+        }
+
+        .vcard-thumb {
+            position: relative;
+            aspect-ratio: 16/9;
+            background: #1e293b;
+            overflow: hidden
+        }
+
+        .vcard-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            opacity: 0;
+            transition: opacity .3s ease
+        }
+
+        .vcard-thumb img.loaded {
+            opacity: .82
+        }
+
+        .vcard:hover .vcard-thumb img {
+            opacity: 1
+        }
+
+        .vcard-play {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, .38);
+            opacity: 0;
+            transition: opacity .2s
+        }
+
+        .vcard:hover .vcard-play {
+            opacity: 1
+        }
+
+        .play-circle {
+            width: 2.75rem;
+            height: 2.75rem;
+            background: #dc2626;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, .4)
+        }
+
+        .vcard-cat {
+            position: absolute;
+            top: .5rem;
+            right: .5rem;
+            background: rgba(0, 0, 0, .7);
+            backdrop-filter: blur(6px);
+            padding: .15rem .45rem;
+            border-radius: .25rem;
+            font-size: .5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #fff
+        }
+
+        .vcard-info {
+            padding: .65rem .75rem .75rem
+        }
+
+        .vcard-id {
+            font-size: .7rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap
+        }
+
+        .vcard-guests {
+            font-size: .6rem;
+            font-weight: 700;
+            color: #ec4899;
+            text-transform: uppercase;
+            margin-top: .2rem
+        }
+
+        /* Modal */
+        #modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            background: rgba(0, 0, 0, .97);
+            backdrop-filter: blur(16px);
+            align-items: flex-end;
+            justify-content: center
+        }
+
+        #modal.open {
+            display: flex
+        }
+
+        @media(min-width:640px) {
+            #modal {
+                align-items: center;
+                padding: 1rem
+            }
+        }
+
+        .modal-box {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 940px;
+            background: #080f1e;
+            border-radius: 1.25rem 1.25rem 0 0;
+            border: 1px solid rgba(255, 255, 255, .07);
+            overflow: hidden;
+            max-height: 92dvh
+        }
+
+        @media(min-width:640px) {
+            .modal-box {
+                border-radius: 1.5rem;
+                max-height: 88dvh
+            }
+        }
+
+        @media(min-width:768px) {
+            .modal-box {
+                flex-direction: row
+            }
+        }
+
+        .modal-video {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+            flex-shrink: 0
+        }
+
+        .modal-video iframe {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: none
+        }
+
+        @media(min-width:768px) {
+            .modal-video {
+                flex: 2 1 0;
+                aspect-ratio: unset;
+                min-height: 280px
+            }
+        }
+
+        .modal-info {
+            flex: 1;
+            padding: .9rem 1.1rem 1.25rem;
+            overflow-y: auto;
+            min-height: 0
+        }
+
+        @media(min-width:768px) {
+            .modal-info {
+                width: 280px;
+                flex: none;
+                padding: 1.5rem 1.6rem
+            }
+        }
+
+        @media(min-width:1024px) {
+            .modal-info {
+                width: 310px
+            }
+        }
+
+        /* Modal info */
+        .modal-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: .5rem;
+            margin-bottom: .85rem
+        }
+
+        .modal-title {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            font-style: italic;
+            color: #fff;
+            line-height: 1.2;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap
+        }
+
+        .modal-cat {
+            font-size: .55rem;
+            font-weight: 700;
+            color: #ec4899;
+            text-transform: uppercase;
+            letter-spacing: .12em;
+            margin-top: .2rem
+        }
+
+        .modal-guests {
+            font-size: .65rem;
+            color: #94a3b8;
+            margin-top: .2rem
+        }
+
+        .modal-id {
+            font-size: .55rem;
+            color: #334155;
+            font-family: monospace;
+            margin-top: .15rem
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            padding: .2rem;
+            flex-shrink: 0;
+            transition: color .15s;
+            display: flex
+        }
+
+        .close-btn:hover {
+            color: #fff
+        }
+
+        .close-btn-mob {
+            position: absolute;
+            top: .65rem;
+            right: .65rem;
+            background: rgba(0, 0, 0, .6);
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 50%;
+            padding: .35rem;
+            display: flex
+        }
+
+        @media(min-width:768px) {
+            .close-btn-mob {
+                display: none
+            }
+        }
+
+        /* Player tabs */
+        .player-tabs {
+            display: flex;
+            gap: .35rem;
+            margin-bottom: .85rem
+        }
+
+        .ptab {
+            flex: 1;
+            padding: .35rem;
+            border-radius: .5rem;
+            font-size: .55rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+            transition: background .15s, color .15s;
+            background: #1e293b;
+            color: #64748b
+        }
+
+        .ptab:hover {
+            background: #334155;
+            color: #fff
+        }
+
+        .ptab.active {
+            background: #dc2626;
+            color: #fff
+        }
+
+        /* Download links */
+        .dl-label {
+            font-size: .55rem;
+            font-weight: 700;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            margin-bottom: .4rem
+        }
+
+        .dl-links {
+            display: flex;
+            flex-direction: column;
+            gap: .4rem
+        }
+
+        .dl-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: .55rem .75rem;
+            border-radius: .65rem;
+            font-size: .65rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: #fff;
+            transition: background .15s
+        }
+
+        .dl-link.primary {
+            background: #dc2626
+        }
+
+        .dl-link.primary:hover {
+            background: #b91c1c
+        }
+
+        .dl-link.secondary {
+            background: #1e293b
+        }
+
+        .dl-link.secondary:hover {
+            background: #334155
+        }
+
+        .no-links {
+            font-size: .75rem;
+            color: #334155
+        }
+
+        /* ── Security screen ─────────────────────────────────────────────────────── */
+        #spinner {
+            display: flex;
+            height: 100vh;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            background: #020617;
+            padding: 1.5rem;
+            animation: fadeInSpin .4s ease both;
+        }
+
+        @keyframes fadeInSpin {
+            from {
+                opacity: 0
+            }
+
+            to {
+                opacity: 1
+            }
+        }
+
+        .sec-logo {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            margin-bottom: 2.5rem;
+            font-size: .7rem;
+            font-weight: 900;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: .2em;
+        }
+
+        .sec-logo svg {
+            flex-shrink: 0
+        }
+
+        .sec-card {
+            width: 100%;
+            max-width: 380px;
+            background: #0b1223;
+            border: 1px solid rgba(255, 255, 255, .07);
+            border-radius: 1.25rem;
+            padding: 2rem 1.75rem 1.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .sec-row {
+            display: flex;
+            align-items: center;
+            gap: .85rem
+        }
+
+        .sec-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: .6rem;
+            flex-shrink: 0;
+            background: rgba(236, 72, 153, .12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sec-heading {
+            margin: 0;
+            font-size: .95rem;
+            font-weight: 800;
+            color: #f1f5f9;
+            line-height: 1.3
+        }
+
+        .sec-sub {
+            margin: .2rem 0 0;
+            font-size: .7rem;
+            color: #475569
+        }
+
+        .sec-checks {
+            display: flex;
+            flex-direction: column;
+            gap: .55rem
+        }
+
+        .chk {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            font-size: .72rem;
+            color: #64748b;
+            transition: color .3s
+        }
+
+        .chk.done {
+            color: #94a3b8
+        }
+
+        .chk.active {
+            color: #e2e8f0
+        }
+
+        .chk-dot {
+            width: .9rem;
+            height: .9rem;
+            border-radius: 50%;
+            flex-shrink: 0;
+            border: 1.5px solid #1e293b;
+            background: #0b1223;
+            transition: all .3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chk.done .chk-dot {
+            background: #10b981;
+            border-color: #10b981
+        }
+
+        .chk.active .chk-dot {
+            border-color: #ec4899;
+            animation: pulseDot .8s ease infinite
+        }
+
+        @keyframes pulseDot {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(236, 72, 153, .4)
+            }
+
+            50% {
+                box-shadow: 0 0 0 5px rgba(236, 72, 153, 0)
+            }
+        }
+
+        .chk-check {
+            display: none
+        }
+
+        .chk.done .chk-check {
+            display: block
+        }
+
+        .chk.done .chk-dot-inner {
+            display: none
+        }
+
+        .sec-bar-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: .5rem
+        }
+
+        .sec-bar-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center
+        }
+
+        .sec-bar-label span:first-child {
+            font-size: .65rem;
+            color: #475569;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .1em
+        }
+
+        #sec-pct {
+            font-size: .65rem;
+            font-weight: 800;
+            color: #ec4899
+        }
+
+        .sec-bar-track {
+            height: 3px;
+            background: #1e293b;
+            border-radius: 2px;
+            overflow: hidden
+        }
+
+        #sec-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #9333ea, #ec4899);
+            border-radius: 2px;
+            transition: width .4s ease
+        }
+
+        .sec-notice {
+            font-size: .6rem;
+            color: #334155;
+            text-align: center;
+            line-height: 1.6
+        }
+
+        .sec-notice b {
+            color: #475569
+        }
+
+        /* Fade-in */
+        .fade-in {
+            animation: fi .22s ease-out both
+        }
+
+        @keyframes fi {
+            from {
+                opacity: 0;
+                transform: translateY(5px)
+            }
+
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+
+        /* Scrollbar */
+        .modal-info::-webkit-scrollbar {
+            width: 3px
+        }
+
+        .modal-info::-webkit-scrollbar-thumb {
+            background: rgba(236, 72, 153, .4);
+            border-radius: 4px
+        }
+
+        /* Empty state */
+        .empty {
+            grid-column: 1/-1;
+            text-align: center;
+            color: #334155;
+            padding: 4rem 0;
+            font-size: .85rem
+        }
+    </style>
 </head>
+
 <body>
 
-<div id="spinner">
-  <div class="sec-logo">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-    Exclusive Portal
-  </div>
-
-  <div class="sec-card">
-    <div class="sec-row">
-      <div class="sec-icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
-      </div>
-      <div>
-        <p class="sec-heading">Verifying your access</p>
-        <p class="sec-sub">Please wait while we validate your session…</p>
-      </div>
-    </div>
-
-    <div class="sec-checks">
-      <div class="chk" id="chk1">
-        <div class="chk-dot">
-          <svg class="chk-check" width="8" height="8" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg>
+    <div id="spinner">
+        <div class="sec-logo">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
+            RIPNSFW
         </div>
-        <span>Verifying IP address</span>
-      </div>
-      <div class="chk" id="chk2">
-        <div class="chk-dot">
-          <svg class="chk-check" width="8" height="8" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg>
+
+        <div class="sec-card">
+            <div class="sec-row">
+                <div class="sec-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 8v4M12 16h.01" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="sec-heading">Verifying your access</p>
+                    <p class="sec-sub">Please wait while we validate your session…</p>
+                </div>
+            </div>
+
+            <div class="sec-checks">
+                <div class="chk" id="chk1">
+                    <div class="chk-dot">
+                        <svg class="chk-check" width="8" height="8" viewBox="0 0 12 12" fill="none" stroke="white"
+                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="2,6 5,9 10,3" />
+                        </svg>
+                    </div>
+                    <span>Verifying IP address</span>
+                </div>
+                <div class="chk" id="chk2">
+                    <div class="chk-dot">
+                        <svg class="chk-check" width="8" height="8" viewBox="0 0 12 12" fill="none" stroke="white"
+                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="2,6 5,9 10,3" />
+                        </svg>
+                    </div>
+                    <span>Validating browser session</span>
+                </div>
+                <div class="chk" id="chk3">
+                    <div class="chk-dot">
+                        <svg class="chk-check" width="8" height="8" viewBox="0 0 12 12" fill="none" stroke="white"
+                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="2,6 5,9 10,3" />
+                        </svg>
+                    </div>
+                    <span>Loading secure catalog</span>
+                </div>
+            </div>
+
+            <div class="sec-bar-wrap">
+                <div class="sec-bar-label">
+                    <span>Progress</span>
+                    <span id="sec-pct">0%</span>
+                </div>
+                <div class="sec-bar-track">
+                    <div id="sec-bar-fill"></div>
+                </div>
+            </div>
+
+            <p class="sec-notice">This usually takes <b>less than 5 seconds</b>.<br>Do not close or refresh this page.
+            </p>
         </div>
-        <span>Validating browser session</span>
-      </div>
-      <div class="chk" id="chk3">
-        <div class="chk-dot">
-          <svg class="chk-check" width="8" height="8" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg>
+    </div>
+
+    <div id="app" style="display:none">
+        <div id="header">
+            <div id="header-inner">
+                <div id="title-row">
+                    <button id="back-btn" aria-label="Voltar">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M19 12H5M12 5l-7 7 7 7" />
+                        </svg>
+                    </button>
+                    <h1 id="page-title">
+                        <a id="home-link" href="/" style="text-decoration: none; color: inherit;">RIPNSFW</a>
+                    </h1>
+                </div>
+                <div id="search-wrap">
+                    <span id="search-icon">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8" />
+                            <path d="m21 21-4.35-4.35" />
+                        </svg>
+                    </span>
+                    <input id="search" type="search" placeholder="Buscar modelo…" autocomplete="off" spellcheck="false">
+                </div>
+            </div>
         </div>
-        <span>Loading secure catalog</span>
-      </div>
+
+        <main id="main">
+            <div id="model-grid"></div>
+            <div id="video-grid"></div>
+        </main>
     </div>
 
-    <div class="sec-bar-wrap">
-      <div class="sec-bar-label">
-        <span>Progress</span>
-        <span id="sec-pct">0%</span>
-      </div>
-      <div class="sec-bar-track">
-        <div id="sec-bar-fill"></div>
-      </div>
-    </div>
-
-    <p class="sec-notice">This usually takes <b>less than 5 seconds</b>.<br>Do not close or refresh this page.</p>
-  </div>
-</div>
-
-<div id="app" style="display:none">
-  <div id="header">
-    <div id="header-inner">
-      <div id="title-row">
-        <button id="back-btn" aria-label="Voltar">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-        </button>
-        <h1 id="page-title">Exclusive Portal</h1>
-      </div>
-      <div id="search-wrap">
-        <span id="search-icon">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-        </span>
-        <input id="search" type="search" placeholder="Buscar modelo…" autocomplete="off" spellcheck="false">
-      </div>
-    </div>
-  </div>
-
-  <main id="main">
-    <div id="model-grid"></div>
-    <div id="video-grid"></div>
-  </main>
-</div>
-
-<!-- Modal -->
-<div id="modal" role="dialog" aria-modal="true">
-  <div class="modal-box">
-    <div class="modal-video" id="modal-video">
-      <button class="close-btn-mob" id="close-mob" aria-label="Fechar">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
-      </button>
-    </div>
-    <div class="modal-info" id="modal-info">
-      <div class="modal-header">
-        <div style="min-width:0">
-          <p class="modal-title" id="m-title"></p>
-          <p class="modal-cat"  id="m-cat"></p>
-          <p class="modal-guests" id="m-guests"></p>
-          <p class="modal-id"   id="m-id"></p>
+    <!-- Modal -->
+    <div id="modal" role="dialog" aria-modal="true">
+        <div class="modal-box">
+            <div class="modal-video" id="modal-video">
+                <button class="close-btn-mob" id="close-mob" aria-label="Fechar">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 6 6 18M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-info" id="modal-info">
+                <div class="modal-header">
+                    <div style="min-width:0">
+                        <p class="modal-title" id="m-title"></p>
+                        <p class="modal-cat" id="m-cat"></p>
+                        <p class="modal-guests" id="m-guests"></p>
+                        <p class="modal-id" id="m-id"></p>
+                    </div>
+                    <button class="close-btn" id="close-desk" aria-label="Fechar">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 6 6 18M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="player-tabs" id="ptabs"></div>
+                <p class="dl-label">Download</p>
+                <div class="dl-links" id="dl-links"></div>
+            </div>
         </div>
-        <button class="close-btn" id="close-desk" aria-label="Fechar">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
-        </button>
-      </div>
-      <div class="player-tabs" id="ptabs"></div>
-      <p class="dl-label">Download</p>
-      <div class="dl-links" id="dl-links"></div>
     </div>
-  </div>
-</div>
 
-<script>
-// ── GitHub Pages SPA redirect handler ────────────────────────────────────────
-// If we arrived via 404.html redirect, restore the original URL silently
-(function() {
-    const redir = sessionStorage.getItem('spa_redirect');
-    if (redir && redir !== '/') {
-        sessionStorage.removeItem('spa_redirect');
-        history.replaceState(null, '', redir);
-    }
-})();
+    <script>
+        // ── GitHub Pages SPA redirect handler ────────────────────────────────────────
+        // If we arrived via 404.html redirect, restore the original URL silently
+        (function () {
+            const redir = sessionStorage.getItem('spa_redirect');
+            if (redir && redir !== '/') {
+                sessionStorage.removeItem('spa_redirect');
+                history.replaceState(null, '', redir);
+            }
+        })();
 
-// ── Security screen controller ────────────────────────────────────────────────
-(function() {
-    let pct = 0;
-    let rafId = null;
-    let done = false;
+        // ── Security screen controller ────────────────────────────────────────────────
+        (function () {
+            let pct = 0;
+            let rafId = null;
+            let done = false;
 
-    const fill  = document.getElementById('sec-bar-fill');
-    const pctEl = document.getElementById('sec-pct');
-    const chk1  = document.getElementById('chk1');
-    const chk2  = document.getElementById('chk2');
-    const chk3  = document.getElementById('chk3');
+            const fill = document.getElementById('sec-bar-fill');
+            const pctEl = document.getElementById('sec-pct');
+            const chk1 = document.getElementById('chk1');
+            const chk2 = document.getElementById('chk2');
+            const chk3 = document.getElementById('chk3');
 
-    function setCheck(el, state) {
-        el.classList.remove('active','done');
-        if (state) el.classList.add(state);
-    }
-    function updateChecks(p) {
-        if (p < 35)       { setCheck(chk1,'active'); setCheck(chk2,'');       setCheck(chk3,''); }
-        else if (p < 70)  { setCheck(chk1,'done');   setCheck(chk2,'active'); setCheck(chk3,''); }
-        else if (p < 99)  { setCheck(chk1,'done');   setCheck(chk2,'done');   setCheck(chk3,'active'); }
-        else              { setCheck(chk1,'done');   setCheck(chk2,'done');   setCheck(chk3,'done'); }
-    }
+            function setCheck(el, state) {
+                el.classList.remove('active', 'done');
+                if (state) el.classList.add(state);
+            }
+            function updateChecks(p) {
+                if (p < 35) { setCheck(chk1, 'active'); setCheck(chk2, ''); setCheck(chk3, ''); }
+                else if (p < 70) { setCheck(chk1, 'done'); setCheck(chk2, 'active'); setCheck(chk3, ''); }
+                else if (p < 99) { setCheck(chk1, 'done'); setCheck(chk2, 'done'); setCheck(chk3, 'active'); }
+                else { setCheck(chk1, 'done'); setCheck(chk2, 'done'); setCheck(chk3, 'done'); }
+            }
 
-    // Fake progress: slow steady advance to 82%, stalls there until real data arrives
-    // Uses setTimeout (not rAF) so it advances at human-readable pace ~1% per 60ms
-    let lastTime = 0;
-    function tick(ts) {
-        if (done) return;
-        if (ts - lastTime < 60) { rafId = requestAnimationFrame(tick); return; }
-        lastTime = ts;
-        // Speed slows down as it approaches 82% ceiling
-        const speed = pct < 30 ? 0.8
+            // Fake progress: slow steady advance to 82%, stalls there until real data arrives
+            // Uses setTimeout (not rAF) so it advances at human-readable pace ~1% per 60ms
+            let lastTime = 0;
+            function tick(ts) {
+                if (done) return;
+                if (ts - lastTime < 60) { rafId = requestAnimationFrame(tick); return; }
+                lastTime = ts;
+                // Speed slows down as it approaches 82% ceiling
+                const speed = pct < 30 ? 0.8
                     : pct < 55 ? 0.5
-                    : pct < 72 ? 0.28
-                    : pct < 82 ? 0.1
-                    : 0; // stop at 82, wait for real data
-        pct = Math.min(pct + speed, 82);
-        fill.style.width = pct + '%';
-        pctEl.textContent = Math.round(pct) + '%';
-        updateChecks(pct);
-        if (pct < 82) rafId = requestAnimationFrame(tick);
-    }
-    rafId = requestAnimationFrame(tick);
+                        : pct < 72 ? 0.28
+                            : pct < 82 ? 0.1
+                                : 0; // stop at 82, wait for real data
+                pct = Math.min(pct + speed, 82);
+                fill.style.width = pct + '%';
+                pctEl.textContent = Math.round(pct) + '%';
+                updateChecks(pct);
+                if (pct < 82) rafId = requestAnimationFrame(tick);
+            }
+            rafId = requestAnimationFrame(tick);
 
-    // Called by init() when data is ready
-    window._secDone = function(onFinish) {
-        done = true;
-        cancelAnimationFrame(rafId);
-        // Snap to 100%
-        let p2 = pct;
-        function finish() {
-            p2 = Math.min(p2 + 4, 100);
-            fill.style.width = p2 + '%';
-            pctEl.textContent = Math.round(p2) + '%';
-            updateChecks(p2);
-            if (p2 < 100) requestAnimationFrame(finish);
-            else {
-                setTimeout(() => {
-                    const sp = document.getElementById('spinner');
-                    sp.style.transition = 'opacity .35s ease';
-                    sp.style.opacity = '0';
-                    setTimeout(() => { sp.style.display = 'none'; onFinish(); }, 350);
-                }, 220);
+            // Called by init() when data is ready
+            window._secDone = function (onFinish) {
+                done = true;
+                cancelAnimationFrame(rafId);
+                // Snap to 100%
+                let p2 = pct;
+                function finish() {
+                    p2 = Math.min(p2 + 4, 100);
+                    fill.style.width = p2 + '%';
+                    pctEl.textContent = Math.round(p2) + '%';
+                    updateChecks(p2);
+                    if (p2 < 100) requestAnimationFrame(finish);
+                    else {
+                        setTimeout(() => {
+                            const sp = document.getElementById('spinner');
+                            sp.style.transition = 'opacity .35s ease';
+                            sp.style.opacity = '0';
+                            setTimeout(() => { sp.style.display = 'none'; onFinish(); }, 350);
+                        }, 220);
+                    }
+                }
+                requestAnimationFrame(finish);
+            };
+        })();
+
+        // ── Config ────────────────────────────────────────────────────────────────────
+        // /pub endpoint has no HTTP cache; export URL is served via Google's CDN with proper caching
+        const SHEET_ID = "2PACX-1vSs1GhZQnhVZLayT56Ik4zsE2GaWyVV6A0IeUz6YSMKGSN9jnmXjpWtIVbfUsXH1_Os17RG_oju8Ba3";
+        const SHEET_URL = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pub?gid=0&single=true&output=csv`;
+        const IMGS_PATH = "./imgs/";
+
+        const IGNORED = new Set(["NAME", "TEST", "MODEL", "EMPTY", "ALINA", "ANNA", "BANANAPOTATO333", "ERIN", "IZZY", "JUNIPER", "KATERINA", "LUCY", "MISTY", "NAKEDBARBIEDOLL", "NINA", "NIKOLETTA QUEEN", "RAINI", "SCARLETT", "SCARLETT HAMPTOM", "SHYLA", "TESSA", "THEODORA", "VIOLET RAY", "WILD HALLI", "YUIWOO", "STELLA LUXX", "REBECA FOX", "BRITNEY ROSE", "EVA NYX", "ELLIE NOVA"]);
+
+        // ── Shared IntersectionObserver ───────────────────────────────────────────────
+        const imgObs = new IntersectionObserver(entries => {
+            for (const e of entries) {
+                if (!e.isIntersecting) continue;
+                const img = e.target;
+                if (img.dataset.src) { img.src = img.dataset.src; delete img.dataset.src; }
+                imgObs.unobserve(img);
+            }
+        }, { rootMargin: '250px' });
+
+        // ── Utilities ─────────────────────────────────────────────────────────────────
+        // nameToSlug: used for both URL paths and image filenames
+        function nameToSlug(name) {
+            return name.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+        }
+        function toSlug(name) { return nameToSlug(name) + ".jpg"; }
+        function toEmbed(url) {
+            if (!url) return '';
+            try {
+                const u = new URL(url);
+                const h = u.hostname;
+                if (h.includes('doodstream') || h.includes('lulustream')) return url.replace(/\/d\//, '/e/');
+                if (h.includes('vidnest')) { const id = u.pathname.replace(/^\//, ''); return u.origin + '/embed-' + id + '.html'; }
+                return url;
+            } catch { return url; }
+        }
+        function csvSplit(line) {
+            // Fast CSV split respecting quoted fields
+            const cols = [];
+            let cur = '', inQ = false;
+            for (let i = 0; i < line.length; i++) {
+                const c = line[i];
+                if (c === '"') { inQ = !inQ; }
+                else if (c === ',' && !inQ) { cols.push(cur.trim()); cur = ''; }
+                else cur += c;
+            }
+            cols.push(cur.trim());
+            return cols;
+        }
+        function parseCSV(csv) {
+            // Normalize line endings — Google Sheets can return \r\n on some clients
+            const lines = csv.trim().replace(/\r/g, '').split('\n');
+            const out = [];
+            for (let i = 1; i < lines.length; i++) {
+                const v = csvSplit(lines[i]);
+                if (!v[2]) continue;
+                // Strip ALL whitespace variants (\r, nbsp, zero-width, etc.)
+                const name = v[2].replace(/[\s\u00a0\u200b\u200c\u200d\ufeff]+/g, ' ').trim();
+                if (!name) continue;
+                if (IGNORED.has(name.toUpperCase())) continue;
+                const l1 = v[3] || '', l2 = v[4] || '', l3 = v[5] || '';
+                out.push({
+                    ModelName: name,
+                    Link1: l1, Link2: l2, Link3: l3,
+                    Embed1: toEmbed(l1), Embed2: toEmbed(l2), Embed3: toEmbed(l3),
+                    Guests: v[7] || '',
+                    Category: v[8] || '',
+                    ID: v[10] || '',
+                    Tags: (v[11] || '').replace(/"/g, '').replace(/,/g, ' ').split(/[#\s]+/).filter(Boolean),
+                    Thumb: v[14] || '',
+                    Photo: v[0] || '',
+                });
+            }
+            return out.reverse();
+        }
+
+        // ── State ─────────────────────────────────────────────────────────────────────
+        let allData = [];
+        let modelMap = new Map();   // name → { name, slug, count }
+        let curModel = null;
+        let curVideo = null;
+        let activePlayerIdx = 0;
+        let searchQ = '';
+        let debTimer = null;
+
+        // ── DOM refs ──────────────────────────────────────────────────────────────────
+        const $ = id => document.getElementById(id);
+        const modelGrid = $('model-grid');
+        const videoGrid = $('video-grid');
+        const pageTitle = $('page-title');
+        const homeLink = $('home-link');
+        const backBtn = $('back-btn');
+        const searchEl = $('search');
+        const modal = $('modal');
+        const modalVideo = $('modal-video');
+        const mTitle = $('m-title');
+        const mCat = $('m-cat');
+        const mGuests = $('m-guests');
+        const mId = $('m-id');
+        const ptabs = $('ptabs');
+        const dlLinks = $('dl-links');
+
+        // ── Lazy image helper ─────────────────────────────────────────────────────────
+        function lazyImg(src, alt, fallback) {
+            const img = document.createElement('img');
+            img.dataset.src = src;
+            img.alt = alt;
+            img.decoding = 'async';
+            img.onload = () => img.classList.add('loaded');
+            img.onerror = () => { img.onerror = null; img.src = fallback; img.classList.add('loaded'); };
+            imgObs.observe(img);
+            return img;
+        }
+
+        // ── Build a single model card element ────────────────────────────────────────
+        function makeModelCard(m) {
+            const card = document.createElement('div');
+            card.className = 'mcard';
+            card.onclick = () => openModel(m);
+            const imgWrap = document.createElement('div');
+            imgWrap.className = 'mcard-img';
+            const img = lazyImg(
+                IMGS_PATH + m.slug, m.name,
+                `https://ui-avatars.com/api/?name=${encodeURIComponent(m.name)}&background=1e293b&color=fff&size=400`
+            );
+            imgWrap.appendChild(img);
+            const grad = document.createElement('div');
+            grad.className = 'mcard-grad';
+            imgWrap.appendChild(grad);
+            const cnt = document.createElement('span');
+            cnt.className = 'mcard-count';
+            cnt.textContent = m.count + ' vídeos';
+            imgWrap.appendChild(cnt);
+            const lbl = document.createElement('p');
+            lbl.className = 'mcard-name';
+            lbl.textContent = m.name;
+            card.appendChild(imgWrap);
+            card.appendChild(lbl);
+            return card;
+        }
+
+        // ── Render model grid in idle chunks (never blocks main thread) ───────────────
+        let _renderModelToken = 0;
+        function renderModels() {
+            const token = ++_renderModelToken;
+            const q = searchQ.toLowerCase();
+            const items = [];
+            for (const [, m] of modelMap) {
+                if (!q || m.name.toLowerCase().includes(q)) items.push(m);
+            }
+
+            modelGrid.innerHTML = '';
+
+            if (items.length === 0) {
+                const empty = document.createElement('p');
+                empty.className = 'empty';
+                empty.textContent = 'Nenhum modelo encontrado.';
+                modelGrid.appendChild(empty);
+                return;
+            }
+
+            const CHUNK = 12;
+            let idx = 0;
+
+            function flush(deadline) {
+                if (token !== _renderModelToken) return; // stale render, abort
+                const frag = document.createDocumentFragment();
+                const limit = Math.min(idx + CHUNK, items.length);
+                while (idx < limit) frag.appendChild(makeModelCard(items[idx++]));
+                modelGrid.appendChild(frag);
+                if (idx < items.length) {
+                    const schedule = typeof requestIdleCallback !== 'undefined'
+                        ? requestIdleCallback
+                        : (cb) => setTimeout(cb, 0);
+                    schedule(flush);
+                }
+            }
+
+            // First chunk synchronously so screen shows content instantly
+            const firstFrag = document.createDocumentFragment();
+            const firstLimit = Math.min(CHUNK, items.length);
+            while (idx < firstLimit) firstFrag.appendChild(makeModelCard(items[idx++]));
+            modelGrid.appendChild(firstFrag);
+            modelGrid.classList.add('fade-in');
+
+            if (idx < items.length) {
+                const schedule = typeof requestIdleCallback !== 'undefined'
+                    ? requestIdleCallback
+                    : (cb) => setTimeout(cb, 16);
+                schedule(flush);
             }
         }
-        requestAnimationFrame(finish);
-    };
-})();
 
-// ── Config ────────────────────────────────────────────────────────────────────
-// /pub endpoint has no HTTP cache; export URL is served via Google's CDN with proper caching
-const SHEET_ID  = "2PACX-1vSs1GhZQnhVZLayT56Ik4zsE2GaWyVV6A0IeUz6YSMKGSN9jnmXjpWtIVbfUsXH1_Os17RG_oju8Ba3";
-const SHEET_URL = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pub?gid=0&single=true&output=csv`;
-const IMGS_PATH = "./imgs/";
-
-const IGNORED = new Set(["NAME","TEST","MODEL","EMPTY","ALINA","ANNA","BANANAPOTATO333","ERIN","IZZY","JUNIPER","KATERINA","LUCY","MISTY","NAKEDBARBIEDOLL","NINA","NIKOLETTA QUEEN","RAINI","SCARLETT","SCARLETT HAMPTOM","SHYLA","TESSA","THEODORA","VIOLET RAY","WILD HALLI","YUIWOO", "STELLA LUXX", "REBECA FOX", "BRITNEY ROSE", "EVA NYX", "ELLIE NOVA"]);
-
-// ── Shared IntersectionObserver ───────────────────────────────────────────────
-const imgObs = new IntersectionObserver(entries => {
-    for (const e of entries) {
-        if (!e.isIntersecting) continue;
-        const img = e.target;
-        if (img.dataset.src) { img.src = img.dataset.src; delete img.dataset.src; }
-        imgObs.unobserve(img);
-    }
-}, { rootMargin: '250px' });
-
-// ── Utilities ─────────────────────────────────────────────────────────────────
-// nameToSlug: used for both URL paths and image filenames
-function nameToSlug(name) {
-    return name.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
-}
-function toSlug(name) { return nameToSlug(name) + ".jpg"; }
-function toEmbed(url) {
-    if (!url) return '';
-    try {
-        const u = new URL(url);
-        const h = u.hostname;
-        if (h.includes('doodstream') || h.includes('lulustream')) return url.replace(/\/d\//, '/e/');
-        if (h.includes('vidnest')) { const id = u.pathname.replace(/^\//,''); return u.origin+'/embed-'+id+'.html'; }
-        return url;
-    } catch { return url; }
-}
-function csvSplit(line) {
-    // Fast CSV split respecting quoted fields
-    const cols = [];
-    let cur = '', inQ = false;
-    for (let i = 0; i < line.length; i++) {
-        const c = line[i];
-        if (c === '"') { inQ = !inQ; }
-        else if (c === ',' && !inQ) { cols.push(cur.trim()); cur = ''; }
-        else cur += c;
-    }
-    cols.push(cur.trim());
-    return cols;
-}
-function parseCSV(csv) {
-    // Normalize line endings — Google Sheets can return \r\n on some clients
-    const lines = csv.trim().replace(/\r/g, '').split('\n');
-    const out = [];
-    for (let i = 1; i < lines.length; i++) {
-        const v = csvSplit(lines[i]);
-        if (!v[2]) continue;
-        // Strip ALL whitespace variants (\r, nbsp, zero-width, etc.)
-        const name = v[2].replace(/[\s\u00a0\u200b\u200c\u200d\ufeff]+/g, ' ').trim();
-        if (!name) continue;
-        if (IGNORED.has(name.toUpperCase())) continue;
-        const l1 = v[3]||'', l2 = v[4]||'', l3 = v[5]||'';
-        out.push({
-            ModelName: name,
-            Link1:l1, Link2:l2, Link3:l3,
-            Embed1:toEmbed(l1), Embed2:toEmbed(l2), Embed3:toEmbed(l3),
-            Guests:   v[7]||'',
-            Category: v[8]||'',
-            ID:       v[10]||'',
-            Tags:     (v[11]||'').replace(/"/g,'').replace(/,/g,' ').split(/[#\s]+/).filter(Boolean),
-            Thumb:    v[14]||'',
-            Photo:    v[0]||'',
-        });
-    }
-    return out.reverse();
-}
-
-// ── State ─────────────────────────────────────────────────────────────────────
-let allData   = [];
-let modelMap  = new Map();   // name → { name, slug, count }
-let curModel  = null;
-let curVideo  = null;
-let activePlayerIdx = 0;
-let searchQ   = '';
-let debTimer  = null;
-
-// ── DOM refs ──────────────────────────────────────────────────────────────────
-const $ = id => document.getElementById(id);
-const modelGrid = $('model-grid');
-const videoGrid = $('video-grid');
-const pageTitle = $('page-title');
-const backBtn   = $('back-btn');
-const searchEl  = $('search');
-const modal     = $('modal');
-const modalVideo= $('modal-video');
-const mTitle    = $('m-title');
-const mCat      = $('m-cat');
-const mGuests   = $('m-guests');
-const mId       = $('m-id');
-const ptabs     = $('ptabs');
-const dlLinks   = $('dl-links');
-
-// ── Lazy image helper ─────────────────────────────────────────────────────────
-function lazyImg(src, alt, fallback) {
-    const img = document.createElement('img');
-    img.dataset.src = src;
-    img.alt = alt;
-    img.decoding = 'async';
-    img.onload  = () => img.classList.add('loaded');
-    img.onerror = () => { img.onerror=null; img.src=fallback; img.classList.add('loaded'); };
-    imgObs.observe(img);
-    return img;
-}
-
-// ── Build a single model card element ────────────────────────────────────────
-function makeModelCard(m) {
-    const card = document.createElement('div');
-    card.className = 'mcard';
-    card.onclick = () => openModel(m);
-    const imgWrap = document.createElement('div');
-    imgWrap.className = 'mcard-img';
-    const img = lazyImg(
-        IMGS_PATH + m.slug, m.name,
-        `https://ui-avatars.com/api/?name=${encodeURIComponent(m.name)}&background=1e293b&color=fff&size=400`
-    );
-    imgWrap.appendChild(img);
-    const grad = document.createElement('div');
-    grad.className = 'mcard-grad';
-    imgWrap.appendChild(grad);
-    const cnt = document.createElement('span');
-    cnt.className = 'mcard-count';
-    cnt.textContent = m.count + ' vídeos';
-    imgWrap.appendChild(cnt);
-    const lbl = document.createElement('p');
-    lbl.className = 'mcard-name';
-    lbl.textContent = m.name;
-    card.appendChild(imgWrap);
-    card.appendChild(lbl);
-    return card;
-}
-
-// ── Render model grid in idle chunks (never blocks main thread) ───────────────
-let _renderModelToken = 0;
-function renderModels() {
-    const token = ++_renderModelToken;
-    const q = searchQ.toLowerCase();
-    const items = [];
-    for (const [, m] of modelMap) {
-        if (!q || m.name.toLowerCase().includes(q)) items.push(m);
-    }
-
-    modelGrid.innerHTML = '';
-
-    if (items.length === 0) {
-        const empty = document.createElement('p');
-        empty.className = 'empty';
-        empty.textContent = 'Nenhum modelo encontrado.';
-        modelGrid.appendChild(empty);
-        return;
-    }
-
-    const CHUNK = 12;
-    let idx = 0;
-
-    function flush(deadline) {
-        if (token !== _renderModelToken) return; // stale render, abort
-        const frag = document.createDocumentFragment();
-        const limit = Math.min(idx + CHUNK, items.length);
-        while (idx < limit) frag.appendChild(makeModelCard(items[idx++]));
-        modelGrid.appendChild(frag);
-        if (idx < items.length) {
-            const schedule = typeof requestIdleCallback !== 'undefined'
-                ? requestIdleCallback
-                : (cb) => setTimeout(cb, 0);
-            schedule(flush);
-        }
-    }
-
-    // First chunk synchronously so screen shows content instantly
-    const firstFrag = document.createDocumentFragment();
-    const firstLimit = Math.min(CHUNK, items.length);
-    while (idx < firstLimit) firstFrag.appendChild(makeModelCard(items[idx++]));
-    modelGrid.appendChild(firstFrag);
-    modelGrid.classList.add('fade-in');
-
-    if (idx < items.length) {
-        const schedule = typeof requestIdleCallback !== 'undefined'
-            ? requestIdleCallback
-            : (cb) => setTimeout(cb, 16);
-        schedule(flush);
-    }
-}
-
-// ── Build a single video card element ────────────────────────────────────────
-function makeVideoCard(v) {
-    const card = document.createElement('div');
-    card.className = 'vcard';
-    card.onclick = () => openVideo(v);
-    const thumb = document.createElement('div');
-    thumb.className = 'vcard-thumb';
-    const img = lazyImg(v.Thumb || v.Photo, v.ID, 'https://placehold.co/600x338/0f172a/1e293b?text=.');
-    thumb.appendChild(img);
-    const playWrap = document.createElement('div');
-    playWrap.className = 'vcard-play';
-    const circle = document.createElement('div');
-    circle.className = 'play-circle';
-    circle.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>`;
-    playWrap.appendChild(circle);
-    thumb.appendChild(playWrap);
-    if (v.Category) {
-        const cat = document.createElement('span');
-        cat.className = 'vcard-cat';
-        cat.textContent = v.Category;
-        thumb.appendChild(cat);
-    }
-    const info = document.createElement('div');
-    info.className = 'vcard-info';
-    const idEl = document.createElement('p');
-    idEl.className = 'vcard-id';
-    idEl.textContent = 'ID: ' + v.ID;
-    info.appendChild(idEl);
-    if (v.Guests) {
-        const g = document.createElement('p');
-        g.className = 'vcard-guests';
-        g.textContent = 'w/ ' + v.Guests;
-        info.appendChild(g);
-    }
-    card.appendChild(thumb);
-    card.appendChild(info);
-    return card;
-}
-
-// ── Render video grid in idle chunks ──────────────────────────────────────────
-let _renderVideoToken = 0;
-function renderVideos() {
-    const token = ++_renderVideoToken;
-    const q = searchQ.toLowerCase();
-    const modelName = curModel.name;
-    const items = allData.filter(v => {
-        if (v.ModelName !== modelName) return false;
-        if (!q) return true;
-        return v.ID.toLowerCase().includes(q) ||
-               v.Guests.toLowerCase().includes(q) ||
-               v.Category.toLowerCase().includes(q) ||
-               v.Tags.some(t => t.toLowerCase().includes(q));
-    });
-
-    videoGrid.innerHTML = '';
-
-    if (items.length === 0) {
-        const empty = document.createElement('p');
-        empty.className = 'empty';
-        empty.textContent = 'Nenhum vídeo encontrado.';
-        videoGrid.appendChild(empty);
-        return;
-    }
-
-    const CHUNK = 9;
-    let idx = 0;
-
-    function flush() {
-        if (token !== _renderVideoToken) return;
-        const frag = document.createDocumentFragment();
-        const limit = Math.min(idx + CHUNK, items.length);
-        while (idx < limit) frag.appendChild(makeVideoCard(items[idx++]));
-        videoGrid.appendChild(frag);
-        if (idx < items.length) setTimeout(flush, 0);
-    }
-
-    // First chunk sync
-    const firstFrag = document.createDocumentFragment();
-    const firstLimit = Math.min(CHUNK, items.length);
-    while (idx < firstLimit) firstFrag.appendChild(makeVideoCard(items[idx++]));
-    videoGrid.appendChild(firstFrag);
-    videoGrid.classList.add('fade-in');
-
-    if (idx < items.length) setTimeout(flush, 0);
-}
-
-// ── Routing helpers ───────────────────────────────────────────────────────────
-// Detect GitHub Pages repo prefix (e.g. /repo-name) vs root deployment
-// Hardcoded repo base — works correctly on both root and subpath deployments
-const BASE = ''; // custom domain at root
-
-function modelUrl(m) {
-    return BASE + '/model/' + nameToSlug(m.name);
-}
-
-// Build a reverse slug→model lookup after data loads
-let slugMap = new Map(); // slug → model object
-function buildSlugMap() {
-    slugMap.clear();
-    for (const [, m] of modelMap) slugMap.set(nameToSlug(m.name), m);
-}
-
-// ── Navigation ────────────────────────────────────────────────────────────────
-function openModel(m, replaceState) {
-    curModel = m;
-    searchQ = '';
-    searchEl.value = '';
-    searchEl.placeholder = `Search in ${m.name}…`;
-    pageTitle.textContent = m.name;
-    document.title = m.name + ' — Exclusive Portal';
-    backBtn.style.display = 'flex';
-    modelGrid.style.display = 'none';
-    videoGrid.style.display = 'grid';
-    renderVideos();
-    window.scrollTo({ top: 0, behavior: 'instant' });
-    const url = modelUrl(m);
-    if (replaceState) history.replaceState({ model: m.name }, '', url);
-    else              history.pushState({ model: m.name }, '', url);
-}
-function goBack(fromPopState) {
-    curModel = null;
-    searchQ = '';
-    searchEl.value = '';
-    searchEl.placeholder = 'Search model…';
-    pageTitle.textContent = 'Exclusive Portal';
-    document.title = 'Exclusive Portal';
-    backBtn.style.display = 'none';
-    videoGrid.style.display = 'none';
-    modelGrid.style.display = 'grid';
-    renderModels();
-    window.scrollTo({ top: 0, behavior: 'instant' });
-    if (!fromPopState) history.pushState({}, '', BASE + '/');
-}
-// Handle browser back/forward & swipe gestures
-window.addEventListener('popstate', () => {
-    const { modelSlug, videoId } = parsePath();
-
-    if (modelSlug && videoId) {
-        // /model/{slug}/{id} — make sure correct model is open then open video
-        const m = slugMap.get(modelSlug);
-        if (m) {
-            if (!curModel || curModel.name !== m.name) openModel(m, true);
-            const v = allData.find(r => r.ModelName === m.name && r.ID === videoId);
-            if (v) { openVideo(v, true); return; }
-        }
-    }
-
-    if (modelSlug) {
-        // /model/{slug} — show model, close modal if open
-        if (curVideo) { closeModal(true); return; }
-        const m = slugMap.get(modelSlug);
-        if (m) { openModel(m, true); return; }
-    }
-
-    // / — home
-    if (curVideo) { closeModal(true); return; }
-    if (curModel) { goBack(true); return; }
-});
-
-function parsePath() {
-    const match = location.pathname.match(/\/model\/([^\/]+)(?:\/([^\/]+))?/);
-    if (!match) return {};
-    return { modelSlug: match[1], videoId: match[2] ? decodeURIComponent(match[2]) : null };
-}
-function getSlugFromPath() { return parsePath().modelSlug || null; }
-
-// ── Modal ─────────────────────────────────────────────────────────────────────
-const EXT_ICON = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`;
-
-function buildPlayers(v) {
-    const data = [
-        { embed: v.Embed1, dl: v.Link1, label: 'Player 1' },
-        { embed: v.Embed2, dl: v.Link2, label: 'Player 2' },
-        { embed: v.Embed3, dl: v.Link3, label: 'Player 3' },
-    ].filter(p => p.embed);
-    return data;
-}
-
-function setActivePlayer(players, idx) {
-    activePlayerIdx = idx;
-    // Swap iframe (key trick: remove and re-add)
-    const old = modalVideo.querySelector('iframe');
-    if (old) old.remove();
-    if (players[idx]) {
-        const iframe = document.createElement('iframe');
-        iframe.src = players[idx].embed;
-        iframe.allowFullscreen = true;
-        iframe.setAttribute('allowfullscreen','');
-        modalVideo.insertBefore(iframe, modalVideo.firstChild);
-    }
-    // Update tab styles
-    const tabs = ptabs.querySelectorAll('.ptab');
-    tabs.forEach((t, i) => t.classList.toggle('active', i === idx));
-}
-
-function openVideo(v, replaceState) {
-    curVideo = v;
-    const players = buildPlayers(v);
-
-    mTitle.textContent  = v.ModelName;
-    mCat.textContent    = v.Category || '';
-    mGuests.textContent = v.Guests ? 'w/ ' + v.Guests : '';
-    mId.textContent     = 'ID: ' + v.ID;
-    mCat.style.display    = v.Category ? '' : 'none';
-    mGuests.style.display = v.Guests   ? '' : 'none';
-
-    // Build tabs
-    ptabs.innerHTML = '';
-    if (players.length > 1) {
-        players.forEach((p, i) => {
-            const btn = document.createElement('button');
-            btn.className = 'ptab' + (i === 0 ? ' active' : '');
-            btn.textContent = p.label;
-            btn.onclick = () => setActivePlayer(players, i);
-            ptabs.appendChild(btn);
-        });
-        ptabs.style.display = 'flex';
-    } else {
-        ptabs.style.display = 'none';
-    }
-
-    // Build download links
-    dlLinks.innerHTML = '';
-    if (players.length === 0) {
-        dlLinks.innerHTML = '<p class="no-links">Nenhum link disponível.</p>';
-    } else {
-        players.forEach((p, i) => {
-            if (!p.dl) return;
-            const a = document.createElement('a');
-            a.href = p.dl;
-            a.target = '_blank';
-            a.rel = 'noopener noreferrer';
-            a.className = 'dl-link ' + (i === 0 ? 'primary' : 'secondary');
-            a.innerHTML = p.label + ' ' + EXT_ICON;
-            dlLinks.appendChild(a);
-        });
-    }
-
-    setActivePlayer(players, 0);
-    modal.classList.add('open');
-    document.body.style.overflow = 'hidden';
-
-    // Update URL to /model/{slug}/{id}
-    if (curModel) {
-        const url = modelUrl(curModel) + '/' + encodeURIComponent(v.ID);
-        if (replaceState) history.replaceState({ model: curModel.name, videoId: v.ID }, '', url);
-        else              history.pushState({ model: curModel.name, videoId: v.ID }, '', url);
-    }
-}
-
-function closeModal(fromPopState) {
-    modal.classList.remove('open');
-    document.body.style.overflow = '';
-    const iframe = modalVideo.querySelector('iframe');
-    if (iframe) iframe.remove();
-    curVideo = null;
-    // Restore model URL, unless we got here via popstate (browser already handled URL)
-    if (!fromPopState && curModel) {
-        history.pushState({ model: curModel.name }, '', modelUrl(curModel));
-    }
-}
-
-// ── Search ────────────────────────────────────────────────────────────────────
-searchEl.addEventListener('input', e => {
-    clearTimeout(debTimer);
-    debTimer = setTimeout(() => {
-        searchQ = e.target.value.trim();
-        if (curModel) renderVideos();
-        else renderModels();
-    }, 280);
-});
-
-// ── Events ────────────────────────────────────────────────────────────────────
-backBtn.onclick = () => goBack(false);
-$('close-mob').onclick = () => closeModal(false);
-$('close-desk').onclick = () => closeModal(false);
-modal.addEventListener('click', e => { if (e.target === modal) closeModal(false); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape' && curVideo) closeModal(false); });
-
-// ── Init ──────────────────────────────────────────────────────────────────────
-const CACHE_KEY = 'ep_csv_v3'; // bumped version busts all old caches automatically
-const CACHE_TTL = 30 * 60 * 1000;
-
-// Wipe any old cache keys from previous versions
-['ep_csv_cache','ep_csv_v2'].forEach(k => { try { localStorage.removeItem(k); } catch {} });
-
-function saveCache(csv) {
-    try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), csv })); } catch {}
-}
-
-function fetchFresh(onDone) {
-    fetch(SHEET_URL)
-        .then(r => r.text())
-        .then(csv => { saveCache(csv); onDone && onDone(csv); })
-        .catch(() => {
-            $('spinner').innerHTML = '<p style="color:#ef4444;font-size:.85rem">Failed to load data.</p>';
-        });
-}
-
-function processCSV(csv) {
-    allData = parseCSV(csv);
-    const tempMap = new Map();
-    for (const row of allData) {
-        const n = row.ModelName;
-        if (!tempMap.has(n)) tempMap.set(n, { name:n, slug:toSlug(n), count:0 });
-        tempMap.get(n).count++;
-    }
-    // Order by most recent activity — first appearance in data (already reversed = newest first)
-    // Build ordered list preserving insertion order from the CSV
-    const sorted = [...tempMap.values()].filter(m => m.count > 1);
-    modelMap = new Map(sorted.map(m => [m.name, m]));
-    buildSlugMap();
-
-    window._secDone(() => {
-        $('app').style.display = '';
-        const { modelSlug, videoId } = parsePath();
-        if (modelSlug && slugMap.has(modelSlug)) {
-            const m = slugMap.get(modelSlug);
-            openModel(m, true);
-            if (videoId) {
-                const v = allData.find(r => r.ModelName === m.name && r.ID === videoId);
-                if (v) openVideo(v, true);
+        // ── Build a single video card element ────────────────────────────────────────
+        function makeVideoCard(v) {
+            const card = document.createElement('div');
+            card.className = 'vcard';
+            card.onclick = () => openVideo(v);
+            const thumb = document.createElement('div');
+            thumb.className = 'vcard-thumb';
+            const img = lazyImg(v.Thumb || v.Photo, v.ID, 'https://placehold.co/600x338/0f172a/1e293b?text=.');
+            thumb.appendChild(img);
+            const playWrap = document.createElement('div');
+            playWrap.className = 'vcard-play';
+            const circle = document.createElement('div');
+            circle.className = 'play-circle';
+            circle.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>`;
+            playWrap.appendChild(circle);
+            thumb.appendChild(playWrap);
+            if (v.Category) {
+                const cat = document.createElement('span');
+                cat.className = 'vcard-cat';
+                cat.textContent = v.Category;
+                thumb.appendChild(cat);
             }
-        } else {
+            const info = document.createElement('div');
+            info.className = 'vcard-info';
+            const idEl = document.createElement('p');
+            idEl.className = 'vcard-id';
+            idEl.textContent = 'ID: ' + v.ID;
+            info.appendChild(idEl);
+            if (v.Guests) {
+                const g = document.createElement('p');
+                g.className = 'vcard-guests';
+                g.textContent = 'w/ ' + v.Guests;
+                info.appendChild(g);
+            }
+            card.appendChild(thumb);
+            card.appendChild(info);
+            return card;
+        }
+
+        // ── Render video grid in idle chunks ──────────────────────────────────────────
+        let _renderVideoToken = 0;
+        function renderVideos() {
+            const token = ++_renderVideoToken;
+            const q = searchQ.toLowerCase();
+            const modelName = curModel.name;
+            const items = allData.filter(v => {
+                if (v.ModelName !== modelName) return false;
+                if (!q) return true;
+                return v.ID.toLowerCase().includes(q) ||
+                    v.Guests.toLowerCase().includes(q) ||
+                    v.Category.toLowerCase().includes(q) ||
+                    v.Tags.some(t => t.toLowerCase().includes(q));
+            });
+
+            videoGrid.innerHTML = '';
+
+            if (items.length === 0) {
+                const empty = document.createElement('p');
+                empty.className = 'empty';
+                empty.textContent = 'Nenhum vídeo encontrado.';
+                videoGrid.appendChild(empty);
+                return;
+            }
+
+            const CHUNK = 9;
+            let idx = 0;
+
+            function flush() {
+                if (token !== _renderVideoToken) return;
+                const frag = document.createDocumentFragment();
+                const limit = Math.min(idx + CHUNK, items.length);
+                while (idx < limit) frag.appendChild(makeVideoCard(items[idx++]));
+                videoGrid.appendChild(frag);
+                if (idx < items.length) setTimeout(flush, 0);
+            }
+
+            // First chunk sync
+            const firstFrag = document.createDocumentFragment();
+            const firstLimit = Math.min(CHUNK, items.length);
+            while (idx < firstLimit) firstFrag.appendChild(makeVideoCard(items[idx++]));
+            videoGrid.appendChild(firstFrag);
+            videoGrid.classList.add('fade-in');
+
+            if (idx < items.length) setTimeout(flush, 0);
+        }
+
+        // ── Routing helpers ───────────────────────────────────────────────────────────
+        // Detect GitHub Pages repo prefix (e.g. /repo-name) vs root deployment
+        // Hardcoded repo base — works correctly on both root and subpath deployments
+        const BASE = ''; // custom domain at root
+
+        function modelUrl(m) {
+            return BASE + '/model/' + nameToSlug(m.name);
+        }
+
+        // Build a reverse slug→model lookup after data loads
+        let slugMap = new Map(); // slug → model object
+        function buildSlugMap() {
+            slugMap.clear();
+            for (const [, m] of modelMap) slugMap.set(nameToSlug(m.name), m);
+        }
+
+        // ── Navigation ────────────────────────────────────────────────────────────────
+        function openModel(m, replaceState) {
+            curModel = m;
+            searchQ = '';
+            searchEl.value = '';
+            searchEl.placeholder = `Search in ${m.name}…`;
+            if (homeLink) homeLink.textContent = m.name;
+            else pageTitle.textContent = m.name; // fallback
+            document.title = m.name + ' — RIPNSFW';
+            backBtn.style.display = 'flex';
+            modelGrid.style.display = 'none';
+            videoGrid.style.display = 'grid';
+            renderVideos();
+            window.scrollTo({ top: 0, behavior: 'instant' });
+            const url = modelUrl(m);
+            if (replaceState) history.replaceState({ model: m.name }, '', url);
+            else history.pushState({ model: m.name }, '', url);
+        }
+        function goBack(fromPopState) {
+            curModel = null;
+            searchQ = '';
+            searchEl.value = '';
+            searchEl.placeholder = 'Search model…';
+            if (homeLink) homeLink.textContent = 'RIPNSFW';
+            else pageTitle.textContent = 'RIPNSFW'; // fallback
+            document.title = 'RIPNSFW';
+            backBtn.style.display = 'none';
+            videoGrid.style.display = 'none';
+            modelGrid.style.display = 'grid';
             renderModels();
+            window.scrollTo({ top: 0, behavior: 'instant' });
+            if (!fromPopState) history.pushState({}, '', BASE + '/');
         }
-    });
-}
+        // Handle browser back/forward & swipe gestures
+        window.addEventListener('popstate', () => {
+            const { modelSlug, videoId } = parsePath();
 
-(function init() {
-    let served = false;
-    try {
-        const raw = localStorage.getItem(CACHE_KEY);
-        if (raw) {
-            const { ts, csv } = JSON.parse(raw);
-            served = true;
-            processCSV(csv);
-            if (Date.now() - ts > CACHE_TTL) fetchFresh(null);
+            if (modelSlug && videoId) {
+                // /model/{slug}/{id} — make sure correct model is open then open video
+                const m = slugMap.get(modelSlug);
+                if (m) {
+                    if (!curModel || curModel.name !== m.name) openModel(m, true);
+                    const v = allData.find(r => r.ModelName === m.name && r.ID === videoId);
+                    if (v) { openVideo(v, true); return; }
+                }
+            }
+
+            if (modelSlug) {
+                // /model/{slug} — show model, close modal if open
+                if (curVideo) { closeModal(true); return; }
+                const m = slugMap.get(modelSlug);
+                if (m) { openModel(m, true); return; }
+            }
+
+            // / — home
+            if (curVideo) { closeModal(true); return; }
+            if (curModel) { goBack(true); return; }
+        });
+
+        function parsePath() {
+            const match = location.pathname.match(/\/model\/([^\/]+)(?:\/([^\/]+))?/);
+            if (!match) return {};
+            return { modelSlug: match[1], videoId: match[2] ? decodeURIComponent(match[2]) : null };
         }
-    } catch {}
-    if (!served) fetchFresh(csv => processCSV(csv));
-})();
-</script>
+        function getSlugFromPath() { return parsePath().modelSlug || null; }
+
+        // ── Modal ─────────────────────────────────────────────────────────────────────
+        const EXT_ICON = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`;
+
+        function buildPlayers(v) {
+            const data = [
+                { embed: v.Embed1, dl: v.Link1, label: 'Player 1' },
+                { embed: v.Embed2, dl: v.Link2, label: 'Player 2' },
+                { embed: v.Embed3, dl: v.Link3, label: 'Player 3' },
+            ].filter(p => p.embed);
+            return data;
+        }
+
+        function setActivePlayer(players, idx) {
+            activePlayerIdx = idx;
+            // Swap iframe (key trick: remove and re-add)
+            const old = modalVideo.querySelector('iframe');
+            if (old) old.remove();
+            if (players[idx]) {
+                const iframe = document.createElement('iframe');
+                iframe.src = players[idx].embed;
+                iframe.allowFullscreen = true;
+                iframe.setAttribute('allowfullscreen', '');
+                modalVideo.insertBefore(iframe, modalVideo.firstChild);
+            }
+            // Update tab styles
+            const tabs = ptabs.querySelectorAll('.ptab');
+            tabs.forEach((t, i) => t.classList.toggle('active', i === idx));
+        }
+
+        function openVideo(v, replaceState) {
+            curVideo = v;
+            const players = buildPlayers(v);
+
+            mTitle.textContent = v.ModelName;
+            mCat.textContent = v.Category || '';
+            mGuests.textContent = v.Guests ? 'w/ ' + v.Guests : '';
+            mId.textContent = 'ID: ' + v.ID;
+            mCat.style.display = v.Category ? '' : 'none';
+            mGuests.style.display = v.Guests ? '' : 'none';
+
+            // Build tabs
+            ptabs.innerHTML = '';
+            if (players.length > 1) {
+                players.forEach((p, i) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'ptab' + (i === 0 ? ' active' : '');
+                    btn.textContent = p.label;
+                    btn.onclick = () => setActivePlayer(players, i);
+                    ptabs.appendChild(btn);
+                });
+                ptabs.style.display = 'flex';
+            } else {
+                ptabs.style.display = 'none';
+            }
+
+            // Build download links
+            dlLinks.innerHTML = '';
+            if (players.length === 0) {
+                dlLinks.innerHTML = '<p class="no-links">Nenhum link disponível.</p>';
+            } else {
+                players.forEach((p, i) => {
+                    if (!p.dl) return;
+                    const a = document.createElement('a');
+                    a.href = p.dl;
+                    a.target = '_blank';
+                    a.rel = 'noopener noreferrer';
+                    a.className = 'dl-link ' + (i === 0 ? 'primary' : 'secondary');
+                    a.innerHTML = p.label + ' ' + EXT_ICON;
+                    dlLinks.appendChild(a);
+                });
+            }
+
+            setActivePlayer(players, 0);
+            modal.classList.add('open');
+            document.body.style.overflow = 'hidden';
+
+            // Update URL to /model/{slug}/{id}
+            if (curModel) {
+                const url = modelUrl(curModel) + '/' + encodeURIComponent(v.ID);
+                if (replaceState) history.replaceState({ model: curModel.name, videoId: v.ID }, '', url);
+                else history.pushState({ model: curModel.name, videoId: v.ID }, '', url);
+            }
+        }
+
+        function closeModal(fromPopState) {
+            modal.classList.remove('open');
+            document.body.style.overflow = '';
+            const iframe = modalVideo.querySelector('iframe');
+            if (iframe) iframe.remove();
+            curVideo = null;
+            // Restore model URL, unless we got here via popstate (browser already handled URL)
+            if (!fromPopState && curModel) {
+                history.pushState({ model: curModel.name }, '', modelUrl(curModel));
+            }
+        }
+
+        // ── Search ────────────────────────────────────────────────────────────────────
+        searchEl.addEventListener('input', e => {
+            clearTimeout(debTimer);
+            debTimer = setTimeout(() => {
+                searchQ = e.target.value.trim();
+                if (curModel) renderVideos();
+                else renderModels();
+            }, 280);
+        });
+
+        // ── Events ────────────────────────────────────────────────────────────────────
+        backBtn.onclick = () => goBack(false);
+        if (homeLink) {
+            homeLink.onclick = (e) => {
+                // Keep SPA navigation: don't reload the whole page when clicking the title/logo.
+                e.preventDefault();
+                if (curVideo) { closeModal(false); return; }
+                if (curModel) { goBack(false); return; }
+                if (location.pathname !== (BASE + '/')) history.pushState({}, '', BASE + '/');
+                window.scrollTo({ top: 0, behavior: 'instant' });
+            };
+        }
+        $('close-mob').onclick = () => closeModal(false);
+        $('close-desk').onclick = () => closeModal(false);
+        modal.addEventListener('click', e => { if (e.target === modal) closeModal(false); });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape' && curVideo) closeModal(false); });
+
+        // ── Init ──────────────────────────────────────────────────────────────────────
+        const CACHE_KEY = 'ep_csv_v3'; // bumped version busts all old caches automatically
+        const CACHE_TTL = 30 * 60 * 1000;
+
+        // Wipe any old cache keys from previous versions
+        ['ep_csv_cache', 'ep_csv_v2'].forEach(k => { try { localStorage.removeItem(k); } catch { } });
+
+        function saveCache(csv) {
+            try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), csv })); } catch { }
+        }
+
+        function fetchFresh(onDone) {
+            fetch(SHEET_URL)
+                .then(r => r.text())
+                .then(csv => { saveCache(csv); onDone && onDone(csv); })
+                .catch(() => {
+                    $('spinner').innerHTML = '<p style="color:#ef4444;font-size:.85rem">Failed to load data.</p>';
+                });
+        }
+
+        function processCSV(csv) {
+            allData = parseCSV(csv);
+            const tempMap = new Map();
+            for (const row of allData) {
+                const n = row.ModelName;
+                if (!tempMap.has(n)) tempMap.set(n, { name: n, slug: toSlug(n), count: 0 });
+                tempMap.get(n).count++;
+            }
+            // Order by most recent activity — first appearance in data (already reversed = newest first)
+            // Build ordered list preserving insertion order from the CSV
+            const sorted = [...tempMap.values()].filter(m => m.count > 1);
+            modelMap = new Map(sorted.map(m => [m.name, m]));
+            buildSlugMap();
+
+            window._secDone(() => {
+                $('app').style.display = '';
+                const { modelSlug, videoId } = parsePath();
+                if (modelSlug && slugMap.has(modelSlug)) {
+                    const m = slugMap.get(modelSlug);
+                    openModel(m, true);
+                    if (videoId) {
+                        const v = allData.find(r => r.ModelName === m.name && r.ID === videoId);
+                        if (v) openVideo(v, true);
+                    }
+                } else {
+                    renderModels();
+                }
+            });
+        }
+
+        (function init() {
+            let served = false;
+            try {
+                const raw = localStorage.getItem(CACHE_KEY);
+                if (raw) {
+                    const { ts, csv } = JSON.parse(raw);
+                    served = true;
+                    processCSV(csv);
+                    if (Date.now() - ts > CACHE_TTL) fetchFresh(null);
+                }
+            } catch { }
+            if (!served) fetchFresh(csv => processCSV(csv));
+        })();
+    </script>
 </body>
+
 </html>

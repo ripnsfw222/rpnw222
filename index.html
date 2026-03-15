@@ -1,66 +1,252 @@
-import csv
-import re
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exclusive Portal - Gallery</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { background-color: #020617; color: white; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        .modal-overlay { background-color: rgba(0,0,0,0.98); backdrop-filter: blur(20px); }
+        .animate-in { animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+        img { transition: opacity 0.3s ease-in; content-visibility: auto; }
+        .custom-scroll::-webkit-scrollbar { width:4px; }
+        .custom-scroll::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(236,72,153,0.5); border-radius:10px; }
+        .aspect-card { aspect-ratio: 3/4; }
+        .aspect-video-box { aspect-ratio: 16/9; }
+        .grid-container { display: grid; contain: content; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
 
-def extrair_links(texto):
-    """Extrai links específicos do texto do post."""
-    links = {
-        'dood': '',
-        'lulu': '',
-        'vidnest': ''
-    }
-    
-    # Regex para encontrar URLs
-    urls = re.findall(r'https?://[^\s]+', texto)
-    
-    for url in urls:
-        if 'doodstream.com' in url or 'dood.li' in url:
-            links['dood'] = url
-        elif 'lulustream.com' in url or 'lulu.to' in url:
-            links['lulu'] = url
-        elif 'vidnest.io' in url:
-            links['vidnest'] = url
-            
-    return links
+    <script type="text/babel">
+        const { useState, useEffect, useMemo, useCallback } = React;
 
-def processar_dados(input_file, output_file):
-    with open(input_file, mode='r', encoding='utf-8') as infile:
-        # Pula a primeira linha se for o cabeçalho original
-        reader = csv.DictReader(infile)
-        
-        fieldnames = ['THUMB', 'NEW', 'NOME', 'DOOD', 'LULU', 'VIDNEST', 'SITE', 'TITLE', 'ID', 'TAGS', 'POST', 'VIEWS']
-        
-        with open(output_file, mode='w', encoding='utf-8', newline='') as outfile:
-            writer = csv.DictWriter(outfile, fieldnames=fieldnames)
-            writer.writeheader()
-            
-            for row in reader:
-                post_content = row.get('POST', '')
-                links = extrair_links(post_content)
-                
-                # Extração básica de ID e Nome (ajuste conforme a necessidade)
-                nome_match = re.search(r'\{New\}\s+([^\s]+ [^\s]+)', post_content)
-                nome = nome_match.group(1) if nome_match else ""
-                
-                # Tentativa de pegar o ID numérico que costuma aparecer nos links ou títulos
-                id_match = re.search(r'/(\d+)', post_content)
-                id_val = id_match.group(1) if id_match else ""
+        const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSs1GhZQnhVZLayT56Ik4zsE2GaWyVV6A0IeUz6YSMKGSN9jnmXjpWtIVbfUsXH1_Os17RG_oju8Ba3/pub?gid=0&single=true&output=csv";
+        const MODEL_PHOTOS_PATH = "./imgs/";
 
-                new_row = {
-                    'THUMB': row.get('THUMB', ''),
-                    'NEW': '{New}',
-                    'NOME': nome,
-                    'DOOD': links['dood'],      # Coluna D
-                    'LULU': links['lulu'],      # Coluna E
-                    'VIDNEST': links['vidnest'], # Coluna F
-                    'SITE': 'Onlyfans', # Valor padrão ou extraído
-                    'TITLE': '(2026)',
-                    'ID': id_val,
-                    'TAGS': '', # Pode ser extraído dos #hashtags se necessário
-                    'POST': post_content,
-                    'VIEWS': row.get('VIEWS', '0')
+        function useDebounce(value, delay) {
+            const [debouncedValue, setDebouncedValue] = useState(value);
+            useEffect(() => {
+                const handler = setTimeout(() => setDebouncedValue(value), delay);
+                return () => clearTimeout(handler);
+            }, [value, delay]);
+            return debouncedValue;
+        }
+
+        function formatImageFileName(name) {
+            if (!name) return "";
+            return name.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g,'-') + ".jpg";
+        }
+
+        function processTags(tagString) {
+            if (!tagString) return [];
+            return tagString.replace(/,/g,' ').split(/[#\s]+/).map(t=>t.trim()).filter(t=>t.length>0);
+        }
+
+        function parseCSV(csvText) {
+            const IGNORED = new Set(["NAME","TEST","MODEL","EMPTY","ALINA","ANNA","BANANAPOTATO333","ERIN","IZZY","JUNIPER","KATERINA","LUCY","MISTY","NAKEDBARBIEDOLL","NINA","NIKOLETTA QUEEN","RAINI","SCARLETT","SCARLETT HAMPTOM","SHYLA","TESSA","THEODORA","VIOLET RAY","WILD HALLI","YUIWOO"]);
+            const lines = csvText.trim().split('\n');
+            const parsedData = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                const values = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                if (!values[2]) continue;
+                const name = values[2].trim();
+                if (IGNORED.has(name.toUpperCase())) continue;
+
+                let embedUrl = values[6]?.trim() || "";
+                if (embedUrl.includes("dood")) embedUrl = embedUrl.replace("/d/", "/e/");
+
+                parsedData.push({
+                    ModelPhoto: values[0]?.trim() || '',
+                    ModelName: name,
+                    Link1: values[3]?.trim() || '',
+                    Link2: values[4]?.trim() || '',
+                    Link3: values[5]?.trim() || '',
+                    EmbedVideo: embedUrl,
+                    Guests: values[7]?.trim() || '',
+                    Category: values[8]?.trim() || '',
+                    ID: values[10]?.trim() || '',
+                    Tags: processTags(values[11]?.replace(/"/g,'').trim()),
+                    VideoThumbnail: values[14]?.trim() || ''
+                });
+            }
+            return parsedData.reverse();
+        }
+
+        const App = () => {
+            const [rawDataTable, setRawDataTable] = useState([]);
+            const [selectedModel, setSelectedModel] = useState(null);
+            const [selectedVideo, setSelectedVideo] = useState(null);
+            const [loading, setLoading] = useState(true);
+            const [searchQuery, setSearchQuery] = useState("");
+
+            const debouncedSearch = useDebounce(searchQuery, 300);
+
+            useEffect(() => {
+                fetch(SHEET_CSV_URL)
+                    .then(res => res.text())
+                    .then(text => { setRawDataTable(parseCSV(text)); setLoading(false); })
+                    .catch(err => console.error("Load Error", err));
+            }, []);
+
+            useEffect(() => { if(!loading && window.lucide) lucide.createIcons(); }, [loading, selectedModel, selectedVideo, debouncedSearch]);
+
+            const modelsList = useMemo(() => {
+                const map = new Map();
+                rawDataTable.forEach(item => {
+                    const name = item.ModelName;
+                    if (!map.has(name)) map.set(name,{name, image: MODEL_PHOTOS_PATH + formatImageFileName(name), videoCount:0});
+                    map.get(name).videoCount++;
+                });
+                let results = Array.from(map.values()).filter(m=>m.videoCount>1).sort((a,b)=>a.name.localeCompare(b.name));
+                if(debouncedSearch && !selectedModel){
+                    const q = debouncedSearch.toLowerCase();
+                    results = results.filter(m=>m.name.toLowerCase().includes(q));
                 }
-                writer.writerow(new_row)
+                return results;
+            }, [rawDataTable, debouncedSearch, selectedModel]);
 
-# Exemplo de uso:
-# processar_dados('Restart.xlsx - Página1.csv', 'Planilha_Corrigida.csv')
-print("Script pronto para processar e restaurar as colunas D, E e F.")
+            const filteredVideos = useMemo(() => {
+                if (!selectedModel) return [];
+                let list = rawDataTable.filter(v=>v.ModelName===selectedModel.name);
+                if(debouncedSearch){
+                    const q = debouncedSearch.toLowerCase();
+                    list = list.filter(v=>
+                        v.ID.toLowerCase().includes(q) ||
+                        v.Guests.toLowerCase().includes(q) ||
+                        v.Category.toLowerCase().includes(q) ||
+                        v.Tags.some(t=>t.toLowerCase().includes(q))
+                    );
+                }
+                return list;
+            }, [selectedModel, rawDataTable, debouncedSearch]);
+
+            const handleBack = useCallback(() => { setSelectedModel(null); setSearchQuery(""); }, []);
+
+            if(loading) return (
+                <div className="flex h-screen items-center justify-center bg-slate-950">
+                    <div className="flex flex-col items-center gap-4">
+                        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-pink-500 border-r-2 border-r-transparent"></div>
+                        <span className="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em]">Loading Gallery...</span>
+                    </div>
+                </div>
+            );
+
+            return (
+                <div className="min-h-screen pb-10 bg-slate-950 text-slate-200">
+                    <header className="bg-slate-900/80 backdrop-blur-xl sticky top-0 z-40 border-b border-white/5 px-4 py-3">
+                        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
+                            <div className="flex items-center gap-4">
+                                {selectedModel && (
+                                    <button onClick={handleBack} className="p-2 hover:bg-white/10 rounded-full transition-all active:scale-90">
+                                        <i data-lucide="arrow-left" className="w-5 h-5"></i>
+                                    </button>
+                                )}
+                                <h1 className="text-xl font-black italic uppercase tracking-tighter text-white">
+                                    {selectedModel ? selectedModel.name : 'Exclusive Portal'}
+                                </h1>
+                            </div>
+                            <div className="relative flex-1 max-w-md">
+                                <i data-lucide="search" className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500"></i>
+                                <input
+                                    type="text"
+                                    placeholder={selectedModel ? `Search ${selectedModel.name}...` : "Search models..."}
+                                    value={searchQuery}
+                                    onChange={(e)=>setSearchQuery(e.target.value)}
+                                    className="w-full bg-slate-950/50 border border-white/10 rounded-xl py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-pink-500/50 transition-all"
+                                />
+                            </div>
+                        </div>
+                    </header>
+
+                    <main className="max-w-7xl mx-auto p-4 md:p-8">
+                        {!selectedModel ? (
+                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 animate-in grid-container">
+                                {modelsList.map((model, idx)=>(
+                                    <div key={model.name} onClick={()=>setSelectedModel(model)} className="group cursor-pointer">
+                                        <div className="relative aspect-card rounded-2xl overflow-hidden mb-2 bg-slate-900 ring-1 ring-white/5 group-hover:ring-pink-500/50 transition-all">
+                                            <img
+                                                src={model.image}
+                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                                loading="lazy"
+                                                alt={model.name}
+                                                onError={(e)=>{e.target.onerror=null;e.target.src=`https://ui-avatars.com/api/?name=${encodeURIComponent(model.name)}&background=1e293b&color=fff&size=512`}}
+                                            />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                                            <div className="absolute bottom-2 left-3">
+                                                <p className="text-[8px] font-black text-pink-500 uppercase tracking-widest">{model.videoCount} Videos</p>
+                                            </div>
+                                        </div>
+                                        <h3 className="text-center font-bold text-xs text-slate-400 group-hover:text-white truncate">{model.name}</h3>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-in grid-container">
+                                {filteredVideos.map((video, idx)=>(
+                                    <div key={video.ID + idx} onClick={()=>setSelectedVideo(video)} className="bg-slate-900/40 rounded-2xl overflow-hidden cursor-pointer hover:bg-slate-900/80 transition-all border border-white/5 group">
+                                        <div className="relative aspect-video-box bg-slate-800">
+                                            <img
+                                                src={video.VideoThumbnail || video.ModelPhoto}
+                                                className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+                                                loading="lazy"
+                                                onError={(e)=>{e.target.onerror=null; e.target.src="https://placehold.co/600x400/1e293b/white?text=No+Preview"}}
+                                            />
+                                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all bg-black/40">
+                                                <div className="w-12 h-12 bg-pink-600 rounded-full flex items-center justify-center shadow-xl">
+                                                    <i data-lucide="play" className="w-5 h-5 fill-white text-white"></i>
+                                                </div>
+                                            </div>
+                                            <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-2 py-0.5 rounded text-[8px] font-bold uppercase text-white">
+                                                {video.Category}
+                                            </div>
+                                        </div>
+                                        <div className="p-4">
+                                            <h4 className="font-bold text-slate-100 text-xs mb-1 truncate">ID: {video.ID}</h4>
+                                            {video.Guests && <p className="text-[9px] text-pink-500 font-bold uppercase mb-2">w/ {video.Guests}</p>}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </main>
+
+                    {selectedVideo && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay animate-in">
+                            <div className="bg-slate-950 w-full max-w-5xl rounded-3xl overflow-hidden shadow-2xl border border-white/10 flex flex-col lg:flex-row max-h-[90vh]">
+                                <div className="flex-[2] bg-black relative">
+                                    <iframe src={selectedVideo.EmbedVideo} className="w-full h-full aspect-video lg:aspect-auto" frameBorder="0" allowFullScreen></iframe>
+                                    <button onClick={()=>setSelectedVideo(null)} className="absolute top-4 right-4 lg:hidden bg-black/50 p-2 rounded-full"><i data-lucide="x" className="w-5 h-5"></i></button>
+                                </div>
+                                <div className="flex-1 p-6 lg:p-8 overflow-y-auto custom-scroll bg-slate-900/30">
+                                    <div className="hidden lg:flex justify-end mb-4">
+                                        <button onClick={()=>setSelectedVideo(null)} className="text-slate-500 hover:text-white p-1"><i data-lucide="x" className="w-6 h-6"></i></button>
+                                    </div>
+                                    <h2 className="text-2xl font-black uppercase italic mb-1 text-white">{selectedVideo.ModelName}</h2>
+                                    <p className="text-pink-500 font-bold text-[10px] mb-6 tracking-widest uppercase">{selectedVideo.Category}</p>
+                                    <div className="grid gap-3">
+                                        {selectedVideo.Link1 && <a href={selectedVideo.Link1} target="_blank" className="flex items-center justify-between p-3 bg-pink-600 rounded-xl text-[10px] font-black uppercase hover:bg-pink-700 transition-colors">Primary Server <i data-lucide="external-link" className="w-3 h-3"></i></a>}
+                                        {selectedVideo.Link2 && <a href={selectedVideo.Link2} target="_blank" className="flex items-center justify-between p-3 bg-slate-800 rounded-xl text-[10px] font-black uppercase hover:bg-slate-700 transition-colors">Backup Mirror <i data-lucide="external-link" className="w-3 h-3"></i></a>}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

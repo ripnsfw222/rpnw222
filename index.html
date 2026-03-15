@@ -346,7 +346,7 @@ const SHEET_ID  = "2PACX-1vSs1GhZQnhVZLayT56Ik4zsE2GaWyVV6A0IeUz6YSMKGSN9jnmXjpW
 const SHEET_URL = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pub?gid=0&single=true&output=csv`;
 const IMGS_PATH = "./imgs/";
 
-const IGNORED = new Set(["STELLA LUXX", "REBECA FOX", "EVA NYX", "ELLIE NOVA", "BRITNEY ROSE", "NAME","TEST","MODEL","EMPTY","ALINA","ANNA","BANANAPOTATO333","ERIN","IZZY","JUNIPER","KATERINA","LUCY","MISTY","NAKEDBARBIEDOLL","NINA","NIKOLETTA QUEEN","RAINI","SCARLETT","SCARLETT HAMPTOM","SHYLA","TESSA","THEODORA","VIOLET RAY","WILD HALLI","YUIWOO"]);
+const IGNORED = new Set(["NAME","TEST","MODEL","EMPTY","ALINA","ANNA","BANANAPOTATO333","ERIN","IZZY","JUNIPER","KATERINA","LUCY","MISTY","NAKEDBARBIEDOLL","NINA","NIKOLETTA QUEEN","RAINI","SCARLETT","SCARLETT HAMPTOM","SHYLA","TESSA","THEODORA","VIOLET RAY","WILD HALLI","YUIWOO"]);
 
 // ── Shared IntersectionObserver ───────────────────────────────────────────────
 const imgObs = new IntersectionObserver(entries => {
@@ -619,26 +619,35 @@ function openModel(m) {
     curModel = m;
     searchQ = '';
     searchEl.value = '';
-    searchEl.placeholder = `Buscar em ${m.name}…`;
+    searchEl.placeholder = `Search in ${m.name}…`;
     pageTitle.textContent = m.name;
     backBtn.style.display = 'flex';
     modelGrid.style.display = 'none';
     videoGrid.style.display = 'grid';
     renderVideos();
     window.scrollTo({ top: 0, behavior: 'instant' });
+    // Push a history entry so swipe-back stays inside the app
+    history.pushState({ model: m.name }, '', '');
 }
-function goBack() {
+function goBack(fromPopState) {
     curModel = null;
     searchQ = '';
     searchEl.value = '';
-    searchEl.placeholder = 'Buscar modelo…';
+    searchEl.placeholder = 'Search model…';
     pageTitle.textContent = 'Exclusive Portal';
     backBtn.style.display = 'none';
     videoGrid.style.display = 'none';
     modelGrid.style.display = 'grid';
     renderModels();
     window.scrollTo({ top: 0, behavior: 'instant' });
+    // Only call history.back() when triggered by the button, not by popstate
+    if (!fromPopState) history.back();
 }
+// Handle browser back gesture / button
+window.addEventListener('popstate', () => {
+    if (curModel) goBack(true);
+    else if (curVideo) closeModal();
+});
 
 // ── Modal ─────────────────────────────────────────────────────────────────────
 const EXT_ICON = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`;
@@ -737,32 +746,29 @@ searchEl.addEventListener('input', e => {
 });
 
 // ── Events ────────────────────────────────────────────────────────────────────
-backBtn.onclick = goBack;
+backBtn.onclick = () => goBack(false);
 $('close-mob').onclick = closeModal;
 $('close-desk').onclick = closeModal;
 modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && curVideo) closeModal(); });
 
 // ── Init ──────────────────────────────────────────────────────────────────────
-const CACHE_KEY = 'ep_csv_v2';
-const CACHE_TTL = 30 * 60 * 1000; // 30 min — show cached instantly, refresh in bg
+const CACHE_KEY = 'ep_csv_v3'; // bumped version busts all old caches automatically
+const CACHE_TTL = 30 * 60 * 1000;
+
+// Wipe any old cache keys from previous versions
+['ep_csv_cache','ep_csv_v2'].forEach(k => { try { localStorage.removeItem(k); } catch {} });
 
 function saveCache(csv) {
     try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), csv })); } catch {}
 }
 
 function fetchFresh(onDone) {
-    // Use 'force-cache' hint so browser reuses any HTTP cache entry from Google CDN
-    fetch(SHEET_URL, { cache: 'force-cache' })
+    fetch(SHEET_URL)
         .then(r => r.text())
         .then(csv => { saveCache(csv); onDone && onDone(csv); })
-        .catch(err => {
-            if (onDone) {
-                // fallback: try without cache hint
-                fetch(SHEET_URL).then(r => r.text()).then(onDone).catch(() => {
-                    $('spinner').innerHTML = '<p style="color:#ef4444;font-size:.85rem">Erro ao carregar dados.</p>';
-                });
-            }
+        .catch(() => {
+            $('spinner').innerHTML = '<p style="color:#ef4444;font-size:.85rem">Failed to load data.</p>';
         });
 }
 
@@ -784,27 +790,18 @@ function processCSV(csv) {
     });
 }
 
-// Stale-while-revalidate: show cache instantly, always refresh in background
 (function init() {
     let served = false;
     try {
         const raw = localStorage.getItem(CACHE_KEY);
         if (raw) {
             const { ts, csv } = JSON.parse(raw);
-            // Show immediately regardless of age
             served = true;
             processCSV(csv);
-            // If stale, also refresh in background
-            if (Date.now() - ts > CACHE_TTL) {
-                fetchFresh(null); // silent background refresh, no re-render
-            }
+            if (Date.now() - ts > CACHE_TTL) fetchFresh(null);
         }
     } catch {}
-
-    if (!served) {
-        // No cache at all — must fetch
-        fetchFresh(csv => processCSV(csv));
-    }
+    if (!served) fetchFresh(csv => processCSV(csv));
 })();
 </script>
 </body>

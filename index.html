@@ -628,12 +628,8 @@ function renderVideos() {
 
 // ── Routing helpers ───────────────────────────────────────────────────────────
 // Detect GitHub Pages repo prefix (e.g. /repo-name) vs root deployment
-const BASE = (() => {
-    const p = location.pathname;
-    // If served from a subpath like /myrepo/model/... the base is /myrepo
-    const m = p.match(/^(\/[^\/]+)\/model\//);
-    return m ? m[1] : '';
-})();
+// Hardcoded repo base — works correctly on both root and subpath deployments
+const BASE = ''; // custom domain at root
 
 function modelUrl(m) {
     return BASE + '/model/' + nameToSlug(m.name);

@@ -85,7 +85,6 @@
             if (lines.length < 2) return [];
             
             const parsedData = lines.slice(1).map(line => {
-                // Regex para lidar com vírgulas dentro de aspas
                 const values = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                 
                 let embedUrl = values[6]?.trim() || "";
@@ -95,19 +94,18 @@
 
                 const nome = values[2]?.trim() || '';
                 
-                // Mapeamento das colunas baseado no seu relato (Coluna O = Índice 14)
                 return {
-                    FotoModelo: values[0]?.trim() || '',  // Coluna A (Geralmente a foto da modelo)
-                    NomeModelo: nome,                     // Coluna C
-                    Link1: values[3]?.trim() || '',       // Coluna D
-                    Link2: values[4]?.trim() || '',       // Coluna E
-                    Link3: values[5]?.trim() || '',       // Coluna F
-                    EmbedVideo: embedUrl,                // Coluna G
-                    Convidadas: values[7]?.trim() || '',   // Coluna H
-                    Categoria: values[8]?.trim() || '',    // Coluna I
-                    ID: values[10]?.trim() || '',          // Coluna K
-                    Tags: values[11]?.replace(/"/g, '').trim() || '', // Coluna L
-                    ThumbnailVideo: values[14]?.trim() || '' // Coluna O (A que estava quebrada)
+                    FotoModelo: values[0]?.trim() || '',
+                    NomeModelo: nome,
+                    Link1: values[3]?.trim() || '',
+                    Link2: values[4]?.trim() || '',
+                    Link3: values[5]?.trim() || '',
+                    EmbedVideo: embedUrl,
+                    Convidadas: values[7]?.trim() || '',
+                    Categoria: values[8]?.trim() || '',
+                    ID: values[10]?.trim() || '',
+                    Tags: values[11]?.replace(/"/g, '').trim() || '',
+                    ThumbnailVideo: values[14]?.trim() || ''
                 };
             }).filter(item => {
                 const nomeLimpo = item.NomeModelo.toUpperCase().trim();
@@ -158,7 +156,11 @@
                     }
                     map.get(name).videoCount++;
                 });
-                return Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name));
+
+                // FILTRAGEM: Apenas modelos com MAIS DE 1 vídeo
+                return Array.from(map.values())
+                    .filter(model => model.videoCount > 1) 
+                    .sort((a, b) => a.name.localeCompare(b.name));
             }, [data]);
 
             const currentVideos = useMemo(() => {
@@ -220,7 +222,6 @@
                                 {currentVideos.map((video, idx) => (
                                     <div key={idx} onClick={() => setSelectedVideo(video)} className="bg-slate-900/50 rounded-2xl overflow-hidden cursor-pointer hover:bg-slate-900 transition-all border border-white/5 group">
                                         <div className="relative aspect-video bg-slate-800">
-                                            {/* AQUI USAMOS A COLUNA O (ThumbnailVideo) */}
                                             <img 
                                                 src={video.ThumbnailVideo || video.FotoModelo} 
                                                 className="w-full h-full object-cover transition-all duration-300" 

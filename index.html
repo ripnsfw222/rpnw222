@@ -1,407 +1,568 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exclusive Portal - Gallery</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <style>
-        *, *::before, *::after { box-sizing: border-box; }
-        body { margin:0; background:#020617; color:white; font-family:'Inter',sans-serif; overflow-x:hidden; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exclusive Portal - Gallery</title>
+<style>
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:auto}
+body{margin:0;background:#020617;color:#e2e8f0;font-family:system-ui,-apple-system,sans-serif;overflow-x:hidden}
 
-        .animate-in { animation: fadeIn 0.25s ease-out both; }
-        @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+/* Layout */
+#header{position:sticky;top:0;z-index:40;background:rgba(15,23,42,0.85);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,0.06);padding:.75rem 1rem}
+#header-inner{max-width:1280px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:.75rem}
+#title-row{display:flex;align-items:center;gap:.75rem;flex-shrink:0}
+#back-btn{display:none;background:none;border:none;color:inherit;cursor:pointer;padding:.4rem;border-radius:50%;transition:background .15s}
+#back-btn:hover{background:rgba(255,255,255,.1)}
+#page-title{margin:0;font-size:1.15rem;font-weight:900;font-style:italic;text-transform:uppercase;letter-spacing:-.04em;color:#fff;white-space:nowrap}
+#search-wrap{position:relative;flex:1;min-width:180px;max-width:360px;margin-left:auto}
+#search-icon{position:absolute;left:.65rem;top:50%;transform:translateY(-50%);color:#64748b;pointer-events:none;display:flex}
+#search{width:100%;background:rgba(2,6,23,.6);border:1px solid rgba(255,255,255,.1);border-radius:.75rem;padding:.45rem .75rem .45rem 2.2rem;font-size:.85rem;color:#e2e8f0;outline:none;transition:border-color .15s}
+#search:focus{border-color:rgba(236,72,153,.5)}
+#main{max-width:1280px;margin:0 auto;padding:1.25rem .75rem 3rem}
 
-        .custom-scroll::-webkit-scrollbar { width:4px; }
-        .custom-scroll::-webkit-scrollbar-track { background:rgba(255,255,255,0.04); }
-        .custom-scroll::-webkit-scrollbar-thumb { background:rgba(236,72,153,0.5); border-radius:10px; }
+/* Grids */
+#model-grid,#video-grid{display:grid;gap:.85rem}
+#model-grid{grid-template-columns:repeat(2,1fr)}
+#video-grid{grid-template-columns:1fr;display:none}
+@media(min-width:480px){#model-grid{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:640px){#model-grid{grid-template-columns:repeat(3,1fr);gap:1rem}#video-grid{grid-template-columns:repeat(2,1fr);gap:1rem}}
+@media(min-width:900px){#model-grid{grid-template-columns:repeat(4,1fr)}}
+@media(min-width:1100px){#model-grid{grid-template-columns:repeat(5,1fr)}#video-grid{grid-template-columns:repeat(3,1fr)}}
 
-        .ratio-card  { aspect-ratio:3/4; }
-        .ratio-video { aspect-ratio:16/9; }
+/* Model card */
+.mcard{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.mcard-img{position:relative;aspect-ratio:3/4;border-radius:1rem;overflow:hidden;background:#0f172a;box-shadow:0 0 0 1px rgba(255,255,255,.06);transition:box-shadow .2s}
+.mcard:hover .mcard-img{box-shadow:0 0 0 1.5px rgba(236,72,153,.45)}
+.mcard-img img{width:100%;height:100%;object-fit:cover;display:block;transform:translateZ(0);transition:transform .4s ease,opacity .3s ease;opacity:0}
+.mcard-img img.loaded{opacity:1}
+.mcard:hover .mcard-img img{transform:scale(1.05) translateZ(0)}
+.mcard-grad{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.82) 0%,transparent 55%);pointer-events:none}
+.mcard-count{position:absolute;bottom:.5rem;left:.75rem;font-size:.5rem;font-weight:900;color:#ec4899;text-transform:uppercase;letter-spacing:.12em}
+.mcard-name{text-align:center;font-size:.7rem;font-weight:700;color:#94a3b8;margin-top:.35rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;transition:color .15s}
+.mcard:hover .mcard-name{color:#fff}
 
-        /* Lazy images */
-        .lazy-img { opacity:0; transition:opacity 0.3s ease; display:block; width:100%; height:100%; object-fit:cover; }
-        .lazy-img.loaded { opacity:1; }
+/* Video card */
+.vcard{cursor:pointer;background:rgba(15,23,42,.45);border:1px solid rgba(255,255,255,.06);border-radius:1rem;overflow:hidden;transition:background .15s;-webkit-tap-highlight-color:transparent}
+.vcard:hover{background:rgba(15,23,42,.8)}
+.vcard-thumb{position:relative;aspect-ratio:16/9;background:#1e293b;overflow:hidden}
+.vcard-thumb img{width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .3s ease}
+.vcard-thumb img.loaded{opacity:.82}
+.vcard:hover .vcard-thumb img{opacity:1}
+.vcard-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.38);opacity:0;transition:opacity .2s}
+.vcard:hover .vcard-play{opacity:1}
+.play-circle{width:2.75rem;height:2.75rem;background:#dc2626;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,.4)}
+.vcard-cat{position:absolute;top:.5rem;right:.5rem;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);padding:.15rem .45rem;border-radius:.25rem;font-size:.5rem;font-weight:700;text-transform:uppercase;color:#fff}
+.vcard-info{padding:.65rem .75rem .75rem}
+.vcard-id{font-size:.7rem;font-weight:700;color:#f1f5f9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vcard-guests{font-size:.6rem;font-weight:700;color:#ec4899;text-transform:uppercase;margin-top:.2rem}
 
-        /* Card hover — GPU only, no JS */
-        .card-thumb { overflow:hidden; position:relative; }
-        .card-thumb .lazy-img { transform:translateZ(0); transition:transform 0.45s ease, opacity 0.3s ease; will-change:transform; }
-        .card-thumb:hover .lazy-img { transform:scale(1.05) translateZ(0); }
-        .play-overlay { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.4); opacity:0; transition:opacity 0.2s ease; }
-        .card-thumb:hover .play-overlay { opacity:1; }
+/* Modal */
+#modal{display:none;position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.97);backdrop-filter:blur(16px);align-items:flex-end;justify-content:center}
+#modal.open{display:flex}
+@media(min-width:640px){#modal{align-items:center;padding:1rem}}
+.modal-box{display:flex;flex-direction:column;width:100%;max-width:940px;background:#080f1e;border-radius:1.25rem 1.25rem 0 0;border:1px solid rgba(255,255,255,.07);overflow:hidden;max-height:92dvh}
+@media(min-width:640px){.modal-box{border-radius:1.5rem;max-height:88dvh}}
+@media(min-width:768px){.modal-box{flex-direction:row}}
+.modal-video{position:relative;width:100%;aspect-ratio:16/9;background:#000;flex-shrink:0}
+.modal-video iframe{position:absolute;inset:0;width:100%;height:100%;border:none}
+@media(min-width:768px){.modal-video{flex:2 1 0;aspect-ratio:unset;min-height:280px}}
+.modal-info{flex:1;padding:.9rem 1.1rem 1.25rem;overflow-y:auto;min-height:0}
+@media(min-width:768px){.modal-info{width:280px;flex:none;padding:1.5rem 1.6rem}}
+@media(min-width:1024px){.modal-info{width:310px}}
 
-        .modal-bg { background:rgba(0,0,0,0.97); backdrop-filter:blur(18px); }
+/* Modal info */
+.modal-header{display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem;margin-bottom:.85rem}
+.modal-title{margin:0;font-size:1rem;font-weight:900;text-transform:uppercase;font-style:italic;color:#fff;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.modal-cat{font-size:.55rem;font-weight:700;color:#ec4899;text-transform:uppercase;letter-spacing:.12em;margin-top:.2rem}
+.modal-guests{font-size:.65rem;color:#94a3b8;margin-top:.2rem}
+.modal-id{font-size:.55rem;color:#334155;font-family:monospace;margin-top:.15rem}
+.close-btn{background:none;border:none;color:#64748b;cursor:pointer;padding:.2rem;flex-shrink:0;transition:color .15s;display:flex}
+.close-btn:hover{color:#fff}
+.close-btn-mob{position:absolute;top:.65rem;right:.65rem;background:rgba(0,0,0,.6);border:none;color:#fff;cursor:pointer;border-radius:50%;padding:.35rem;display:flex}
+@media(min-width:768px){.close-btn-mob{display:none}}
 
-        /* Modal — mobile: sheet from bottom, desktop: centered */
-        .modal-inner {
-            display:flex; flex-direction:column;
-            width:100%; max-width:920px;
-            border-radius:1.25rem 1.25rem 0 0;
-            overflow:hidden;
-            border:1px solid rgba(255,255,255,0.07);
-            background:#0b1223;
-            max-height:92dvh;
-        }
-        .modal-video-side {
-            position:relative; width:100%; aspect-ratio:16/9;
-            background:#000; flex-shrink:0;
-        }
-        .modal-video-side iframe { position:absolute; inset:0; width:100%; height:100%; border:none; }
-        .modal-info-side { flex:1; padding:1rem 1.25rem 1.5rem; overflow-y:auto; min-height:0; }
+/* Player tabs */
+.player-tabs{display:flex;gap:.35rem;margin-bottom:.85rem}
+.ptab{flex:1;padding:.35rem;border-radius:.5rem;font-size:.55rem;font-weight:900;text-transform:uppercase;border:none;cursor:pointer;transition:background .15s,color .15s;background:#1e293b;color:#64748b}
+.ptab:hover{background:#334155;color:#fff}
+.ptab.active{background:#dc2626;color:#fff}
 
-        @media(min-width:640px){
-            .modal-inner { border-radius:1.5rem; max-height:88dvh; }
-        }
-        @media(min-width:768px){
-            .modal-inner { flex-direction:row; }
-            .modal-video-side { flex:2; aspect-ratio:unset; min-height:300px; }
-            .modal-info-side  { width:260px; flex:none; padding:1.5rem 1.75rem; }
-        }
-        @media(min-width:1024px){
-            .modal-info-side { width:300px; }
-        }
-    </style>
+/* Download links */
+.dl-label{font-size:.55rem;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem}
+.dl-links{display:flex;flex-direction:column;gap:.4rem}
+.dl-link{display:flex;align-items:center;justify-content:space-between;padding:.55rem .75rem;border-radius:.65rem;font-size:.65rem;font-weight:900;text-transform:uppercase;text-decoration:none;color:#fff;transition:background .15s}
+.dl-link.primary{background:#dc2626}.dl-link.primary:hover{background:#b91c1c}
+.dl-link.secondary{background:#1e293b}.dl-link.secondary:hover{background:#334155}
+.no-links{font-size:.75rem;color:#334155}
+
+/* Spinner */
+#spinner{display:flex;height:100vh;align-items:center;justify-content:center;flex-direction:column;gap:.75rem;background:#020617}
+.spin{width:2.2rem;height:2.2rem;border:2px solid rgba(236,72,153,.3);border-top-color:#ec4899;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#spinner p{font-size:.55rem;font-weight:900;color:#475569;text-transform:uppercase;letter-spacing:.25em;margin:0}
+
+/* Fade-in */
+.fade-in{animation:fi .22s ease-out both}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+/* Scrollbar */
+.modal-info::-webkit-scrollbar{width:3px}
+.modal-info::-webkit-scrollbar-thumb{background:rgba(236,72,153,.4);border-radius:4px}
+
+/* Empty state */
+.empty{grid-column:1/-1;text-align:center;color:#334155;padding:4rem 0;font-size:.85rem}
+</style>
 </head>
 <body>
-<div id="root"></div>
+
+<div id="spinner">
+  <div class="spin"></div>
+  <p>Loading Gallery...</p>
+</div>
+
+<div id="app" style="display:none">
+  <div id="header">
+    <div id="header-inner">
+      <div id="title-row">
+        <button id="back-btn" aria-label="Voltar">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        </button>
+        <h1 id="page-title">Exclusive Portal</h1>
+      </div>
+      <div id="search-wrap">
+        <span id="search-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </span>
+        <input id="search" type="search" placeholder="Buscar modelo…" autocomplete="off" spellcheck="false">
+      </div>
+    </div>
+  </div>
+
+  <main id="main">
+    <div id="model-grid"></div>
+    <div id="video-grid"></div>
+  </main>
+</div>
+
+<!-- Modal -->
+<div id="modal" role="dialog" aria-modal="true">
+  <div class="modal-box">
+    <div class="modal-video" id="modal-video">
+      <button class="close-btn-mob" id="close-mob" aria-label="Fechar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-info" id="modal-info">
+      <div class="modal-header">
+        <div style="min-width:0">
+          <p class="modal-title" id="m-title"></p>
+          <p class="modal-cat"  id="m-cat"></p>
+          <p class="modal-guests" id="m-guests"></p>
+          <p class="modal-id"   id="m-id"></p>
+        </div>
+        <button class="close-btn" id="close-desk" aria-label="Fechar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="player-tabs" id="ptabs"></div>
+      <p class="dl-label">Download</p>
+      <div class="dl-links" id="dl-links"></div>
+    </div>
+  </div>
+</div>
 
 <script>
-    // ONE shared IntersectionObserver for all images — zero per-component overhead
-    const imgObserver = new IntersectionObserver(entries => {
-        entries.forEach(e => {
-            if (!e.isIntersecting) return;
-            const img = e.target;
-            if (img.dataset.src) { img.src = img.dataset.src; img.removeAttribute('data-src'); }
-            imgObserver.unobserve(img);
+// ── Config ────────────────────────────────────────────────────────────────────
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSs1GhZQnhVZLayT56Ik4zsE2GaWyVV6A0IeUz6YSMKGSN9jnmXjpWtIVbfUsXH1_Os17RG_oju8Ba3/pub?gid=0&single=true&output=csv";
+const IMGS_PATH = "./imgs/";
+
+const IGNORED = new Set(["NAME","TEST","MODEL","EMPTY","ALINA","ANNA","BANANAPOTATO333","ERIN","IZZY","JUNIPER","KATERINA","LUCY","MISTY","NAKEDBARBIEDOLL","NINA","NIKOLETTA QUEEN","RAINI","SCARLETT","SCARLETT HAMPTOM","SHYLA","TESSA","THEODORA","VIOLET RAY","WILD HALLI","YUIWOO"]);
+
+// ── Shared IntersectionObserver ───────────────────────────────────────────────
+const imgObs = new IntersectionObserver(entries => {
+    for (const e of entries) {
+        if (!e.isIntersecting) continue;
+        const img = e.target;
+        if (img.dataset.src) { img.src = img.dataset.src; delete img.dataset.src; }
+        imgObs.unobserve(img);
+    }
+}, { rootMargin: '250px' });
+
+// ── Utilities ─────────────────────────────────────────────────────────────────
+function toSlug(name) {
+    return name.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/\s+/g,'-') + ".jpg";
+}
+function toEmbed(url) {
+    if (!url) return '';
+    try {
+        const u = new URL(url);
+        const h = u.hostname;
+        if (h.includes('doodstream') || h.includes('lulustream')) return url.replace(/\/d\//, '/e/');
+        if (h.includes('vidnest')) { const id = u.pathname.replace(/^\//,''); return u.origin+'/embed-'+id+'.html'; }
+        return url;
+    } catch { return url; }
+}
+function csvSplit(line) {
+    // Fast CSV split respecting quoted fields
+    const cols = [];
+    let cur = '', inQ = false;
+    for (let i = 0; i < line.length; i++) {
+        const c = line[i];
+        if (c === '"') { inQ = !inQ; }
+        else if (c === ',' && !inQ) { cols.push(cur.trim()); cur = ''; }
+        else cur += c;
+    }
+    cols.push(cur.trim());
+    return cols;
+}
+function parseCSV(csv) {
+    const lines = csv.trim().split('\n');
+    const out = [];
+    for (let i = 1; i < lines.length; i++) {
+        const v = csvSplit(lines[i]);
+        if (!v[2]) continue;
+        const name = v[2].trim();
+        if (IGNORED.has(name.toUpperCase())) continue;
+        const l1 = v[3]||'', l2 = v[4]||'', l3 = v[5]||'';
+        out.push({
+            ModelName: name,
+            Link1:l1, Link2:l2, Link3:l3,
+            Embed1:toEmbed(l1), Embed2:toEmbed(l2), Embed3:toEmbed(l3),
+            Guests:   v[7]||'',
+            Category: v[8]||'',
+            ID:       v[10]||'',
+            Tags:     (v[11]||'').replace(/"/g,'').replace(/,/g,' ').split(/[#\s]+/).filter(Boolean),
+            Thumb:    v[14]||'',
+            Photo:    v[0]||'',
         });
-    }, { rootMargin: '300px' });
-
-    function observeImg(el) { if (el) imgObserver.observe(el); }
-</script>
-
-<script type="text/babel">
-    const { useState, useEffect, useMemo, useCallback, useRef } = React;
-
-    const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSs1GhZQnhVZLayT56Ik4zsE2GaWyVV6A0IeUz6YSMKGSN9jnmXjpWtIVbfUsXH1_Os17RG_oju8Ba3/pub?gid=0&single=true&output=csv";
-    const MODEL_PHOTOS_PATH = "./imgs/";
-
-    const IGNORED = new Set(["NAME","TEST","MODEL","EMPTY","ALINA","ANNA","BANANAPOTATO333","ERIN","IZZY","JUNIPER","KATERINA","LUCY","MISTY","NAKEDBARBIEDOLL","NINA","NIKOLETTA QUEEN","RAINI","SCARLETT","SCARLETT HAMPTOM","SHYLA","TESSA","THEODORA","VIOLET RAY","WILD HALLI","YUIWOO"]);
-
-    function toFileName(name) {
-        return name.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/\s+/g,'-') + ".jpg";
     }
-    function parseTags(s) {
-        if (!s) return [];
-        return s.replace(/,/g,' ').split(/[#\s]+/).map(t=>t.trim()).filter(Boolean);
-    }
-    // Converts any download URL to its embeddable form automatically
-    function toEmbedUrl(url) {
-        if (!url) return '';
-        try {
-            const u = new URL(url);
-            const host = u.hostname;
-            if (host.includes('doodstream') || host.includes('lulustream')) {
-                return url.replace(/\/d\//, '/e/');
-            }
-            if (host.includes('vidnest')) {
-                const id = u.pathname.replace(/^\//, '');
-                return u.origin + '/embed-' + id + '.html';
-            }
-            return url; // unknown platform — try as-is
-        } catch(e) { return url; }
-    }
+    return out.reverse();
+}
 
-    function parseCSV(csv) {
-        const lines = csv.trim().split('\n');
-        const out = [];
-        for (let i = 1; i < lines.length; i++) {
-            const v = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-            if (!v[2]) continue;
-            const name = v[2].trim();
-            if (IGNORED.has(name.toUpperCase())) continue;
-            const l1 = v[3]?.trim() || '';
-            const l2 = v[4]?.trim() || '';
-            const l3 = v[5]?.trim() || '';
-            out.push({
-                ModelName: name,
-                Link1: l1, Link2: l2, Link3: l3,
-                Embed1: toEmbedUrl(l1),
-                Embed2: toEmbedUrl(l2),
-                Embed3: toEmbedUrl(l3),
-                Guests: v[7]?.trim() || '',
-                Category: v[8]?.trim() || '',
-                ID: v[10]?.trim() || '',
-                Tags: parseTags(v[11]?.replace(/"/g,'').trim()),
-                VideoThumbnail: v[14]?.trim() || '',
-                ModelPhoto: v[0]?.trim() || '',
-            });
+// ── State ─────────────────────────────────────────────────────────────────────
+let allData   = [];
+let modelMap  = new Map();   // name → { name, slug, count }
+let curModel  = null;
+let curVideo  = null;
+let activePlayerIdx = 0;
+let searchQ   = '';
+let debTimer  = null;
+
+// ── DOM refs ──────────────────────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+const modelGrid = $('model-grid');
+const videoGrid = $('video-grid');
+const pageTitle = $('page-title');
+const backBtn   = $('back-btn');
+const searchEl  = $('search');
+const modal     = $('modal');
+const modalVideo= $('modal-video');
+const mTitle    = $('m-title');
+const mCat      = $('m-cat');
+const mGuests   = $('m-guests');
+const mId       = $('m-id');
+const ptabs     = $('ptabs');
+const dlLinks   = $('dl-links');
+
+// ── Lazy image helper ─────────────────────────────────────────────────────────
+function lazyImg(src, alt, fallback) {
+    const img = document.createElement('img');
+    img.dataset.src = src;
+    img.alt = alt;
+    img.decoding = 'async';
+    img.onload  = () => img.classList.add('loaded');
+    img.onerror = () => { img.onerror=null; img.src=fallback; img.classList.add('loaded'); };
+    imgObs.observe(img);
+    return img;
+}
+
+// ── Render model grid ─────────────────────────────────────────────────────────
+function renderModels() {
+    const q = searchQ.toLowerCase();
+    const frag = document.createDocumentFragment();
+    let count = 0;
+    for (const [, m] of modelMap) {
+        if (q && !m.name.toLowerCase().includes(q)) continue;
+        count++;
+
+        const card = document.createElement('div');
+        card.className = 'mcard';
+        card.onclick = () => openModel(m);
+
+        const imgWrap = document.createElement('div');
+        imgWrap.className = 'mcard-img';
+
+        const img = lazyImg(
+            IMGS_PATH + m.slug,
+            m.name,
+            `https://ui-avatars.com/api/?name=${encodeURIComponent(m.name)}&background=1e293b&color=fff&size=400`
+        );
+        imgWrap.appendChild(img);
+
+        const grad = document.createElement('div');
+        grad.className = 'mcard-grad';
+        imgWrap.appendChild(grad);
+
+        const cnt = document.createElement('span');
+        cnt.className = 'mcard-count';
+        cnt.textContent = m.count + ' vídeos';
+        imgWrap.appendChild(cnt);
+
+        const lbl = document.createElement('p');
+        lbl.className = 'mcard-name';
+        lbl.textContent = m.name;
+
+        card.appendChild(imgWrap);
+        card.appendChild(lbl);
+        frag.appendChild(card);
+    }
+    if (!count) {
+        const empty = document.createElement('p');
+        empty.className = 'empty';
+        empty.textContent = 'Nenhum modelo encontrado.';
+        frag.appendChild(empty);
+    }
+    modelGrid.innerHTML = '';
+    modelGrid.appendChild(frag);
+    modelGrid.classList.add('fade-in');
+    void modelGrid.offsetWidth; // force reflow to re-trigger animation
+    modelGrid.classList.remove('fade-in');
+    requestAnimationFrame(() => modelGrid.classList.add('fade-in'));
+}
+
+// ── Render video grid ─────────────────────────────────────────────────────────
+function renderVideos() {
+    const q = searchQ.toLowerCase();
+    const frag = document.createDocumentFragment();
+    let count = 0;
+    for (const v of allData) {
+        if (v.ModelName !== curModel.name) continue;
+        if (q && !(
+            v.ID.toLowerCase().includes(q) ||
+            v.Guests.toLowerCase().includes(q) ||
+            v.Category.toLowerCase().includes(q) ||
+            v.Tags.some(t => t.toLowerCase().includes(q))
+        )) continue;
+        count++;
+
+        const card = document.createElement('div');
+        card.className = 'vcard';
+        card.onclick = () => openVideo(v);
+
+        const thumb = document.createElement('div');
+        thumb.className = 'vcard-thumb';
+
+        const img = lazyImg(
+            v.Thumb || v.Photo,
+            v.ID,
+            'https://placehold.co/600x338/0f172a/1e293b?text=.'
+        );
+        thumb.appendChild(img);
+
+        const playWrap = document.createElement('div');
+        playWrap.className = 'vcard-play';
+        const circle = document.createElement('div');
+        circle.className = 'play-circle';
+        circle.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>`;
+        playWrap.appendChild(circle);
+        thumb.appendChild(playWrap);
+
+        if (v.Category) {
+            const cat = document.createElement('span');
+            cat.className = 'vcard-cat';
+            cat.textContent = v.Category;
+            thumb.appendChild(cat);
         }
-        return out.reverse();
+
+        const info = document.createElement('div');
+        info.className = 'vcard-info';
+        const idEl = document.createElement('p');
+        idEl.className = 'vcard-id';
+        idEl.textContent = 'ID: ' + v.ID;
+        info.appendChild(idEl);
+        if (v.Guests) {
+            const g = document.createElement('p');
+            g.className = 'vcard-guests';
+            g.textContent = 'w/ ' + v.Guests;
+            info.appendChild(g);
+        }
+
+        card.appendChild(thumb);
+        card.appendChild(info);
+        frag.appendChild(card);
     }
-    function useDebounce(val, ms) {
-        const [dv, setDv] = useState(val);
-        useEffect(() => { const t = setTimeout(()=>setDv(val), ms); return ()=>clearTimeout(t); }, [val, ms]);
-        return dv;
+    if (!count) {
+        const empty = document.createElement('p');
+        empty.className = 'empty';
+        empty.textContent = 'Nenhum vídeo encontrado.';
+        frag.appendChild(empty);
+    }
+    videoGrid.innerHTML = '';
+    videoGrid.appendChild(frag);
+    videoGrid.classList.add('fade-in');
+    void videoGrid.offsetWidth;
+    videoGrid.classList.remove('fade-in');
+    requestAnimationFrame(() => videoGrid.classList.add('fade-in'));
+}
+
+// ── Navigation ────────────────────────────────────────────────────────────────
+function openModel(m) {
+    curModel = m;
+    searchQ = '';
+    searchEl.value = '';
+    searchEl.placeholder = `Buscar em ${m.name}…`;
+    pageTitle.textContent = m.name;
+    backBtn.style.display = 'flex';
+    modelGrid.style.display = 'none';
+    videoGrid.style.display = 'grid';
+    renderVideos();
+    window.scrollTo({ top: 0, behavior: 'instant' });
+}
+function goBack() {
+    curModel = null;
+    searchQ = '';
+    searchEl.value = '';
+    searchEl.placeholder = 'Buscar modelo…';
+    pageTitle.textContent = 'Exclusive Portal';
+    backBtn.style.display = 'none';
+    videoGrid.style.display = 'none';
+    modelGrid.style.display = 'grid';
+    renderModels();
+    window.scrollTo({ top: 0, behavior: 'instant' });
+}
+
+// ── Modal ─────────────────────────────────────────────────────────────────────
+const EXT_ICON = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`;
+
+function buildPlayers(v) {
+    const data = [
+        { embed: v.Embed1, dl: v.Link1, label: 'Player 1' },
+        { embed: v.Embed2, dl: v.Link2, label: 'Player 2' },
+        { embed: v.Embed3, dl: v.Link3, label: 'Player 3' },
+    ].filter(p => p.embed);
+    return data;
+}
+
+function setActivePlayer(players, idx) {
+    activePlayerIdx = idx;
+    // Swap iframe (key trick: remove and re-add)
+    const old = modalVideo.querySelector('iframe');
+    if (old) old.remove();
+    if (players[idx]) {
+        const iframe = document.createElement('iframe');
+        iframe.src = players[idx].embed;
+        iframe.allowFullscreen = true;
+        iframe.setAttribute('allowfullscreen','');
+        modalVideo.insertBefore(iframe, modalVideo.firstChild);
+    }
+    // Update tab styles
+    const tabs = ptabs.querySelectorAll('.ptab');
+    tabs.forEach((t, i) => t.classList.toggle('active', i === idx));
+}
+
+function openVideo(v) {
+    curVideo = v;
+    const players = buildPlayers(v);
+
+    mTitle.textContent  = v.ModelName;
+    mCat.textContent    = v.Category || '';
+    mGuests.textContent = v.Guests ? 'w/ ' + v.Guests : '';
+    mId.textContent     = 'ID: ' + v.ID;
+    mCat.style.display    = v.Category ? '' : 'none';
+    mGuests.style.display = v.Guests   ? '' : 'none';
+
+    // Build tabs
+    ptabs.innerHTML = '';
+    if (players.length > 1) {
+        players.forEach((p, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'ptab' + (i === 0 ? ' active' : '');
+            btn.textContent = p.label;
+            btn.onclick = () => setActivePlayer(players, i);
+            ptabs.appendChild(btn);
+        });
+        ptabs.style.display = 'flex';
+    } else {
+        ptabs.style.display = 'none';
     }
 
-    // Icons as static JSX constants — rendered once, reused everywhere
-    const ICback = <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>;
-    const ICsearch = <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>;
-    const ICplay = <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>;
-    const ICext = <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>;
-    const ICx20 = <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>;
-    const ICx18 = <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>;
+    // Build download links
+    dlLinks.innerHTML = '';
+    if (players.length === 0) {
+        dlLinks.innerHTML = '<p class="no-links">Nenhum link disponível.</p>';
+    } else {
+        players.forEach((p, i) => {
+            if (!p.dl) return;
+            const a = document.createElement('a');
+            a.href = p.dl;
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer';
+            a.className = 'dl-link ' + (i === 0 ? 'primary' : 'secondary');
+            a.innerHTML = p.label + ' ' + EXT_ICON;
+            dlLinks.appendChild(a);
+        });
+    }
 
-    // LazyImg — uses shared observer, NO useState, NO useEffect after mount
-    const LazyImg = React.memo(({ src, alt, cls, fallback }) => (
-        <img
-            ref={el => observeImg(el)}
-            data-src={src}
-            alt={alt}
-            decoding="async"
-            className={"lazy-img " + (cls || "")}
-            onLoad={e => e.target.classList.add('loaded')}
-            onError={e => { e.target.onerror=null; e.target.src=fallback; e.target.classList.add('loaded'); }}
-        />
-    ));
+    setActivePlayer(players, 0);
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
 
-    const ModelCard = React.memo(({ model, onClick }) => (
-        <div onClick={onClick} className="cursor-pointer group">
-            <div className="card-thumb ratio-card rounded-2xl mb-2 bg-slate-900 ring-1 ring-white/5 group-hover:ring-pink-500/40 transition-shadow duration-200">
-                <LazyImg
-                    src={model.image}
-                    alt={model.name}
-                    fallback={`https://ui-avatars.com/api/?name=${encodeURIComponent(model.name)}&background=1e293b&color=fff&size=400`}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/5 to-transparent pointer-events-none"/>
-                <span className="absolute bottom-2 left-3 text-[8px] font-black text-pink-500 uppercase tracking-widest">{model.count} vídeos</span>
-            </div>
-            <p className="text-center text-xs font-bold text-slate-400 group-hover:text-white truncate transition-colors">{model.name}</p>
-        </div>
-    ));
+function closeModal() {
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+    // Remove iframe to stop video
+    const iframe = modalVideo.querySelector('iframe');
+    if (iframe) iframe.remove();
+    curVideo = null;
+}
 
-    const VideoCard = React.memo(({ video, onClick }) => (
-        <div onClick={onClick} className="cursor-pointer group bg-slate-900/40 hover:bg-slate-900/70 border border-white/5 rounded-2xl overflow-hidden transition-colors">
-            <div className="card-thumb ratio-video bg-slate-800">
-                <LazyImg
-                    src={video.VideoThumbnail || video.ModelPhoto}
-                    alt={video.ID}
-                    fallback="https://placehold.co/600x338/0f172a/1e293b?text=."
-                />
-                <div className="play-overlay">
-                    <div className="w-11 h-11 bg-pink-600 rounded-full flex items-center justify-center shadow-lg">{ICplay}</div>
-                </div>
-                {video.Category && (
-                    <span className="absolute top-2 right-2 bg-black/70 backdrop-blur-sm px-2 py-0.5 rounded text-[8px] font-bold uppercase">{video.Category}</span>
-                )}
-            </div>
-            <div className="p-3">
-                <p className="font-bold text-slate-100 text-xs truncate">ID: {video.ID}</p>
-                {video.Guests && <p className="text-[9px] text-pink-500 font-bold uppercase mt-0.5">w/ {video.Guests}</p>}
-            </div>
-        </div>
-    ));
+// ── Search ────────────────────────────────────────────────────────────────────
+searchEl.addEventListener('input', e => {
+    clearTimeout(debTimer);
+    debTimer = setTimeout(() => {
+        searchQ = e.target.value.trim();
+        if (curModel) renderVideos();
+        else renderModels();
+    }, 280);
+});
 
-    // Pairs each player tab with its embed URL and download link
-    const PLAYERS = [
-        { key: 'p1', label: 'Player 1' },
-        { key: 'p2', label: 'Player 2' },
-        { key: 'p3', label: 'Player 3' },
-    ];
+// ── Events ────────────────────────────────────────────────────────────────────
+backBtn.onclick = goBack;
+$('close-mob').onclick = closeModal;
+$('close-desk').onclick = closeModal;
+modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && curVideo) closeModal(); });
 
-    const VideoModal = React.memo(({ video, onClose }) => {
-        const onBg = useCallback(e => { if (e.target === e.currentTarget) onClose(); }, [onClose]);
-        useEffect(() => {
-            const h = e => { if (e.key === 'Escape') onClose(); };
-            window.addEventListener('keydown', h);
-            return () => window.removeEventListener('keydown', h);
-        }, [onClose]);
+// ── Init ──────────────────────────────────────────────────────────────────────
+fetch(SHEET_URL)
+    .then(r => r.text())
+    .then(csv => {
+        allData = parseCSV(csv);
 
-        // Build available players (only those with an embed URL)
-        const players = useMemo(() => {
-            const embeds = [video.Embed1, video.Embed2, video.Embed3];
-            const dls    = [video.Link1,  video.Link2,  video.Link3];
-            return PLAYERS.map((p, i) => ({ ...p, embed: embeds[i], dl: dls[i] })).filter(p => p.embed);
-        }, [video]);
+        // Build model map (preserves insertion order = already sorted later)
+        const tempMap = new Map();
+        for (const row of allData) {
+            const n = row.ModelName;
+            if (!tempMap.has(n)) tempMap.set(n, { name:n, slug:toSlug(n), count:0 });
+            tempMap.get(n).count++;
+        }
+        // Sort alphabetically, keep only models with >1 video
+        const sorted = [...tempMap.values()]
+            .filter(m => m.count > 1)
+            .sort((a,b) => a.name.localeCompare(b.name));
+        modelMap = new Map(sorted.map(m => [m.name, m]));
 
-        const [activeIdx, setActiveIdx] = useState(0);
-
-        // Reset to first player when video changes
-        useEffect(() => { setActiveIdx(0); }, [video]);
-
-        const active = players[activeIdx] || players[0];
-
-        return (
-            <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center modal-bg animate-in" onClick={onBg}>
-                <div className="modal-inner shadow-2xl">
-                    {/* Video side */}
-                    <div className="modal-video-side">
-                        {active
-                            ? <iframe key={active.embed} src={active.embed} allowFullScreen/>
-                            : <div className="absolute inset-0 flex items-center justify-center text-slate-600 text-sm">Sem embed disponível</div>
-                        }
-                        <button onClick={onClose} className="absolute top-3 right-3 md:hidden bg-black/60 rounded-full p-1.5">{ICx18}</button>
-                    </div>
-
-                    {/* Info side */}
-                    <div className="modal-info-side custom-scroll">
-                        <div className="flex items-start justify-between gap-2 mb-3">
-                            <div className="min-w-0">
-                                <h2 className="text-base font-black uppercase italic text-white leading-tight truncate">{video.ModelName}</h2>
-                                {video.Category && <p className="text-pink-500 font-bold text-[9px] tracking-widest uppercase mt-0.5">{video.Category}</p>}
-                                {video.Guests   && <p className="text-slate-400 text-[10px] mt-1">w/ {video.Guests}</p>}
-                                <p className="text-slate-600 text-[9px] mt-1 font-mono">ID: {video.ID}</p>
-                            </div>
-                            <button onClick={onClose} className="hidden md:flex flex-shrink-0 text-slate-500 hover:text-white transition-colors p-1">{ICx20}</button>
-                        </div>
-
-                        {/* Player tabs */}
-                        {players.length > 1 && (
-                            <div className="flex gap-1.5 mb-4">
-                                {players.map((p, i) => (
-                                    <button
-                                        key={p.key}
-                                        onClick={() => setActiveIdx(i)}
-                                        className={`flex-1 py-1.5 rounded-lg text-[9px] font-black uppercase transition-colors ${
-                                            i === activeIdx
-                                                ? 'bg-pink-600 text-white'
-                                                : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white'
-                                        }`}
-                                    >
-                                        {p.label}
-                                    </button>
-                                ))}
-                            </div>
-                        )}
-
-                        {/* Download link for active player */}
-                        <div className="flex flex-col gap-2">
-                            <p className="text-slate-500 text-[9px] uppercase font-bold tracking-wider mb-0.5">Download</p>
-                            {players.length > 0
-                                ? players.map((p, i) => p.dl && (
-                                    <a key={p.dl} href={p.dl} target="_blank" rel="noopener noreferrer"
-                                       className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-[10px] font-black uppercase transition-colors ${
-                                           i === 0 ? 'bg-pink-600 hover:bg-pink-700' : 'bg-slate-800 hover:bg-slate-700'
-                                       }`}>
-                                        {p.label} {ICext}
-                                    </a>
-                                ))
-                                : <p className="text-slate-600 text-xs">Nenhum link disponível.</p>
-                            }
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
+        $('spinner').style.display = 'none';
+        $('app').style.display = '';
+        renderModels();
+    })
+    .catch(err => {
+        console.error(err);
+        $('spinner').innerHTML = '<p style="color:#ef4444;font-size:.85rem">Erro ao carregar dados.</p>';
     });
-
-    const App = () => {
-        const [data,    setData]  = useState([]);
-        const [model,   setModel] = useState(null);
-        const [video,   setVideo] = useState(null);
-        const [loading, setLoad]  = useState(true);
-        const [search,  setSrch]  = useState("");
-        const q = useDebounce(search, 280);
-
-        useEffect(() => {
-            fetch(SHEET_CSV_URL)
-                .then(r => r.text())
-                .then(t => { setData(parseCSV(t)); setLoad(false); })
-                .catch(e => { console.error(e); setLoad(false); });
-        }, []);
-
-        const modelMap = useMemo(() => {
-            const map = new Map();
-            data.forEach(({ ModelName }) => {
-                if (!map.has(ModelName)) map.set(ModelName, { name: ModelName, image: MODEL_PHOTOS_PATH + toFileName(ModelName), count: 0 });
-                map.get(ModelName).count++;
-            });
-            return Array.from(map.values()).filter(m => m.count > 1).sort((a,b) => a.name.localeCompare(b.name));
-        }, [data]);
-
-        const models = useMemo(() => {
-            if (!q) return modelMap;
-            const lq = q.toLowerCase();
-            return modelMap.filter(m => m.name.toLowerCase().includes(lq));
-        }, [modelMap, q]);
-
-        const videos = useMemo(() => {
-            if (!model) return [];
-            let list = data.filter(v => v.ModelName === model.name);
-            if (q) {
-                const lq = q.toLowerCase();
-                list = list.filter(v =>
-                    v.ID.toLowerCase().includes(lq) ||
-                    v.Guests.toLowerCase().includes(lq) ||
-                    v.Category.toLowerCase().includes(lq) ||
-                    v.Tags.some(t => t.toLowerCase().includes(lq))
-                );
-            }
-            return list;
-        }, [model, data, q]);
-
-        const handleBack  = useCallback(() => { setModel(null); setSrch(""); }, []);
-        const handleClose = useCallback(() => setVideo(null), []);
-
-        if (loading) return (
-            <div className="flex h-screen items-center justify-center bg-slate-950">
-                <div className="flex flex-col items-center gap-3">
-                    <div className="w-9 h-9 rounded-full border-2 border-pink-500 border-r-transparent animate-spin"/>
-                    <span className="text-slate-500 text-[9px] font-black uppercase tracking-[0.3em]">Loading Gallery...</span>
-                </div>
-            </div>
-        );
-
-        return (
-            <div className="min-h-screen pb-12 bg-slate-950 text-slate-200">
-                <header className="sticky top-0 z-40 bg-slate-900/80 backdrop-blur-xl border-b border-white/5 px-4 py-3">
-                    <div className="max-w-7xl mx-auto flex flex-wrap sm:flex-nowrap items-center gap-3">
-                        <div className="flex items-center gap-3 flex-shrink-0">
-                            {model && (
-                                <button onClick={handleBack} className="p-2 hover:bg-white/10 rounded-full transition-colors active:scale-90">
-                                    {ICback}
-                                </button>
-                            )}
-                            <h1 className="text-lg sm:text-xl font-black italic uppercase tracking-tighter text-white whitespace-nowrap">
-                                {model ? model.name : 'Exclusive Portal'}
-                            </h1>
-                        </div>
-                        <div className="relative w-full sm:max-w-sm ml-auto">
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none">{ICsearch}</span>
-                            <input
-                                type="search"
-                                placeholder={model ? `Buscar em ${model.name}…` : "Buscar modelo…"}
-                                value={search}
-                                onChange={e => setSrch(e.target.value)}
-                                className="w-full bg-slate-950/60 border border-white/10 rounded-xl py-2 pl-9 pr-4 text-sm focus:outline-none focus:border-pink-500/50 transition-colors"
-                            />
-                        </div>
-                    </div>
-                </header>
-
-                <main className="max-w-7xl mx-auto px-3 sm:px-6 md:px-8 py-5 md:py-8">
-                    {!model ? (
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5 animate-in">
-                            {models.map(m => <ModelCard key={m.name} model={m} onClick={() => setModel(m)} />)}
-                            {models.length === 0 && <p className="col-span-full text-center text-slate-600 py-16 text-sm">Nenhum modelo encontrado.</p>}
-                        </div>
-                    ) : (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 animate-in">
-                            {videos.map((v, i) => <VideoCard key={v.ID + i} video={v} onClick={() => setVideo(v)} />)}
-                            {videos.length === 0 && <p className="col-span-full text-center text-slate-600 py-16 text-sm">Nenhum vídeo encontrado.</p>}
-                        </div>
-                    )}
-                </main>
-
-                {video && <VideoModal video={video} onClose={handleClose} />}
-            </div>
-        );
-    };
-
-    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
 </script>
 </body>
 </html>

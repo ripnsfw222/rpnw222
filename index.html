@@ -678,20 +678,37 @@ function goBack(fromPopState) {
     if (!fromPopState) history.pushState({}, '', BASE + '/');
 }
 // Handle browser back/forward & swipe gestures
-window.addEventListener('popstate', e => {
-    const slug = getSlugFromPath();
-    if (slug) {
-        const m = slugMap.get(slug);
+window.addEventListener('popstate', () => {
+    const { modelSlug, videoId } = parsePath();
+
+    if (modelSlug && videoId) {
+        // /model/{slug}/{id} — make sure correct model is open then open video
+        const m = slugMap.get(modelSlug);
+        if (m) {
+            if (!curModel || curModel.name !== m.name) openModel(m, true);
+            const v = allData.find(r => r.ModelName === m.name && r.ID === videoId);
+            if (v) { openVideo(v, true); return; }
+        }
+    }
+
+    if (modelSlug) {
+        // /model/{slug} — show model, close modal if open
+        if (curVideo) { closeModal(true); return; }
+        const m = slugMap.get(modelSlug);
         if (m) { openModel(m, true); return; }
     }
-    if (curModel) goBack(true);
-    else if (curVideo) closeModal();
+
+    // / — home
+    if (curVideo) { closeModal(true); return; }
+    if (curModel) { goBack(true); return; }
 });
 
-function getSlugFromPath() {
-    const m = location.pathname.match(/\/model\/([^\/]+)/);
-    return m ? m[1] : null;
+function parsePath() {
+    const match = location.pathname.match(/\/model\/([^\/]+)(?:\/([^\/]+))?/);
+    if (!match) return {};
+    return { modelSlug: match[1], videoId: match[2] ? decodeURIComponent(match[2]) : null };
 }
+function getSlugFromPath() { return parsePath().modelSlug || null; }
 
 // ── Modal ─────────────────────────────────────────────────────────────────────
 const EXT_ICON = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`;
@@ -722,7 +739,7 @@ function setActivePlayer(players, idx) {
     tabs.forEach((t, i) => t.classList.toggle('active', i === idx));
 }
 
-function openVideo(v) {
+function openVideo(v, replaceState) {
     curVideo = v;
     const players = buildPlayers(v);
 
@@ -768,15 +785,25 @@ function openVideo(v) {
     setActivePlayer(players, 0);
     modal.classList.add('open');
     document.body.style.overflow = 'hidden';
+
+    // Update URL to /model/{slug}/{id}
+    if (curModel) {
+        const url = modelUrl(curModel) + '/' + encodeURIComponent(v.ID);
+        if (replaceState) history.replaceState({ model: curModel.name, videoId: v.ID }, '', url);
+        else              history.pushState({ model: curModel.name, videoId: v.ID }, '', url);
+    }
 }
 
-function closeModal() {
+function closeModal(fromPopState) {
     modal.classList.remove('open');
     document.body.style.overflow = '';
-    // Remove iframe to stop video
     const iframe = modalVideo.querySelector('iframe');
     if (iframe) iframe.remove();
     curVideo = null;
+    // Restore model URL, unless we got here via popstate (browser already handled URL)
+    if (!fromPopState && curModel) {
+        history.pushState({ model: curModel.name }, '', modelUrl(curModel));
+    }
 }
 
 // ── Search ────────────────────────────────────────────────────────────────────
@@ -791,10 +818,10 @@ searchEl.addEventListener('input', e => {
 
 // ── Events ────────────────────────────────────────────────────────────────────
 backBtn.onclick = () => goBack(false);
-$('close-mob').onclick = closeModal;
-$('close-desk').onclick = closeModal;
-modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape' && curVideo) closeModal(); });
+$('close-mob').onclick = () => closeModal(false);
+$('close-desk').onclick = () => closeModal(false);
+modal.addEventListener('click', e => { if (e.target === modal) closeModal(false); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && curVideo) closeModal(false); });
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 const CACHE_KEY = 'ep_csv_v3'; // bumped version busts all old caches automatically
@@ -832,10 +859,14 @@ function processCSV(csv) {
 
     window._secDone(() => {
         $('app').style.display = '';
-        // Check if URL already points to a model (direct link / page refresh)
-        const slug = getSlugFromPath();
-        if (slug && slugMap.has(slug)) {
-            openModel(slugMap.get(slug), true); // replaceState — keep history clean
+        const { modelSlug, videoId } = parsePath();
+        if (modelSlug && slugMap.has(modelSlug)) {
+            const m = slugMap.get(modelSlug);
+            openModel(m, true);
+            if (videoId) {
+                const v = allData.find(r => r.ModelName === m.name && r.ID === videoId);
+                if (v) openVideo(v, true);
+            }
         } else {
             renderModels();
         }

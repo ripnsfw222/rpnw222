@@ -33,7 +33,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
-        /* Smooth transitions for images */
         img { 
             transition: opacity 0.5s ease-in-out;
             content-visibility: auto; 
@@ -50,7 +49,6 @@
             border-radius: 10px;
         }
 
-        /* Performance boost: prevent layout shift */
         .aspect-card {
             aspect-ratio: 3/4;
         }
@@ -66,7 +64,7 @@
     <script type="text/babel">
         const { useState, useEffect, useMemo } = React;
 
-        // PERFORMANCE TIP: If you move this to GitHub, replace this URL with your raw GitHub URL
+        // Replace with your raw GitHub CSV URL for better performance
         const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSs1GhZQnhVZLayT56Ik4zsE2GaWyVV6A0IeUz6YSMKGSN9jnmXjpWtIVbfUsXH1_Os17RG_oju8Ba3/pub?gid=0&single=true&output=csv";
         const MODEL_PHOTOS_PATH = "./imgs/";
 
@@ -86,12 +84,22 @@
                 + ".jpg";
         };
 
+        // NEW: Improved tag cleaner to handle glued hashtags or comma-separated values
+        const processTags = (tagString) => {
+            if (!tagString) return [];
+            // Replace commas with spaces, then split by # or space
+            return tagString
+                .replace(/,/g, ' ')
+                .split(/[#\s]+/)
+                .map(t => t.trim())
+                .filter(t => t.length > 0);
+        };
+
         function parseCSV(csvText) {
             const IGNORED_NAMES = ["NAME", "TEST", "MODEL", "EMPTY", "ALINA", "ANNA", "BANANAPOTATO333", "ERIN", "IZZY", "JUNIPER", "KATERINA", "LUCY", "MISTY", "NAKEDBARBIEDOLL", "NINA", "NIKOLETTA QUEEN", "RAINI", "SCARLETT", "SCARLETT HAMPTOM", "SHYLA", "TESSA", "THEODORA", "VIOLET RAY", "WILD HALLI", "YUIWOO"];
             const lines = csvText.trim().split('\n');
             if (lines.length < 2) return [];
             
-            // Map data efficiently
             const parsedData = [];
             for (let i = 1; i < lines.length; i++) {
                 const values = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
@@ -117,7 +125,7 @@
                     Guests: values[7]?.trim() || '',
                     Category: values[8]?.trim() || '',
                     ID: values[10]?.trim() || '',
-                    Tags: values[11]?.replace(/"/g, '').trim() || '',
+                    Tags: processTags(values[11]?.replace(/"/g, '').trim()), // Pre-processing tags
                     VideoThumbnail: values[14]?.trim() || ''
                 });
             }
@@ -256,8 +264,8 @@
                                             <h4 className="font-bold text-slate-100 text-sm mb-1 truncate">ID: {video.ID}</h4>
                                             {video.Guests && <p className="text-[10px] text-pink-500 font-bold uppercase mb-3 tracking-wide">w/ {video.Guests}</p>}
                                             <div className="flex flex-wrap gap-1.5">
-                                                {video.Tags && video.Tags.split(',').slice(0, 3).map((tag, i) => (
-                                                    <span key={i} className="text-[8px] bg-white/5 text-slate-500 px-2 py-0.5 rounded uppercase font-bold border border-white/5">{tag.trim()}</span>
+                                                {video.Tags.slice(0, 3).map((tag, i) => (
+                                                    <span key={i} className="text-[8px] bg-white/5 text-slate-500 px-2 py-0.5 rounded uppercase font-bold border border-white/5 truncate max-w-[80px]">#{tag}</span>
                                                 ))}
                                             </div>
                                         </div>
@@ -311,8 +319,8 @@
                                     <div className="mt-12">
                                         <p className="text-[9px] font-bold text-slate-600 uppercase mb-3 tracking-widest">Metadata Tags</p>
                                         <div className="flex flex-wrap gap-1.5">
-                                            {selectedVideo.Tags && selectedVideo.Tags.split(',').map((tag, i) => (
-                                                <span key={i} className="text-[9px] border border-white/5 bg-white/5 text-slate-400 px-3 py-1.5 rounded-lg font-bold uppercase">{tag.trim()}</span>
+                                            {selectedVideo.Tags.map((tag, i) => (
+                                                <span key={i} className="text-[9px] border border-white/5 bg-white/5 text-slate-400 px-3 py-1.5 rounded-lg font-bold uppercase">#{tag}</span>
                                             ))}
                                         </div>
                                     </div>

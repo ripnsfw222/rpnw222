@@ -386,12 +386,15 @@ function csvSplit(line) {
     return cols;
 }
 function parseCSV(csv) {
-    const lines = csv.trim().split('\n');
+    // Normalize line endings — Google Sheets can return \r\n on some clients
+    const lines = csv.trim().replace(/\r/g, '').split('\n');
     const out = [];
     for (let i = 1; i < lines.length; i++) {
         const v = csvSplit(lines[i]);
         if (!v[2]) continue;
-        const name = v[2].trim();
+        // Strip ALL whitespace variants (\r, nbsp, zero-width, etc.)
+        const name = v[2].replace(/[\s\u00a0\u200b\u200c\u200d\ufeff]+/g, ' ').trim();
+        if (!name) continue;
         if (IGNORED.has(name.toUpperCase())) continue;
         const l1 = v[3]||'', l2 = v[4]||'', l3 = v[5]||'';
         out.push({

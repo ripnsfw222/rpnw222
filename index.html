@@ -97,11 +97,61 @@ body{margin:0;background:#020617;color:#e2e8f0;font-family:system-ui,-apple-syst
 .dl-link.secondary{background:#1e293b}.dl-link.secondary:hover{background:#334155}
 .no-links{font-size:.75rem;color:#334155}
 
-/* Spinner */
-#spinner{display:flex;height:100vh;align-items:center;justify-content:center;flex-direction:column;gap:.75rem;background:#020617}
-.spin{width:2.2rem;height:2.2rem;border:2px solid rgba(236,72,153,.3);border-top-color:#ec4899;border-radius:50%;animation:spin .7s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-#spinner p{font-size:.55rem;font-weight:900;color:#475569;text-transform:uppercase;letter-spacing:.25em;margin:0}
+/* ── Security screen ─────────────────────────────────────────────────────── */
+#spinner{
+    display:flex;height:100vh;align-items:center;justify-content:center;
+    flex-direction:column;background:#020617;padding:1.5rem;
+    animation:fadeInSpin .4s ease both;
+}
+@keyframes fadeInSpin{from{opacity:0}to{opacity:1}}
+
+.sec-logo{
+    display:flex;align-items:center;gap:.6rem;margin-bottom:2.5rem;
+    font-size:.7rem;font-weight:900;color:#475569;text-transform:uppercase;letter-spacing:.2em;
+}
+.sec-logo svg{flex-shrink:0}
+
+.sec-card{
+    width:100%;max-width:380px;
+    background:#0b1223;border:1px solid rgba(255,255,255,.07);
+    border-radius:1.25rem;padding:2rem 1.75rem 1.75rem;
+    display:flex;flex-direction:column;gap:1.25rem;
+}
+
+.sec-row{display:flex;align-items:center;gap:.85rem}
+.sec-icon{
+    width:2.5rem;height:2.5rem;border-radius:.6rem;flex-shrink:0;
+    background:rgba(236,72,153,.12);display:flex;align-items:center;justify-content:center;
+}
+.sec-heading{margin:0;font-size:.95rem;font-weight:800;color:#f1f5f9;line-height:1.3}
+.sec-sub{margin:.2rem 0 0;font-size:.7rem;color:#475569}
+
+.sec-checks{display:flex;flex-direction:column;gap:.55rem}
+.chk{display:flex;align-items:center;gap:.6rem;font-size:.72rem;color:#64748b;transition:color .3s}
+.chk.done{color:#94a3b8}
+.chk.active{color:#e2e8f0}
+.chk-dot{
+    width:.9rem;height:.9rem;border-radius:50%;flex-shrink:0;
+    border:1.5px solid #1e293b;background:#0b1223;
+    transition:all .3s;display:flex;align-items:center;justify-content:center;
+}
+.chk.done .chk-dot{background:#10b981;border-color:#10b981}
+.chk.active .chk-dot{border-color:#ec4899;animation:pulseDot .8s ease infinite}
+@keyframes pulseDot{0%,100%{box-shadow:0 0 0 0 rgba(236,72,153,.4)}50%{box-shadow:0 0 0 5px rgba(236,72,153,0)}}
+
+.chk-check{display:none}
+.chk.done .chk-check{display:block}
+.chk.done .chk-dot-inner{display:none}
+
+.sec-bar-wrap{display:flex;flex-direction:column;gap:.5rem}
+.sec-bar-label{display:flex;justify-content:space-between;align-items:center}
+.sec-bar-label span:first-child{font-size:.65rem;color:#475569;font-weight:600;text-transform:uppercase;letter-spacing:.1em}
+#sec-pct{font-size:.65rem;font-weight:800;color:#ec4899}
+.sec-bar-track{height:3px;background:#1e293b;border-radius:2px;overflow:hidden}
+#sec-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,#9333ea,#ec4899);border-radius:2px;transition:width .4s ease}
+
+.sec-notice{font-size:.6rem;color:#334155;text-align:center;line-height:1.6}
+.sec-notice b{color:#475569}
 
 /* Fade-in */
 .fade-in{animation:fi .22s ease-out both}
@@ -118,8 +168,55 @@ body{margin:0;background:#020617;color:#e2e8f0;font-family:system-ui,-apple-syst
 <body>
 
 <div id="spinner">
-  <div class="spin"></div>
-  <p>Loading Gallery...</p>
+  <div class="sec-logo">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    Exclusive Portal
+  </div>
+
+  <div class="sec-card">
+    <div class="sec-row">
+      <div class="sec-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+      </div>
+      <div>
+        <p class="sec-heading">Verificando seu acesso</p>
+        <p class="sec-sub">Aguarde enquanto validamos sua sessão…</p>
+      </div>
+    </div>
+
+    <div class="sec-checks">
+      <div class="chk" id="chk1">
+        <div class="chk-dot">
+          <svg class="chk-check" width="8" height="8" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg>
+        </div>
+        <span>Verificando endereço IP</span>
+      </div>
+      <div class="chk" id="chk2">
+        <div class="chk-dot">
+          <svg class="chk-check" width="8" height="8" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg>
+        </div>
+        <span>Validando sessão do navegador</span>
+      </div>
+      <div class="chk" id="chk3">
+        <div class="chk-dot">
+          <svg class="chk-check" width="8" height="8" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg>
+        </div>
+        <span>Carregando catálogo seguro</span>
+      </div>
+    </div>
+
+    <div class="sec-bar-wrap">
+      <div class="sec-bar-label">
+        <span>Progresso</span>
+        <span id="sec-pct">0%</span>
+      </div>
+      <div class="sec-bar-track">
+        <div id="sec-bar-fill"></div>
+      </div>
+    </div>
+
+    <p class="sec-notice">Isso geralmente leva <b>menos de 5 segundos</b>.<br>Não feche ou atualize esta página.</p>
+  </div>
 </div>
 
 <div id="app" style="display:none">
@@ -174,13 +271,74 @@ body{margin:0;background:#020617;color:#e2e8f0;font-family:system-ui,-apple-syst
 </div>
 
 <script>
+// ── Security screen controller ────────────────────────────────────────────────
+(function() {
+    let pct = 0;
+    let rafId = null;
+    let done = false;
+
+    const fill  = document.getElementById('sec-bar-fill');
+    const pctEl = document.getElementById('sec-pct');
+    const chk1  = document.getElementById('chk1');
+    const chk2  = document.getElementById('chk2');
+    const chk3  = document.getElementById('chk3');
+
+    function setCheck(el, state) {
+        el.classList.remove('active','done');
+        if (state) el.classList.add(state);
+    }
+    function updateChecks(p) {
+        if (p < 35)       { setCheck(chk1,'active'); setCheck(chk2,'');       setCheck(chk3,''); }
+        else if (p < 70)  { setCheck(chk1,'done');   setCheck(chk2,'active'); setCheck(chk3,''); }
+        else if (p < 99)  { setCheck(chk1,'done');   setCheck(chk2,'done');   setCheck(chk3,'active'); }
+        else              { setCheck(chk1,'done');   setCheck(chk2,'done');   setCheck(chk3,'done'); }
+    }
+
+    // Fake progress: fast to 85%, then crawl until real data arrives
+    function tick() {
+        if (done) return;
+        const target = done ? 100 : 85;
+        const speed  = pct < 40 ? 1.8 : pct < 70 ? 0.9 : pct < 85 ? 0.3 : 0;
+        pct = Math.min(pct + speed, target);
+        fill.style.width = pct + '%';
+        pctEl.textContent = Math.round(pct) + '%';
+        updateChecks(pct);
+        if (pct < target) rafId = requestAnimationFrame(tick);
+    }
+    rafId = requestAnimationFrame(tick);
+
+    // Called by init() when data is ready
+    window._secDone = function(onFinish) {
+        done = true;
+        cancelAnimationFrame(rafId);
+        // Snap to 100%
+        let p2 = pct;
+        function finish() {
+            p2 = Math.min(p2 + 4, 100);
+            fill.style.width = p2 + '%';
+            pctEl.textContent = Math.round(p2) + '%';
+            updateChecks(p2);
+            if (p2 < 100) requestAnimationFrame(finish);
+            else {
+                setTimeout(() => {
+                    const sp = document.getElementById('spinner');
+                    sp.style.transition = 'opacity .35s ease';
+                    sp.style.opacity = '0';
+                    setTimeout(() => { sp.style.display = 'none'; onFinish(); }, 350);
+                }, 220);
+            }
+        }
+        requestAnimationFrame(finish);
+    };
+})();
+
 // ── Config ────────────────────────────────────────────────────────────────────
 // /pub endpoint has no HTTP cache; export URL is served via Google's CDN with proper caching
 const SHEET_ID  = "2PACX-1vSs1GhZQnhVZLayT56Ik4zsE2GaWyVV6A0IeUz6YSMKGSN9jnmXjpWtIVbfUsXH1_Os17RG_oju8Ba3";
 const SHEET_URL = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pub?gid=0&single=true&output=csv`;
 const IMGS_PATH = "./imgs/";
 
-const IGNORED = new Set(["STELLA LUXX", "REBECA FOX", "EVA NYX", "ELLIE NOVA", "BRITNEY ROSE", "NAME","TEST","MODEL","EMPTY","ALINA","ANNA","BANANAPOTATO333","ERIN","IZZY","JUNIPER","KATERINA","LUCY","MISTY","NAKEDBARBIEDOLL","NINA","NIKOLETTA QUEEN","RAINI","SCARLETT","SCARLETT HAMPTOM","SHYLA","TESSA","THEODORA","VIOLET RAY","WILD HALLI","YUIWOO"]);
+const IGNORED = new Set(["NAME","TEST","MODEL","EMPTY","ALINA","ANNA","BANANAPOTATO333","ERIN","IZZY","JUNIPER","KATERINA","LUCY","MISTY","NAKEDBARBIEDOLL","NINA","NIKOLETTA QUEEN","RAINI","SCARLETT","SCARLETT HAMPTOM","SHYLA","TESSA","THEODORA","VIOLET RAY","WILD HALLI","YUIWOO"]);
 
 // ── Shared IntersectionObserver ───────────────────────────────────────────────
 const imgObs = new IntersectionObserver(entries => {
@@ -609,9 +767,10 @@ function processCSV(csv) {
         .filter(m => m.count > 1)
         .sort((a,b) => a.name.localeCompare(b.name));
     modelMap = new Map(sorted.map(m => [m.name, m]));
-    $('spinner').style.display = 'none';
-    $('app').style.display = '';
-    renderModels();
+    window._secDone(() => {
+        $('app').style.display = '';
+        renderModels();
+    });
 }
 
 // Stale-while-revalidate: show cache instantly, always refresh in background

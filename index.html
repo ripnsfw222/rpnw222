@@ -1541,11 +1541,11 @@
         document.addEventListener('keydown', e => { if (e.key === 'Escape' && curVideo) closeModal(false); });
 
         // ── Init ──────────────────────────────────────────────────────────────────────
-        const CACHE_KEY = 'ep_csv_v3'; // bumped version busts all old caches automatically
+        const CACHE_KEY = 'ep_csv_v4'; // era v3
         const CACHE_TTL = 30 * 60 * 1000;
 
         // Wipe any old cache keys from previous versions
-        ['ep_csv_cache', 'ep_csv_v2'].forEach(k => { try { localStorage.removeItem(k); } catch { } });
+        ['ep_csv_cache', 'ep_csv_v2', 'ep_csv_v3'].forEach(k => { try { localStorage.removeItem(k); } catch { } });
 
         function saveCache(csv) {
             try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), csv })); } catch { }

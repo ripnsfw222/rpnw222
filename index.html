@@ -1096,11 +1096,11 @@
             // Fast CSV split respecting quoted fields
             const cols = [];
             let cur = '', inQ = false;
-            for (let i = 0; i < line.length; i++) {
-                const c = line[i];
-                if (c === '"') { inQ = !inQ; }
-                else if (c === ',' && !inQ) { cols.push(cur.trim()); cur = ''; }
-                else cur += c;
+            for (let i = 0; i < allData.length; i++) {
+                const row = allData[i];
+                const n = row.ModelName;
+                if (!tempMap.has(n)) tempMap.set(n, { name: n, slug: toSlug(n), count: 0, firstIdx: i });
+                tempMap.get(n).count++;
             }
             cols.push(cur.trim());
             return cols;
@@ -1570,7 +1570,9 @@
             }
             // Order by most recent activity — first appearance in data (already reversed = newest first)
             // Build ordered list preserving insertion order from the CSV
-            const sorted = [...tempMap.values()].filter(m => m.count > 1);
+            const sorted = [...tempMap.values()]
+                .filter(m => m.count > 1)
+                .sort((a, b) => b.firstIdx - a.firstIdx);
             modelMap = new Map(sorted.map(m => [m.name, m]));
             buildSlugMap();
 

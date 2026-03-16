@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RIPNSFW SXYPRN</title>
-    <link rel="icon" href="/favicon.png" type="image/png">
     <style>
         *,
         *::before,
@@ -1096,11 +1095,11 @@
             // Fast CSV split respecting quoted fields
             const cols = [];
             let cur = '', inQ = false;
-            for (let i = 0; i < allData.length; i++) {
-                const row = allData[i];
-                const n = row.ModelName;
-                if (!tempMap.has(n)) tempMap.set(n, { name: n, slug: toSlug(n), count: 0, firstIdx: i });
-                tempMap.get(n).count++;
+            for (let i = 0; i < line.length; i++) {
+                const c = line[i];
+                if (c === '"') { inQ = !inQ; }
+                else if (c === ',' && !inQ) { cols.push(cur.trim()); cur = ''; }
+                else cur += c;
             }
             cols.push(cur.trim());
             return cols;
@@ -1541,7 +1540,7 @@
         document.addEventListener('keydown', e => { if (e.key === 'Escape' && curVideo) closeModal(false); });
 
         // ── Init ──────────────────────────────────────────────────────────────────────
-        const CACHE_KEY = 'ep_csv_v4'; // era v3
+        const CACHE_KEY = 'ep_csv_v4'; // bumped version busts all old caches automatically
         const CACHE_TTL = 30 * 60 * 1000;
 
         // Wipe any old cache keys from previous versions
@@ -1570,9 +1569,7 @@
             }
             // Order by most recent activity — first appearance in data (already reversed = newest first)
             // Build ordered list preserving insertion order from the CSV
-            const sorted = [...tempMap.values()]
-                .filter(m => m.count > 1)
-                .sort((a, b) => b.firstIdx - a.firstIdx);
+            const sorted = [...tempMap.values()].filter(m => m.count > 1);
             modelMap = new Map(sorted.map(m => [m.name, m]));
             buildSlugMap();
 
@@ -1600,11 +1597,13 @@
                     const { ts, csv } = JSON.parse(raw);
                     served = true;
                     processCSV(csv);
-                    if (Date.now() - ts > CACHE_TTL) fetchFresh(null);
+                    // If cache is stale, refresh and re-render (previously we refreshed silently but kept old UI)
+                    if (Date.now() - ts > CACHE_TTL) fetchFresh(processCSV);
                 }
             } catch { }
             if (!served) fetchFresh(csv => processCSV(csv));
         })();
     </script>
 </body>
+
 </html>

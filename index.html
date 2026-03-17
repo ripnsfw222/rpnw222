@@ -1032,37 +1032,28 @@
             }
             rafId = requestAnimationFrame(tick);
 
-            // Called by init() when data is ready
-            window._secDone(() => {
-                $('app').style.display = '';
-                const { modelSlug, videoId } = parsePath();
-                if (modelSlug && slugMap.has(modelSlug)) {
-                    const m = slugMap.get(modelSlug);
-                    openModel(m, true);
-                    if (videoId) {
-                        const v = allData.find(r => r.ModelName === m.name && r.ID === videoId);
-                        if (v) openVideo(v, true);
+            window._secDone = function(onFinish) {
+                done = true;
+                cancelAnimationFrame(rafId);
+                let p2 = pct;
+                function finish() {
+                    p2 = Math.min(p2 + 4, 100);
+                    fill.style.width = p2 + '%';
+                    pctEl.textContent = Math.round(p2) + '%';
+                    updateChecks(p2);
+                    if (p2 < 100) requestAnimationFrame(finish);
+                    else {
+                        setTimeout(() => {
+                            const sp = document.getElementById('spinner');
+                            sp.style.transition = 'opacity .35s ease';
+                            sp.style.opacity = '0';
+                            setTimeout(() => { sp.style.display = 'none'; onFinish(); }, 350);
+                        }, 220);
                     }
-                } else if (modelSlug && !slugMap.has(modelSlug)) {
-                    // Slug existe na URL mas dados ainda não carregaram — tenta novamente
-                    const retry = setInterval(() => {
-                        if (slugMap.has(modelSlug)) {
-                            clearInterval(retry);
-                            const m = slugMap.get(modelSlug);
-                            openModel(m, true);
-                            if (videoId) {
-                                const v = allData.find(r => r.ModelName === m.name && r.ID === videoId);
-                                if (v) openVideo(v, true);
-                            }
-                        }
-                    }, 100);
-                    setTimeout(() => clearInterval(retry), 5000);
-                    renderModels();
-                } else {
-                    renderModels();
                 }
-            });
-            })();
+                requestAnimationFrame(finish);
+            };
+        })();
 
         // ── Config ────────────────────────────────────────────────────────────────────
         // /pub endpoint has no HTTP cache; export URL is served via Google's CDN with proper caching

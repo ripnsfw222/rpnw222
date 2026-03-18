@@ -58,6 +58,11 @@ header{
   color:var(--pink);border:1px solid rgba(236,72,153,.3);
   padding:.25rem .65rem;border-radius:99px;
 }
+.logo a {
+  text-decoration: none; /* remove sublinhado */
+  color: inherit; /* mantém a cor do texto */
+  cursor: pointer;
+}
 
 /* ── Hero ── */
 .hero{
@@ -374,7 +379,9 @@ footer{
 
 <header>
   <div class="header-inner">
-    <div class="logo">RIP<span>NSFW</span></div>
+    <div class="logo">
+      <a href="index.html">RIP<span>NSFW</span></a>
+    </div>
     <div class="header-badge">🔒 Premium Access</div>
   </div>
 </header>

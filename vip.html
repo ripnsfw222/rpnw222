@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RIPNSFW Premium — Exclusive Access</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#020617;
+  --surface:#0b1223;
+  --surface2:#0f172a;
+  --border:rgba(255,255,255,.07);
+  --pink:#ec4899;
+  --red:#dc2626;
+  --text:#e2e8f0;
+  --muted:#64748b;
+  --subtle:#334155;
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'DM Sans',sans-serif;
+  overflow-x:hidden;
+  line-height:1.6;
+}
+
+/* ── Noise overlay ── */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:0;opacity:.6;
+}
+
+/* ── Header ── */
+header{
+  position:sticky;top:0;z-index:40;
+  background:rgba(2,6,23,.85);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  padding:.75rem 1.25rem;
+}
+.header-inner{
+  max-width:1100px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.logo{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.5rem;letter-spacing:.04em;color:#fff;
+}
+.logo span{color:var(--pink)}
+.header-badge{
+  font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;
+  color:var(--pink);border:1px solid rgba(236,72,153,.3);
+  padding:.25rem .65rem;border-radius:99px;
+}
+
+/* ── Hero ── */
+.hero{
+  position:relative;padding:5rem 1.25rem 3rem;text-align:center;
+  overflow:hidden;
+}
+.hero-glow{
+  position:absolute;top:-120px;left:50%;transform:translateX(-50%);
+  width:700px;height:700px;border-radius:50%;
+  background:radial-gradient(circle,rgba(220,38,38,.18) 0%,rgba(236,72,153,.08) 40%,transparent 70%);
+  pointer-events:none;
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.2em;
+  color:var(--pink);margin-bottom:1.5rem;
+}
+.eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--pink);animation:blink 1.4s ease infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.hero h1{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(3rem,10vw,7rem);
+  line-height:.95;
+  letter-spacing:.02em;
+  color:#fff;
+  margin-bottom:1rem;
+}
+.hero h1 em{
+  font-style:normal;
+  -webkit-text-stroke:1px var(--pink);
+  color:transparent;
+}
+.hero-sub{
+  font-size:clamp(.9rem,2vw,1.15rem);
+  color:var(--muted);max-width:540px;margin:0 auto 2.5rem;
+}
+.hero-sub strong{color:var(--text)}
+
+/* ── Stats bar ── */
+.stats{
+  display:flex;justify-content:center;gap:2.5rem;flex-wrap:wrap;
+  margin-bottom:3rem;
+}
+.stat{text-align:center}
+.stat-num{
+  font-family:'Bebas Neue',sans-serif;font-size:2.2rem;
+  color:#fff;line-height:1;
+  display:block;
+}
+.stat-label{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.15em}
+
+/* ── Preview box ── */
+.preview-section{
+  max-width:100%;margin:0 auto 4rem;
+  padding:0 1.25rem;
+}
+.preview-label{
+  text-align:center;
+  font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.2em;
+  color:var(--muted);margin-bottom:1rem;
+}
+.preview-container{
+  position:relative;
+  width:100%;
+  max-width:1100px;
+  margin:0 auto;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:1.25rem;
+  overflow:hidden;
+  box-shadow:0 0 0 1px rgba(236,72,153,.1),0 40px 80px rgba(0,0,0,.6);
+}
+.preview-scroll-wrap{
+  width:100%;
+  overflow:auto;
+  cursor:grab;
+  max-height:80vh;
+  -webkit-overflow-scrolling:touch;
+}
+.preview-scroll-wrap:active{cursor:grabbing}
+.preview-scroll-wrap::-webkit-scrollbar{width:4px;height:4px}
+.preview-scroll-wrap::-webkit-scrollbar-thumb{background:rgba(236,72,153,.4);border-radius:4px}
+.preview-img{
+  display:block;
+  min-width:100%;
+  width:auto;
+  height:auto;
+  transition:transform .2s;
+}
+.preview-overlay{
+  position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(to top,rgba(2,6,23,.9) 0%,transparent 100%);
+  padding:1.5rem;
+  display:flex;align-items:center;justify-content:center;
+  pointer-events:none;
+}
+.preview-hint{
+  font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;
+  color:var(--muted);
+  display:flex;align-items:center;gap:.4rem;
+}
+
+/* ── Zoom controls ── */
+.zoom-controls{
+  display:flex;align-items:center;justify-content:center;gap:.5rem;
+  padding:.75rem;
+  background:rgba(11,18,35,.8);
+  border-top:1px solid var(--border);
+}
+.zoom-btn{
+  background:var(--surface2);border:1px solid var(--border);
+  color:var(--text);border-radius:.5rem;
+  width:2rem;height:2rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.9rem;font-weight:700;transition:background .15s;
+}
+.zoom-btn:hover{background:#1e293b}
+.zoom-label{font-size:.65rem;color:var(--muted);min-width:2.5rem;text-align:center}
+
+/* ── Benefits ── */
+.section{max-width:1100px;margin:0 auto;padding:0 1.25rem 4rem}
+.section-title{
+  font-family:'Bebas Neue',sans-serif;font-size:2.2rem;
+  color:#fff;margin-bottom:.5rem;
+  letter-spacing:.04em;
+}
+.section-sub{font-size:.85rem;color:var(--muted);margin-bottom:2rem}
+.benefits-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:1rem;
+}
+.benefit-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:1rem;
+  padding:1.5rem;
+  position:relative;overflow:hidden;
+  transition:border-color .2s,transform .2s;
+}
+.benefit-card:hover{border-color:rgba(236,72,153,.35);transform:translateY(-2px)}
+.benefit-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(236,72,153,.5),transparent);
+}
+.benefit-icon{
+  width:2.5rem;height:2.5rem;border-radius:.65rem;
+  background:rgba(220,38,38,.12);
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:1rem;font-size:1.1rem;
+}
+.benefit-title{font-weight:700;font-size:.9rem;color:#fff;margin-bottom:.35rem}
+.benefit-desc{font-size:.78rem;color:var(--muted);line-height:1.5}
+
+/* ── Divider ── */
+.divider{height:1px;background:var(--border);margin:0 1.25rem 4rem;max-width:1100px;margin-left:auto;margin-right:auto}
+
+/* ── Pricing ── */
+.pricing-wrap{
+  max-width:500px;margin:0 auto;padding:0 1.25rem 4rem;
+  text-align:center;
+}
+.pricing-wrap .section-title{font-size:2rem}
+.price-card{
+  background:var(--surface);
+  border:1px solid rgba(236,72,153,.25);
+  border-radius:1.5rem;
+  padding:2rem 1.75rem;
+  position:relative;overflow:hidden;
+  box-shadow:0 0 40px rgba(236,72,153,.06);
+  text-align:left;
+  margin-top:1.5rem;
+}
+.price-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--red),var(--pink));
+}
+.price-badge{
+  display:inline-block;font-size:.55rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;
+  color:var(--pink);border:1px solid rgba(236,72,153,.3);
+  padding:.25rem .65rem;border-radius:99px;margin-bottom:1rem;
+}
+.price-main{
+  font-family:'Bebas Neue',sans-serif;font-size:4rem;
+  color:#fff;line-height:1;
+  display:flex;align-items:flex-start;gap:.35rem;
+  margin-bottom:.5rem;
+}
+.price-currency{font-size:1.5rem;padding-top:.5rem}
+.price-period{font-size:.75rem;color:var(--muted);margin-bottom:1.5rem}
+
+/* Crypto equivalents */
+.crypto-list{
+  display:flex;flex-direction:column;gap:.5rem;
+  margin-bottom:1.75rem;
+  padding:.75rem;
+  background:rgba(2,6,23,.5);
+  border-radius:.75rem;
+  border:1px solid var(--border);
+}
+.crypto-row{
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:.7rem;
+}
+.crypto-name{display:flex;align-items:center;gap:.4rem;color:var(--muted)}
+.crypto-name span{font-weight:700;color:var(--text)}
+.crypto-amount{font-weight:700;color:#fff;font-family:monospace;font-size:.65rem}
+
+/* Features list */
+.features{list-style:none;display:flex;flex-direction:column;gap:.6rem;margin-bottom:1.75rem}
+.features li{
+  display:flex;align-items:flex-start;gap:.6rem;
+  font-size:.78rem;color:var(--muted);
+}
+.features li::before{
+  content:'✓';color:var(--pink);font-weight:900;flex-shrink:0;margin-top:.05rem;
+}
+
+/* CTA buttons */
+.cta-group{display:flex;flex-direction:column;gap:.65rem}
+.cta-btn{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.85rem 1.25rem;border-radius:.85rem;
+  font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
+  text-decoration:none;color:#fff;cursor:pointer;border:none;
+  transition:filter .2s,transform .2s;
+}
+.cta-btn:hover{filter:brightness(1.12);transform:translateY(-1px)}
+.cta-btn:active{transform:translateY(0)}
+.cta-btc{background:linear-gradient(135deg,#f7931a,#e5780c)}
+.cta-eth{background:linear-gradient(135deg,#627eea,#4c63c6)}
+.cta-usdt{background:linear-gradient(135deg,#26a17b,#1e7a5f)}
+.cta-btn-icon{display:flex;align-items:center;gap:.4rem}
+.cta-btn-arrow{opacity:.7;font-size:.8rem}
+
+/* Manual notice */
+.notice-box{
+  margin-top:1.25rem;
+  padding:.75rem 1rem;
+  background:rgba(236,72,153,.06);
+  border:1px solid rgba(236,72,153,.15);
+  border-radius:.75rem;
+  display:flex;gap:.6rem;align-items:flex-start;
+}
+.notice-icon{flex-shrink:0;color:var(--pink);margin-top:.1rem}
+.notice-text{font-size:.68rem;color:var(--muted);line-height:1.5}
+.notice-text strong{color:var(--text)}
+
+/* ── Social proof ── */
+.proof-section{
+  max-width:1100px;margin:0 auto;padding:0 1.25rem 4rem;
+}
+.testimonials{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;
+  margin-top:1.5rem;
+}
+.tcard{
+  background:var(--surface);border:1px solid var(--border);border-radius:1rem;
+  padding:1.25rem;position:relative;
+}
+.tcard-quote{
+  font-size:.75rem;color:var(--muted);line-height:1.6;margin-bottom:.85rem;
+  font-style:italic;
+}
+.tcard-author{font-size:.65rem;font-weight:700;color:var(--text)}
+.tcard-stars{color:var(--pink);font-size:.7rem;margin-bottom:.5rem;letter-spacing:.1em}
+
+/* ── FAQ ── */
+.faq-section{max-width:700px;margin:0 auto;padding:0 1.25rem 5rem;text-align:center}
+.faqs{text-align:left;margin-top:1.5rem;display:flex;flex-direction:column;gap:.5rem}
+.faq-item{
+  background:var(--surface);border:1px solid var(--border);border-radius:.85rem;
+  overflow:hidden;
+}
+.faq-q{
+  display:flex;align-items:center;justify-content:space-between;gap:.5rem;
+  padding:1rem 1.25rem;cursor:pointer;font-size:.82rem;font-weight:700;color:#fff;
+  background:none;border:none;width:100%;text-align:left;
+}
+.faq-q:hover{background:rgba(255,255,255,.03)}
+.faq-arrow{color:var(--muted);transition:transform .2s;flex-shrink:0}
+.faq-item.open .faq-arrow{transform:rotate(180deg)}
+.faq-a{
+  display:none;padding:0 1.25rem 1rem;
+  font-size:.75rem;color:var(--muted);line-height:1.6;
+}
+.faq-item.open .faq-a{display:block}
+
+/* ── Footer ── */
+footer{
+  border-top:1px solid var(--border);
+  text-align:center;padding:2rem 1.25rem;
+}
+.footer-logo{
+  font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.04em;color:var(--subtle);
+  margin-bottom:.5rem;
+}
+.footer-text{font-size:.65rem;color:var(--subtle);line-height:1.6}
+
+/* Animations */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+.fade-up{animation:fadeUp .5s ease both}
+.delay-1{animation-delay:.1s}
+.delay-2{animation-delay:.2s}
+.delay-3{animation-delay:.3s}
+
+@media(max-width:480px){
+  .stats{gap:1.5rem}
+  .hero{padding:3.5rem 1.25rem 2rem}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">RIP<span>NSFW</span></div>
+    <div class="header-badge">🔒 Premium Access</div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-eyebrow">
+    <span class="eyebrow-dot"></span>
+    Exclusive Telegram Channel
+  </div>
+  <h1 class="fade-up">Unlimited <em>Access</em><br>to the Best Content</h1>
+  <p class="hero-sub fade-up delay-1">
+    Hundreds of <strong>high-quality</strong> videos, constantly updated. 
+    Pay once, access forever — no subscription.
+  </p>
+  <div class="stats fade-up delay-2">
+    <div class="stat"><span class="stat-num">500+</span><span class="stat-label">Videos</span></div>
+    <div class="stat"><span class="stat-num">4K</span><span class="stat-label">Quality</span></div>
+    <div class="stat"><span class="stat-num">∞</span><span class="stat-label">Lifetime Access</span></div>
+    <div class="stat"><span class="stat-num">24h</span><span class="stat-label">New Content</span></div>
+  </div>
+</section>
+
+<!-- PREVIEW -->
+<div class="preview-section fade-up delay-3">
+  <p class="preview-label">👇 Channel preview — drag, scroll and zoom</p>
+  <div class="preview-container">
+    <div class="preview-scroll-wrap" id="previewScroll">
+      <img 
+        class="preview-img" 
+        id="previewImg"
+        src="https://ripnsfw.com/tg%20preview.jpg" 
+        alt="RIPNSFW Telegram Channel Preview"
+        draggable="false"
+      >
+    </div>
+    <div class="zoom-controls">
+      <button class="zoom-btn" id="zoomOut">−</button>
+      <span class="zoom-label" id="zoomLabel">100%</span>
+      <button class="zoom-btn" id="zoomIn">+</button>
+      <button class="zoom-btn" id="zoomReset" title="Reset">⟳</button>
+    </div>
+  </div>
+</div>
+
+<!-- BENEFITS -->
+<section class="section">
+  <h2 class="section-title">Why join?</h2>
+  <p class="section-sub">Everything you'll find inside the channel</p>
+  <div class="benefits-grid">
+    <div class="benefit-card">
+      <div class="benefit-icon">🎬</div>
+      <div class="benefit-title">High-Quality Videos</div>
+      <div class="benefit-desc">Exclusive content in maximum resolution, no watermarks and no ads. Straight to the point.</div>
+    </div>
+    <div class="benefit-card">
+      <div class="benefit-icon">🔄</div>
+      <div class="benefit-title">Constant Updates</div>
+      <div class="benefit-desc">New videos added regularly. The catalog keeps growing — at no extra cost to you.</div>
+    </div>
+    <div class="benefit-card">
+      <div class="benefit-icon">⚡</div>
+      <div class="benefit-title">Unlimited Downloads</div>
+      <div class="benefit-desc">Download everything on Telegram with no speed or quantity limits. Save directly to your device.</div>
+    </div>
+    <div class="benefit-card">
+      <div class="benefit-icon">🔐</div>
+      <div class="benefit-title">100% Private</div>
+      <div class="benefit-desc">Closed Telegram channel. Nobody knows you're in there — only members have access.</div>
+    </div>
+    <div class="benefit-card">
+      <div class="benefit-icon">💎</div>
+      <div class="benefit-title">Lifetime Access</div>
+      <div class="benefit-desc">Pay once. No monthly fee, no renewal. Pay today, access forever.</div>
+    </div>
+    <div class="benefit-card">
+      <div class="benefit-icon">🏆</div>
+      <div class="benefit-title">Exclusive Curation</div>
+      <div class="benefit-desc">Manually selected content. Only the best makes it in — no junk or repetition.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PRICING -->
+<section class="pricing-wrap">
+  <h2 class="section-title">One-Time Access</h2>
+  <p class="section-sub">Pay once. Access forever.</p>
+
+  <div class="price-card">
+    <div class="price-badge">⚡ Limited time offer</div>
+    <div class="price-main">
+      <span class="price-currency">$</span>
+      <span>XX</span>
+    </div>
+    <p class="price-period">one-time payment — lifetime channel access</p>
+
+    <!-- Crypto equivalents -->
+    <div class="crypto-list">
+      <div class="crypto-row">
+        <div class="crypto-name">
+          <svg width="14" height="14" viewBox="0 0 32 32" fill="#f7931a"><path d="M31.007 19.79c-2.12 8.512-10.76 13.691-19.273 11.57C3.222 29.239-1.958 20.598.163 12.087 2.282 3.575 10.921-1.604 19.433.516c8.514 2.12 13.693 10.762 11.574 19.274z"/><path d="M23.2 13.893c.304-2.033-1.243-3.126-3.36-3.856l.686-2.752-1.677-.418-.669 2.682a68 68 0 0 0-1.34-.316l.673-2.698-1.676-.418-.687 2.752c-.37-.084-.733-.167-1.085-.255l.002-.008-2.313-.578-.446 1.79s1.243.285 1.217.303c.68.169.802.618.781 1.73l-.782 3.135c.047.012.108.029.176.055l-.179-.044-1.097 4.395c-.083.206-.293.516-.766.398.017.024-1.218-.304-1.218-.304l-.832 1.918 2.182.544c.406.102.803.209 1.195.31l-.693 2.78 1.675.418.687-2.754c.453.123.893.236 1.323.343l-.685 2.742 1.676.418.694-2.776c2.862.542 5.014.323 5.92-2.266.73-2.081-.036-3.282-1.541-4.063 1.097-.253 1.923-.975 2.144-2.465zm-3.836 5.379c-.518 2.082-4.025.957-5.163.674l.92-3.69c1.138.284 4.785.847 4.243 3.016zm.52-5.41c-.473 1.895-3.385.932-4.33.696l.834-3.345c.945.236 3.986.675 3.496 2.649z" fill="#fff"/></svg>
+          <span>Bitcoin</span> BTC
+        </div>
+        <span class="crypto-amount" id="btc-val">≈ 0.00XX BTC</span>
+      </div>
+      <div class="crypto-row">
+        <div class="crypto-name">
+          <svg width="14" height="14" viewBox="0 0 32 32" fill="#627eea"><circle cx="16" cy="16" r="16"/><path d="M16.498 4v8.87l7.497 3.35z" fill="#fff" opacity=".6"/><path d="M16.498 4L9 16.22l7.498-3.35z" fill="#fff"/><path d="M16.498 21.968v6.027L24 17.616z" fill="#fff" opacity=".6"/><path d="M16.498 27.995v-6.028L9 17.616z" fill="#fff"/><path d="M16.498 20.573l7.497-4.353-7.497-3.348z" fill="#fff" opacity=".2"/><path d="M9 16.22l7.498 4.353v-7.701z" fill="#fff" opacity=".6"/></svg>
+          <span>Ethereum</span> ETH
+        </div>
+        <span class="crypto-amount" id="eth-val">≈ 0.0XXX ETH</span>
+      </div>
+      <div class="crypto-row">
+        <div class="crypto-name">
+          <svg width="14" height="14" viewBox="0 0 32 32"><circle cx="16" cy="16" r="16" fill="#26a17b"/><path d="M17.922 17.383v-.002c-.11.008-.677.042-1.942.042-1.01 0-1.721-.03-1.971-.042v.003c-3.888-.171-6.79-.848-6.79-1.658 0-.809 2.902-1.486 6.79-1.66v2.644c.254.018.982.061 1.988.061 1.207 0 1.812-.05 1.925-.06v-2.643c3.88.173 6.775.85 6.775 1.658 0 .81-2.895 1.485-6.775 1.657m0-3.59v-2.366h5.414V7.819H8.595v3.608h5.414v2.365c-4.4.202-7.709 1.074-7.709 2.118 0 1.044 3.309 1.915 7.709 2.118v7.582h3.913v-7.584c4.393-.202 7.694-1.073 7.694-2.116 0-1.043-3.301-1.914-7.694-2.117" fill="#fff"/></svg>
+          <span>Tether</span> USDT
+        </div>
+        <span class="crypto-amount" id="usdt-val">≈ XX USDT</span>
+      </div>
+    </div>
+
+    <!-- Feature list -->
+    <ul class="features">
+      <li>Immediate access to the private Telegram channel</li>
+      <li>Hundreds of high-quality videos already available</li>
+      <li>New videos added constantly</li>
+      <li>Unlimited downloads, no watermark</li>
+      <li>Lifetime access — no monthly fee</li>
+      <li>Total privacy — closed channel</li>
+    </ul>
+
+    <!-- CTA Buttons -->
+    <div class="cta-group">
+      <a href="#" class="cta-btn cta-btc" id="btn-btc">
+        <div class="cta-btn-icon">
+          <svg width="16" height="16" viewBox="0 0 32 32" fill="#fff" opacity=".9"><path d="M31.007 19.79c-2.12 8.512-10.76 13.691-19.273 11.57C3.222 29.239-1.958 20.598.163 12.087 2.282 3.575 10.921-1.604 19.433.516c8.514 2.12 13.693 10.762 11.574 19.274z"/><path d="M23.2 13.893c.304-2.033-1.243-3.126-3.36-3.856l.686-2.752-1.677-.418-.669 2.682a68 68 0 0 0-1.34-.316l.673-2.698-1.676-.418-.687 2.752c-.37-.084-.733-.167-1.085-.255l.002-.008-2.313-.578-.446 1.79s1.243.285 1.217.303c.68.169.802.618.781 1.73l-.782 3.135c.047.012.108.029.176.055l-.179-.044-1.097 4.395c-.083.206-.293.516-.766.398.017.024-1.218-.304-1.218-.304l-.832 1.918 2.182.544c.406.102.803.209 1.195.31l-.693 2.78 1.675.418.687-2.754c.453.123.893.236 1.323.343l-.685 2.742 1.676.418.694-2.776c2.862.542 5.014.323 5.92-2.266.73-2.081-.036-3.282-1.541-4.063 1.097-.253 1.923-.975 2.144-2.465zm-3.836 5.379c-.518 2.082-4.025.957-5.163.674l.92-3.69c1.138.284 4.785.847 4.243 3.016zm.52-5.41c-.473 1.895-3.385.932-4.33.696l.834-3.345c.945.236 3.986.675 3.496 2.649z" fill="#fff2"/></svg>
+          Pay with Bitcoin
+        </div>
+        <span class="cta-btn-arrow">→</span>
+      </a>
+      <a href="#" class="cta-btn cta-eth" id="btn-eth">
+        <div class="cta-btn-icon">
+          <svg width="16" height="16" viewBox="0 0 32 32"><path d="M16 32C7.163 32 0 24.837 0 16S7.163 0 16 0s16 7.163 16 16-7.163 16-16 16z" fill="#627eea"/><path d="M16.498 4v8.87l7.497 3.35z" fill="#fff" opacity=".6"/><path d="M16.498 4L9 16.22l7.498-3.35z" fill="#fff"/><path d="M16.498 21.968v6.027L24 17.616z" fill="#fff" opacity=".6"/><path d="M16.498 27.995v-6.028L9 17.616z" fill="#fff"/><path d="M16.498 20.573l7.497-4.353-7.497-3.348z" fill="#fff" opacity=".2"/><path d="M9 16.22l7.498 4.353v-7.701z" fill="#fff" opacity=".6"/></svg>
+          Pay with Ethereum
+        </div>
+        <span class="cta-btn-arrow">→</span>
+      </a>
+      <a href="#" class="cta-btn cta-usdt" id="btn-usdt">
+        <div class="cta-btn-icon">
+          <svg width="16" height="16" viewBox="0 0 32 32"><circle cx="16" cy="16" r="16" fill="#26a17b"/><path d="M17.922 17.383v-.002c-.11.008-.677.042-1.942.042-1.01 0-1.721-.03-1.971-.042v.003c-3.888-.171-6.79-.848-6.79-1.658 0-.809 2.902-1.486 6.79-1.66v2.644c.254.018.982.061 1.988.061 1.207 0 1.812-.05 1.925-.06v-2.643c3.88.173 6.775.85 6.775 1.658 0 .81-2.895 1.485-6.775 1.657m0-3.59v-2.366h5.414V7.819H8.595v3.608h5.414v2.365c-4.4.202-7.709 1.074-7.709 2.118 0 1.044 3.309 1.915 7.709 2.118v7.582h3.913v-7.584c4.393-.202 7.694-1.073 7.694-2.116 0-1.043-3.301-1.914-7.694-2.117" fill="#fff"/></svg>
+          Pay with USDT (TRC-20)
+        </div>
+        <span class="cta-btn-arrow">→</span>
+      </a>
+    </div>
+
+    <!-- Manual notice -->
+    <div class="notice-box">
+      <div class="notice-icon">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+      </div>
+      <div class="notice-text">
+        <strong>Manual process:</strong> after payment, access to the channel is added manually and may take <strong>a few hours</strong>. If it takes too long, reach out on Telegram. Keep your transaction receipt (hash).
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SOCIAL PROOF -->
+<section class="proof-section">
+  <h2 class="section-title">What members say</h2>
+  <p class="section-sub">Reviews from people already inside</p>
+  <div class="testimonials">
+    <div class="tcard">
+      <div class="tcard-stars">★★★★★</div>
+      <p class="tcard-quote">"Best investment I made. The video quality is insane and there was already a ton of content when I joined."</p>
+      <div class="tcard-author">@hidden_user</div>
+    </div>
+    <div class="tcard">
+      <div class="tcard-stars">★★★★★</div>
+      <p class="tcard-quote">"Was expecting to get scammed, but everything went smooth. Was added in under 2h and the channel is impressive."</p>
+      <div class="tcard-author">@satisfied_member</div>
+    </div>
+    <div class="tcard">
+      <div class="tcard-stars">★★★★★</div>
+      <p class="tcard-quote">"Actually lifetime. Pay once, you're in forever. Found stuff here I couldn't find anywhere else."</p>
+      <div class="tcard-author">@anon_user</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FAQ -->
+<section class="faq-section">
+  <h2 class="section-title">Frequently asked questions</h2>
+  <p class="section-sub">Clear your doubts before joining</p>
+  <div class="faqs">
+    <div class="faq-item">
+      <button class="faq-q">
+        How does the access process work?
+        <svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="faq-a">You send the payment via crypto to one of the available wallets, then send us the receipt (transaction hash) on Telegram. We add you to the channel manually within a few hours.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q">
+        How long does it take to be added?
+        <svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="faq-a">The process is manual, so it may vary. Usually takes between 1 and 6 hours. During peak times it might take a little longer. If more than 24h pass with no response, contact us on Telegram.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q">
+        Is the access really lifetime?
+        <svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="faq-a">Yes. No monthly fee, no renewal. Pay once and you'll have access to the channel as long as it exists, including all future content added.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q">
+        Is my privacy protected?
+        <svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="faq-a">Completely. The channel is closed and private — nobody outside knows you're a member. Crypto payments leave no trace linked to your real name.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q">
+        Which cryptos are accepted?
+        <svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="faq-a">We accept Bitcoin (BTC), Ethereum (ETH) and USDT on the TRC-20 network (Tron). Crypto amounts are equivalent to the USD price at the time of payment.</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">RIPNSFW</div>
+  <p class="footer-text">Private Telegram channel · One-time payment · Lifetime access<br>© 2025 RIPNSFW — All rights reserved</p>
+</footer>
+
+<script>
+// ── Zoom / pan for preview image ────────────────────────────────────────────
+(function(){
+  const wrap = document.getElementById('previewScroll');
+  const img  = document.getElementById('previewImg');
+  const label = document.getElementById('zoomLabel');
+  let scale = 1;
+  const MIN = 0.5, MAX = 3, STEP = 0.25;
+
+  function applyZoom(){
+    img.style.width = (scale * 100) + '%';
+    img.style.minWidth = (scale * 100) + '%';
+    label.textContent = Math.round(scale*100) + '%';
+  }
+
+  document.getElementById('zoomIn').onclick = () => { scale = Math.min(scale + STEP, MAX); applyZoom(); };
+  document.getElementById('zoomOut').onclick = () => { scale = Math.max(scale - STEP, MIN); applyZoom(); };
+  document.getElementById('zoomReset').onclick = () => { scale = 1; applyZoom(); };
+
+  // Pinch-to-zoom on touch
+  let initDist = 0, initScale = 1;
+  wrap.addEventListener('touchstart', e => {
+    if(e.touches.length === 2){
+      initDist = Math.hypot(e.touches[1].clientX - e.touches[0].clientX, e.touches[1].clientY - e.touches[0].clientY);
+      initScale = scale;
+    }
+  }, {passive:true});
+  wrap.addEventListener('touchmove', e => {
+    if(e.touches.length === 2){
+      const dist = Math.hypot(e.touches[1].clientX - e.touches[0].clientX, e.touches[1].clientY - e.touches[0].clientY);
+      scale = Math.min(MAX, Math.max(MIN, initScale * (dist / initDist)));
+      applyZoom();
+    }
+  }, {passive:true});
+
+  // Mouse wheel zoom
+  wrap.addEventListener('wheel', e => {
+    if(e.ctrlKey || e.metaKey){
+      e.preventDefault();
+      scale = Math.min(MAX, Math.max(MIN, scale - e.deltaY * 0.005));
+      applyZoom();
+    }
+  }, {passive:false});
+
+  // Drag to scroll (mouse)
+  let isDragging = false, startX, startY, scrollLeft, scrollTop;
+  wrap.addEventListener('mousedown', e => {
+    isDragging = true;
+    startX = e.clientX - wrap.offsetLeft;
+    startY = e.clientY - wrap.offsetTop;
+    scrollLeft = wrap.scrollLeft;
+    scrollTop  = wrap.scrollTop;
+    wrap.style.cursor = 'grabbing';
+  });
+  document.addEventListener('mouseup', () => { isDragging = false; wrap.style.cursor = 'grab'; });
+  wrap.addEventListener('mousemove', e => {
+    if(!isDragging) return;
+    e.preventDefault();
+    wrap.scrollLeft = scrollLeft - (e.clientX - wrap.offsetLeft - startX);
+    wrap.scrollTop  = scrollTop  - (e.clientY - wrap.offsetTop  - startY);
+  });
+})();
+
+// ── FAQ accordion ───────────────────────────────────────────────────────────
+document.querySelectorAll('.faq-q').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const item = btn.closest('.faq-item');
+    const wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if(!wasOpen) item.classList.add('open');
+  });
+});
+
+// ── Crypto price fetch (CoinGecko) ──────────────────────────────────────────
+// Replace PRICE_USD with your actual price once decided
+const PRICE_USD = 0; // ← SET YOUR PRICE HERE (e.g. 25)
+
+async function fetchPrices(){
+  if(PRICE_USD === 0){ return; } // skip if price not set
+  try{
+    const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,tether&vs_currencies=usd');
+    const d = await r.json();
+    const btcP = d.bitcoin?.usd;
+    const ethP = d.ethereum?.usd;
+    if(btcP) document.getElementById('btc-val').textContent = '≈ ' + (PRICE_USD/btcP).toFixed(6) + ' BTC';
+    if(ethP) document.getElementById('eth-val').textContent = '≈ ' + (PRICE_USD/ethP).toFixed(5) + ' ETH';
+    document.getElementById('usdt-val').textContent = '≈ ' + PRICE_USD + ' USDT';
+  } catch(e){ console.warn('Price fetch failed', e); }
+}
+fetchPrices();
+</script>
+</body>
+</html>

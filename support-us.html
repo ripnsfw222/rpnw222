@@ -581,4 +581,16 @@ function updateEquiv() {
 
 async function fetchPrices() {
   try {
-    const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_
+    const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd');
+    const d = await r.json();
+    prices.btc = d.bitcoin?.usd;
+    prices.eth = d.ethereum?.usd;
+    updateEquiv();
+  } catch(e) { console.warn('Price fetch failed', e); }
+}
+
+fetchPrices();
+updateEquiv();
+</script>
+</body>
+</html>

@@ -979,7 +979,6 @@
 
     <script>
         // ── GitHub Pages SPA redirect handler ────────────────────────────────────────
-        // If we arrived via 404.html redirect, restore the original URL silently
         (function () {
             const redir = sessionStorage.getItem('spa_redirect');
             if (redir && redir !== '/') {
@@ -1011,19 +1010,16 @@
                 else { setCheck(chk1, 'done'); setCheck(chk2, 'done'); setCheck(chk3, 'done'); }
             }
 
-            // Fake progress: slow steady advance to 82%, stalls there until real data arrives
-            // Uses setTimeout (not rAF) so it advances at human-readable pace ~1% per 60ms
             let lastTime = 0;
             function tick(ts) {
                 if (done) return;
                 if (ts - lastTime < 60) { rafId = requestAnimationFrame(tick); return; }
                 lastTime = ts;
-                // Speed slows down as it approaches 82% ceiling
                 const speed = pct < 30 ? 0.8
                     : pct < 55 ? 0.5
                         : pct < 72 ? 0.28
                             : pct < 82 ? 0.1
-                                : 0; // stop at 82, wait for real data
+                                : 0;
                 pct = Math.min(pct + speed, 82);
                 fill.style.width = pct + '%';
                 pctEl.textContent = Math.round(pct) + '%';
@@ -1032,7 +1028,7 @@
             }
             rafId = requestAnimationFrame(tick);
 
-            window._secDone = function(onFinish) {
+            window._secDone = function (onFinish) {
                 done = true;
                 cancelAnimationFrame(rafId);
                 let p2 = pct;
@@ -1056,7 +1052,6 @@
         })();
 
         // ── Config ────────────────────────────────────────────────────────────────────
-        // /pub endpoint has no HTTP cache; export URL is served via Google's CDN with proper caching
         const SHEET_ID = "2PACX-1vSs1GhZQnhVZLayT56Ik4zsE2GaWyVV6A0IeUz6YSMKGSN9jnmXjpWtIVbfUsXH1_Os17RG_oju8Ba3";
         const SHEET_URL = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pub?gid=0&single=true&output=csv`;
         const IMGS_PATH = "./imgs/";
@@ -1074,7 +1069,6 @@
         }, { rootMargin: '250px' });
 
         // ── Utilities ─────────────────────────────────────────────────────────────────
-        // nameToSlug: used for both URL paths and image filenames
         function nameToSlug(name) {
             return name.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
         }
@@ -1090,7 +1084,6 @@
             } catch { return url; }
         }
         function csvSplit(line) {
-            // Fast CSV split respecting quoted fields
             const cols = [];
             let cur = '', inQ = false;
             for (let i = 0; i < line.length; i++) {
@@ -1103,13 +1096,11 @@
             return cols;
         }
         function parseCSV(csv) {
-            // Normalize line endings — Google Sheets can return \r\n on some clients
             const lines = csv.trim().replace(/\r/g, '').split('\n');
             const out = [];
             for (let i = 1; i < lines.length; i++) {
                 const v = csvSplit(lines[i]);
                 if (!v[2]) continue;
-                // Strip ALL whitespace variants (\r, nbsp, zero-width, etc.)
                 const name = v[2].replace(/[\s\u00a0\u200b\u200c\u200d\ufeff]+/g, ' ').trim();
                 if (!name) continue;
                 if (IGNORED.has(name.toUpperCase())) continue;
@@ -1155,6 +1146,20 @@
         const ptabs = $('ptabs');
         const dlLinks = $('dl-links');
 
+        // ── Case-insensitive model lookup ─────────────────────────────────────────────
+        // Finds a model in modelMap regardless of casing (e.g. JackandJill vs JACKANDJILL)
+        function getModel(name) {
+            if (!name) return null;
+            // First try exact match (fast path)
+            if (modelMap.has(name)) return modelMap.get(name);
+            // Fallback: case-insensitive search
+            const upper = name.toUpperCase();
+            for (const [key, val] of modelMap) {
+                if (key.toUpperCase() === upper) return val;
+            }
+            return null;
+        }
+
         // ── Lazy image helper ─────────────────────────────────────────────────────────
         function lazyImg(src, alt, fallback) {
             const img = document.createElement('img');
@@ -1194,7 +1199,7 @@
             return card;
         }
 
-        // ── Render model grid in idle chunks (never blocks main thread) ───────────────
+        // ── Render model grid in idle chunks ──────────────────────────────────────────
         let _renderModelToken = 0;
         function renderModels() {
             const token = ++_renderModelToken;
@@ -1218,7 +1223,7 @@
             let idx = 0;
 
             function flush(deadline) {
-                if (token !== _renderModelToken) return; // stale render, abort
+                if (token !== _renderModelToken) return;
                 const frag = document.createDocumentFragment();
                 const limit = Math.min(idx + CHUNK, items.length);
                 while (idx < limit) frag.appendChild(makeModelCard(items[idx++]));
@@ -1231,7 +1236,6 @@
                 }
             }
 
-            // First chunk synchronously so screen shows content instantly
             const firstFrag = document.createDocumentFragment();
             const firstLimit = Math.min(CHUNK, items.length);
             while (idx < firstLimit) firstFrag.appendChild(makeModelCard(items[idx++]));
@@ -1274,12 +1278,23 @@
             idEl.className = 'vcard-id';
             idEl.textContent = 'ID: ' + v.ID;
             info.appendChild(idEl);
-            if (v.Guests) {
-                const g = document.createElement('p');
-                g.className = 'vcard-guests';
-                g.textContent = 'w/ ' + v.Guests;
-                info.appendChild(g);
+
+            // Monta w/ excluindo a modelo atual da página
+            if (curModel) {
+                const allParticipants = [v.ModelName, ...v.Guests.split(/[,&\/]+/).map(g => g.trim()).filter(Boolean)];
+                const others = allParticipants.filter(n => n.toUpperCase() !== curModel.name.toUpperCase());
+                if (others.length) {
+                    const g = document.createElement('p');
+                    g.className = 'vcard-guests';
+                    g.innerHTML = 'w/ ' + others.map(n => {
+                        const m = getModel(n);
+                        if (m) return `<a href="${modelUrl(m)}" onclick="event.stopPropagation();event.preventDefault();openModel(getModel('${n.replace(/'/g, "\\'")}'))" style="color:inherit;text-decoration:underline;text-underline-offset:2px">${n}</a>`;
+                        return n;
+                    }).join(', ');
+                    info.appendChild(g);
+                }
             }
+
             card.appendChild(thumb);
             card.appendChild(info);
             return card;
@@ -1292,7 +1307,10 @@
             const q = searchQ.toLowerCase();
             const modelName = curModel.name;
             const items = allData.filter(v => {
-                if (v.ModelName !== modelName) return false;
+                const isMain = v.ModelName.toUpperCase() === modelName.toUpperCase();
+                const isGuest = v.Guests.split(/[,&\/]+/).map(g => g.trim().toUpperCase())
+                    .includes(modelName.toUpperCase());
+                if (!isMain && !isGuest) return false;
                 if (!q) return true;
                 return v.ID.toLowerCase().includes(q) ||
                     v.Guests.toLowerCase().includes(q) ||
@@ -1322,7 +1340,6 @@
                 if (idx < items.length) setTimeout(flush, 0);
             }
 
-            // First chunk sync
             const firstFrag = document.createDocumentFragment();
             const firstLimit = Math.min(CHUNK, items.length);
             while (idx < firstLimit) firstFrag.appendChild(makeVideoCard(items[idx++]));
@@ -1333,16 +1350,13 @@
         }
 
         // ── Routing helpers ───────────────────────────────────────────────────────────
-        // Detect GitHub Pages repo prefix (e.g. /repo-name) vs root deployment
-        // Hardcoded repo base — works correctly on both root and subpath deployments
         const BASE = ''; // custom domain at root
 
         function modelUrl(m) {
             return BASE + '/model/' + nameToSlug(m.name);
         }
 
-        // Build a reverse slug→model lookup after data loads
-        let slugMap = new Map(); // slug → model object
+        let slugMap = new Map();
         function buildSlugMap() {
             slugMap.clear();
             for (const [, m] of modelMap) slugMap.set(nameToSlug(m.name), m);
@@ -1355,7 +1369,7 @@
             searchEl.value = '';
             searchEl.placeholder = `Search in ${m.name}…`;
             if (homeLink) homeLink.textContent = m.name;
-            else pageTitle.textContent = m.name; // fallback
+            else pageTitle.textContent = m.name;
             document.title = m.name + ' — RIPNSFW';
             backBtn.style.display = 'flex';
             modelGrid.style.display = 'none';
@@ -1372,7 +1386,7 @@
             searchEl.value = '';
             searchEl.placeholder = 'Search model…';
             if (homeLink) homeLink.textContent = 'RIPNSFW';
-            else pageTitle.textContent = 'RIPNSFW'; // fallback
+            else pageTitle.textContent = 'RIPNSFW';
             document.title = 'RIPNSFW';
             backBtn.style.display = 'none';
             videoGrid.style.display = 'none';
@@ -1381,28 +1395,25 @@
             window.scrollTo({ top: 0, behavior: 'instant' });
             if (!fromPopState) history.pushState({}, '', BASE + '/');
         }
-        // Handle browser back/forward & swipe gestures
+
         window.addEventListener('popstate', () => {
             const { modelSlug, videoId } = parsePath();
 
             if (modelSlug && videoId) {
-                // /model/{slug}/{id} — make sure correct model is open then open video
                 const m = slugMap.get(modelSlug);
                 if (m) {
                     if (!curModel || curModel.name !== m.name) openModel(m, true);
-                    const v = allData.find(r => r.ModelName === m.name && r.ID === videoId);
+                    const v = allData.find(r => r.ID === videoId);
                     if (v) { openVideo(v, true); return; }
                 }
             }
 
             if (modelSlug) {
-                // /model/{slug} — show model, close modal if open
                 if (curVideo) { closeModal(true); return; }
                 const m = slugMap.get(modelSlug);
                 if (m) { openModel(m, true); return; }
             }
 
-            // / — home
             if (curVideo) { closeModal(true); return; }
             if (curModel) { goBack(true); return; }
         });
@@ -1428,7 +1439,6 @@
 
         function setActivePlayer(players, idx) {
             activePlayerIdx = idx;
-            // Swap iframe (key trick: remove and re-add)
             const old = modalVideo.querySelector('iframe');
             if (old) old.remove();
             if (players[idx]) {
@@ -1438,7 +1448,6 @@
                 iframe.setAttribute('allowfullscreen', '');
                 modalVideo.insertBefore(iframe, modalVideo.firstChild);
             }
-            // Update tab styles
             const tabs = ptabs.querySelectorAll('.ptab');
             tabs.forEach((t, i) => t.classList.toggle('active', i === idx));
         }
@@ -1447,14 +1456,28 @@
             curVideo = v;
             const players = buildPlayers(v);
 
-            mTitle.textContent = v.ModelName;
+            const displayName = curModel ? curModel.name : v.ModelName;
+            mTitle.textContent = displayName;
             mCat.textContent = v.Category || '';
-            mGuests.textContent = v.Guests ? 'w/ ' + v.Guests : '';
+
+            // Monta lista de "w/" excluindo a modelo atual da página
+            const allParticipants = [v.ModelName, ...v.Guests.split(/[,&\/]+/).map(g => g.trim()).filter(Boolean)];
+            const others = allParticipants.filter(n => n.toUpperCase() !== displayName.toUpperCase());
+            if (others.length) {
+                mGuests.style.display = '';
+                mGuests.innerHTML = 'w/ ' + others.map(n => {
+                    const m = getModel(n);
+                    if (m) return `<a href="${modelUrl(m)}" onclick="event.preventDefault();closeModal(false);openModel(getModel('${n.replace(/'/g, "\\'")}'))" style="color:inherit;text-decoration:underline;text-underline-offset:2px">${n}</a>`;
+                    return n;
+                }).join(', ');
+            } else {
+                mGuests.style.display = 'none';
+                mGuests.innerHTML = '';
+            }
+
             mId.textContent = 'ID: ' + v.ID;
             mCat.style.display = v.Category ? '' : 'none';
-            mGuests.style.display = v.Guests ? '' : 'none';
 
-            // Build tabs
             ptabs.innerHTML = '';
             if (players.length > 1) {
                 players.forEach((p, i) => {
@@ -1469,7 +1492,6 @@
                 ptabs.style.display = 'none';
             }
 
-            // Build download links
             dlLinks.innerHTML = '';
             if (players.length === 0) {
                 dlLinks.innerHTML = '<p class="no-links">Nenhum link disponível.</p>';
@@ -1490,7 +1512,6 @@
             modal.classList.add('open');
             document.body.style.overflow = 'hidden';
 
-            // Update URL to /model/{slug}/{id}
             if (curModel) {
                 const url = modelUrl(curModel) + '/' + encodeURIComponent(v.ID);
                 if (replaceState) history.replaceState({ model: curModel.name, videoId: v.ID }, '', url);
@@ -1504,7 +1525,6 @@
             const iframe = modalVideo.querySelector('iframe');
             if (iframe) iframe.remove();
             curVideo = null;
-            // Restore model URL, unless we got here via popstate (browser already handled URL)
             if (!fromPopState && curModel) {
                 history.pushState({ model: curModel.name }, '', modelUrl(curModel));
             }
@@ -1524,7 +1544,6 @@
         backBtn.onclick = () => goBack(false);
         if (homeLink) {
             homeLink.onclick = (e) => {
-                // Keep SPA navigation: don't reload the whole page when clicking the title/logo.
                 e.preventDefault();
                 if (curVideo) { closeModal(false); return; }
                 if (curModel) { goBack(false); return; }
@@ -1538,11 +1557,11 @@
         document.addEventListener('keydown', e => { if (e.key === 'Escape' && curVideo) closeModal(false); });
 
         // ── Init ──────────────────────────────────────────────────────────────────────
-        const CACHE_KEY = 'ep_csv_v4'; // bumped version busts all old caches automatically
+        const CACHE_KEY = 'ep_csv_v5';
         const CACHE_TTL = 30 * 60 * 1000;
 
-        // Wipe any old cache keys from previous versions
-        ['ep_csv_cache', 'ep_csv_v2', 'ep_csv_v3'].forEach(k => { try { localStorage.removeItem(k); } catch { } });
+        // Wipe old cache keys
+        ['ep_csv_cache', 'ep_csv_v2', 'ep_csv_v3', 'ep_csv_v4'].forEach(k => { try { localStorage.removeItem(k); } catch { } });
 
         function saveCache(csv) {
             try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), csv })); } catch { }
@@ -1560,13 +1579,29 @@
         function processCSV(csv) {
             allData = parseCSV(csv);
             const tempMap = new Map();
+
+            // Conta vídeos onde a modelo é a principal
             for (const row of allData) {
                 const n = row.ModelName;
                 if (!tempMap.has(n)) tempMap.set(n, { name: n, slug: toSlug(n), count: 0 });
                 tempMap.get(n).count++;
             }
-            // Order by most recent activity — first appearance in data (already reversed = newest first)
-            // Build ordered list preserving insertion order from the CSV
+
+            // Conta também aparições como convidada (coluna H / Guests) — case-insensitive
+            for (const row of allData) {
+                if (!row.Guests) continue;
+                row.Guests.split(/[,&\/]+/).map(g => g.trim()).forEach(gName => {
+                    if (!gName) return;
+                    // Busca case-insensitive no tempMap
+                    const existingKey = [...tempMap.keys()].find(k => k.toUpperCase() === gName.toUpperCase());
+                    if (existingKey) {
+                        tempMap.get(existingKey).count++;
+                    } else {
+                        tempMap.set(gName, { name: gName, slug: toSlug(gName), count: 1 });
+                    }
+                });
+            }
+
             const sorted = [...tempMap.values()].filter(m => m.count > 1);
             modelMap = new Map(sorted.map(m => [m.name, m]));
             buildSlugMap();
@@ -1578,7 +1613,7 @@
                     const m = slugMap.get(modelSlug);
                     openModel(m, true);
                     if (videoId) {
-                        const v = allData.find(r => r.ModelName === m.name && r.ID === videoId);
+                        const v = allData.find(r => r.ID === videoId);
                         if (v) openVideo(v, true);
                     }
                 } else {
@@ -1595,7 +1630,6 @@
                     const { ts, csv } = JSON.parse(raw);
                     served = true;
                     processCSV(csv);
-                    // If cache is stale, refresh and re-render (previously we refreshed silently but kept old UI)
                     if (Date.now() - ts > CACHE_TTL) fetchFresh(processCSV);
                 }
             } catch { }
@@ -1604,73 +1638,79 @@
     </script>
 
     <!-- Floating CTA Button -->
-<style>
-  #float-cta {
-    position: fixed;
-    bottom: 1.5rem;
-    right: 1.5rem;
-    z-index: 999;
-    display: flex;
-    align-items: center;
-    gap: .6rem;
-    background: linear-gradient(135deg, #dc2626, #ec4899);
-    color: #fff;
-    text-decoration: none;
-    padding: .75rem 1.25rem;
-    border-radius: 99px;
-    font-family: system-ui, sans-serif;
-    font-size: .8rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .08em;
-    box-shadow: 0 8px 32px rgba(220, 38, 38, .45);
-    opacity: 0;
-    transform: translateY(16px);
-    transition: opacity .4s ease, transform .4s ease, filter .2s;
-    pointer-events: none;
-  }
-  #float-cta.visible {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-  }
-  #float-cta:hover {
-    filter: brightness(1.15);
-  }
-  #float-cta-close {
-    position: absolute;
-    top: -.4rem;
-    right: -.4rem;
-    width: 1.2rem;
-    height: 1.2rem;
-    background: #0f172a;
-    border: 1px solid rgba(255,255,255,.15);
-    border-radius: 50%;
-    cursor: pointer;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    font-size: .6rem;
-    color: #94a3b8;
-  }
-  #float-cta.visible #float-cta-close {
-    display: flex;
-  }
-</style>
+    <style>
+        #float-cta {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            background: linear-gradient(135deg, #dc2626, #ec4899);
+            color: #fff;
+            text-decoration: none;
+            padding: .75rem 1.25rem;
+            border-radius: 99px;
+            font-family: system-ui, sans-serif;
+            font-size: .8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            box-shadow: 0 8px 32px rgba(220, 38, 38, .45);
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity .4s ease, transform .4s ease, filter .2s;
+            pointer-events: none;
+        }
 
-<a id="float-cta" href="https://ripnsfw.com/support-us">
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.289c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.48 14.013l-2.95-.924c-.64-.204-.657-.64.136-.954l11.57-4.461c.537-.194 1.006.131.826.574z"/>
-  </svg>
-  Help us!
-  <span id="float-cta-close" onclick="event.preventDefault(); document.getElementById('float-cta').style.display='none'">✕</span>
-</a>
+        #float-cta.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
 
-<script>
-  setTimeout(function() {
-    document.getElementById('float-cta').classList.add('visible');
-  }, 8000);
-</script>
+        #float-cta:hover {
+            filter: brightness(1.15);
+        }
+
+        #float-cta-close {
+            position: absolute;
+            top: -.4rem;
+            right: -.4rem;
+            width: 1.2rem;
+            height: 1.2rem;
+            background: #0f172a;
+            border: 1px solid rgba(255, 255, 255, .15);
+            border-radius: 50%;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: .6rem;
+            color: #94a3b8;
+        }
+
+        #float-cta.visible #float-cta-close {
+            display: flex;
+        }
+    </style>
+
+    <a id="float-cta" href="https://ripnsfw.com/support-us">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path
+                d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.289c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.48 14.013l-2.95-.924c-.64-.204-.657-.64.136-.954l11.57-4.461c.537-.194 1.006.131.826.574z" />
+        </svg>
+        Help us!
+        <span id="float-cta-close"
+            onclick="event.preventDefault(); document.getElementById('float-cta').style.display='none'">✕</span>
+    </a>
+
+    <script>
+        setTimeout(function () {
+            document.getElementById('float-cta').classList.add('visible');
+        }, 8000);
+    </script>
 </body>
 
 </html>

@@ -1602,7 +1602,7 @@
                 });
             }
 
-            const sorted = [...tempMap.values()].filter(m => m.count > 1);
+            const sorted = [...tempMap.values()].filter(m => m.count > 1 && !IGNORED.has(m.name.toUpperCase()));
             modelMap = new Map(sorted.map(m => [m.name, m]));
             buildSlugMap();
 

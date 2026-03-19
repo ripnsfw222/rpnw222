@@ -1219,35 +1219,38 @@
                 return;
             }
 
-            const CHUNK = 12;
+            const CHUNK = 20;
             let idx = 0;
 
-            function flush(deadline) {
+            function loadChunk() {
                 if (token !== _renderModelToken) return;
                 const frag = document.createDocumentFragment();
                 const limit = Math.min(idx + CHUNK, items.length);
                 while (idx < limit) frag.appendChild(makeModelCard(items[idx++]));
                 modelGrid.appendChild(frag);
+
                 if (idx < items.length) {
-                    const schedule = typeof requestIdleCallback !== 'undefined'
-                        ? requestIdleCallback
-                        : (cb) => setTimeout(cb, 0);
-                    schedule(flush);
+                    // Reposiciona sentinel depois dos novos cards
+                    sentinel.remove();
+                    modelGrid.appendChild(sentinel);
+                } else {
+                    sentinel.remove();
+                    observer.disconnect();
                 }
             }
 
-            const firstFrag = document.createDocumentFragment();
-            const firstLimit = Math.min(CHUNK, items.length);
-            while (idx < firstLimit) firstFrag.appendChild(makeModelCard(items[idx++]));
-            modelGrid.appendChild(firstFrag);
-            modelGrid.classList.add('fade-in');
+            const sentinel = document.createElement('div');
+            sentinel.style.cssText = 'grid-column:1/-1;height:1px';
 
-            if (idx < items.length) {
-                const schedule = typeof requestIdleCallback !== 'undefined'
-                    ? requestIdleCallback
-                    : (cb) => setTimeout(cb, 16);
-                schedule(flush);
-            }
+            const observer = new IntersectionObserver(entries => {
+                if (entries[0].isIntersecting) loadChunk();
+            }, { rootMargin: '400px' });
+
+            // Carrega primeiro chunk imediatamente, só depois ativa o observer
+            loadChunk();
+            modelGrid.appendChild(sentinel);
+            observer.observe(sentinel);
+            modelGrid.classList.add('fade-in');
         }
 
         // ── Build a single video card element ────────────────────────────────────────
@@ -1581,28 +1584,33 @@
             const tempMap = new Map();
 
             // Conta vídeos onde a modelo é a principal
-            for (const row of allData) {
-                const n = row.ModelName;
-                if (!tempMap.has(n)) tempMap.set(n, { name: n, slug: toSlug(n), count: 0 });
+            for (let i = 0; i < allData.length; i++) {
+                const n = allData[i].ModelName;
+                if (!tempMap.has(n)) tempMap.set(n, { name: n, slug: toSlug(n), count: 0, firstIdx: i });
                 tempMap.get(n).count++;
             }
 
             // Conta também aparições como convidada (coluna H / Guests) — case-insensitive
-            for (const row of allData) {
+            for (let i = 0; i < allData.length; i++) {
+                const row = allData[i];
                 if (!row.Guests) continue;
                 row.Guests.split(/[,&\/]+/).map(g => g.trim()).forEach(gName => {
                     if (!gName) return;
-                    // Busca case-insensitive no tempMap
+                    if (IGNORED.has(gName.toUpperCase())) return;
                     const existingKey = [...tempMap.keys()].find(k => k.toUpperCase() === gName.toUpperCase());
                     if (existingKey) {
-                        tempMap.get(existingKey).count++;
+                        const m = tempMap.get(existingKey);
+                        m.count++;
+                        if (i < m.firstIdx) m.firstIdx = i;
                     } else {
-                        tempMap.set(gName, { name: gName, slug: toSlug(gName), count: 1 });
+                        tempMap.set(gName, { name: gName, slug: toSlug(gName), count: 1, firstIdx: i });
                     }
                 });
             }
 
-            const sorted = [...tempMap.values()].filter(m => m.count > 1 && !IGNORED.has(m.name.toUpperCase()));
+            const sorted = [...tempMap.values()]
+                .filter(m => m.count > 1 && !IGNORED.has(m.name.toUpperCase()))
+                .sort((a, b) => a.firstIdx - b.firstIdx);
             modelMap = new Map(sorted.map(m => [m.name, m]));
             buildSlugMap();
 
@@ -1634,6 +1642,83 @@
                 }
             } catch { }
             if (!served) fetchFresh(csv => processCSV(csv));
+        })();
+    </script>
+
+    <!-- Scroll buttons (above CTA) -->
+    <style>
+        #scroll-btns {
+            position: fixed;
+            bottom: 5.5rem;
+            right: 1.5rem;
+            z-index: 998;
+            display: flex;
+            flex-direction: column;
+            gap: .4rem;
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity .4s ease, transform .4s ease;
+            pointer-events: none;
+        }
+
+        #scroll-btns.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .scroll-btn {
+            width: 2.5rem;
+            height: 2.5rem;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 50%;
+            color: #94a3b8;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background .15s, color .15s;
+        }
+
+        .scroll-btn:hover {
+            background: rgba(30, 41, 59, 0.95);
+            color: #fff;
+        }
+    </style>
+
+    <div id="scroll-btns">
+        <button class="scroll-btn" id="scroll-top" aria-label="Ir ao topo" title="Topo">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 15l-6-6-6 6" />
+            </svg>
+        </button>
+        <button class="scroll-btn" id="scroll-bottom" aria-label="Ir ao fim" title="Fim">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 9l6 6 6-6" />
+            </svg>
+        </button>
+    </div>
+
+    <script>
+        (function () {
+            const btns = document.getElementById('scroll-btns');
+            const cta = document.getElementById('float-cta');
+
+            window.addEventListener('scroll', function () {
+                const scrolled = window.scrollY > 300;
+                btns.classList.toggle('visible', scrolled);
+            }, { passive: true });
+
+            document.getElementById('scroll-top').onclick = function () {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+            document.getElementById('scroll-bottom').onclick = function () {
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            };
         })();
     </script>
 

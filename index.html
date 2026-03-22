@@ -1055,6 +1055,7 @@
         const SHEET_ID = "2PACX-1vSs1GhZQnhVZLayT56Ik4zsE2GaWyVV6A0IeUz6YSMKGSN9jnmXjpWtIVbfUsXH1_Os17RG_oju8Ba3";
         const SHEET_URL = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pub?gid=0&single=true&output=csv`;
         const IMGS_PATH = "./imgs/";
+        const IMG_VERSION = Math.floor(Date.now() / (1000 * 60 * 60 * 24)); // muda 1x por dia
 
         const IGNORED = new Set(["NAME", "TEST", "MODEL", "EMPTY", "ALINA", "ANNA", "BANANAPOTATO333", "ERIN", "IZZY", "JUNIPER", "KATERINA", "LUCY", "MISTY", "NAKEDBARBIEDOLL", "NINA", "NIKOLETTA QUEEN", "RAINI", "SCARLETT", "SCARLETT HAMPTOM", "SHYLA", "TESSA", "THEODORA", "VIOLET RAY", "WILD HALLI", "YUIWOO", "STELLA LUXX", "REBECA FOX", "BRITNEY ROSE", "EVA NYX", "ELLIE NOVA", "ANNIE KATE", "SUSIE STELLAR", "CARYN BEAUMONT", "LILY STARFIRE"]);
 
@@ -1180,7 +1181,7 @@
             const imgWrap = document.createElement('div');
             imgWrap.className = 'mcard-img';
             const img = lazyImg(
-                IMGS_PATH + m.slug, m.name,
+                IMGS_PATH + m.slug + '?' + IMG_VERSION, m.name,
                 `https://ui-avatars.com/api/?name=${encodeURIComponent(m.name)}&background=1e293b&color=fff&size=400`
             );
             imgWrap.appendChild(img);

@@ -1079,7 +1079,7 @@
             try {
                 const u = new URL(url);
                 const h = u.hostname;
-                if (h.includes('doodstream') || h.includes('lulustream')) return url.replace(/\/d\//, '/e/');
+                if (h.includes('streamtape') || h.includes('lulustream')) return url.replace(/\/d\//, '/e/');
                 if (h.includes('vidnest')) { const id = u.pathname.replace(/^\//, ''); return u.origin + '/embed-' + id + '.html'; }
                 return url;
             } catch { return url; }

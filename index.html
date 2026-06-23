@@ -1057,7 +1057,8 @@
 
         const IMG_VERSION = Math.floor(Date.now() / (1000 * 60 * 60 * 24)); // muda 1x por dia
 
-        const IGNORED = new Set(["NAME", "TEST", "MODEL", "EMPTY", "LITTLE PUCK", "DALLAS", "LEXI LORE", "VALENTINE VIXEN", "GIA DERZA", "KATIE CAI", "RAISSA BELLINI", "STEPHANIE", "ALINA", "ANNA", "BANANAPOTATO333", "ERIN", "IZZY", "JUNIPER", "KATERINA", "LUCY", "MISTY", "NAKEDBARBIEDOLL", "NINA", "NIKOLETTA QUEEN", "RAINI", "SCARLETT", "SCARLETT HAMPTOM", "SHYLA", "TESSA", "THEODORA", "VIOLET RAY", "WILD HALLI", "YUIWOO", "STELLA LUXX", "REBECA FOX", "BRITNEY ROSE", "EVA NYX", "ELLIE NOVA", "ANNIE KATE", "SUSIE STELLAR", "CARYN BEAUMONT", "LILY STARFIRE", "AVA AMIRA", "DAKOTA LYN", "MADI RUVE", "MINAMI AIRI", "#VALUE!"]);
+        // IGNORED é carregado de /blacklist.txt em paralelo com o CSV
+        let IGNORED = new Set();
 
         // ── Shared IntersectionObserver ───────────────────────────────────────────────
         const imgObs = new IntersectionObserver(entries => {
@@ -1663,17 +1664,29 @@
         }
 
         (function init() {
+            // Carrega blacklist.txt e CSV em paralelo
+            const blFetch = fetch('/blacklist.txt')
+                .then(r => r.ok ? r.text() : '')
+                .then(txt => {
+                    IGNORED = new Set(
+                        txt.split('\n').map(l => l.trim().toUpperCase()).filter(Boolean)
+                    );
+                })
+                .catch(() => {}); // falha silenciosa: mantém IGNORED vazio
+
             let served = false;
             try {
                 const raw = localStorage.getItem(CACHE_KEY);
                 if (raw) {
                     const { ts, csv } = JSON.parse(raw);
                     served = true;
-                    processCSV(csv);
-                    if (Date.now() - ts > CACHE_TTL) fetchFresh(processCSV);
+                    blFetch.then(() => {
+                        processCSV(csv);
+                        if (Date.now() - ts > CACHE_TTL) fetchFresh(processCSV);
+                    });
                 }
             } catch { }
-            if (!served) fetchFresh(csv => processCSV(csv));
+            if (!served) blFetch.then(() => fetchFresh(csv => processCSV(csv)));
         })();
     </script>
 

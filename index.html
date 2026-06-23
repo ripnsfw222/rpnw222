@@ -1052,8 +1052,9 @@
         })();
 
         // ── Config ────────────────────────────────────────────────────────────────────
-        const SHEET_URL = "./data.csv";
-        const IMGS_PATH = "./imgs/";
+        const SHEET_URL = "/data.csv";   // caminho absoluto — evita resolver relativo a /model/... após replaceState
+        const IMGS_PATH = "/imgs/";
+
         const IMG_VERSION = Math.floor(Date.now() / (1000 * 60 * 60 * 24)); // muda 1x por dia
 
         const IGNORED = new Set(["NAME", "TEST", "MODEL", "EMPTY", "LITTLE PUCK", "DALLAS", "LEXI LORE", "VALENTINE VIXEN", "GIA DERZA", "KATIE CAI", "RAISSA BELLINI", "STEPHANIE", "ALINA", "ANNA", "BANANAPOTATO333", "ERIN", "IZZY", "JUNIPER", "KATERINA", "LUCY", "MISTY", "NAKEDBARBIEDOLL", "NINA", "NIKOLETTA QUEEN", "RAINI", "SCARLETT", "SCARLETT HAMPTOM", "SHYLA", "TESSA", "THEODORA", "VIOLET RAY", "WILD HALLI", "YUIWOO", "STELLA LUXX", "REBECA FOX", "BRITNEY ROSE", "EVA NYX", "ELLIE NOVA", "ANNIE KATE", "SUSIE STELLAR", "CARYN BEAUMONT", "LILY STARFIRE", "AVA AMIRA", "DAKOTA LYN", "MADI RUVE", "MINAMI AIRI", "#VALUE!"]);
@@ -1589,12 +1590,20 @@
             try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), csv })); } catch { }
         }
 
+        const FALLBACK_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSs1GhZQnhVZLayT56Ik4zsE2GaWyVV6A0IeUz6YSMKGSN9jnmXjpWtIVbfUsXH1_Os17RG_oju8Ba3/pub?gid=0&single=true&output=csv';
+
         function fetchFresh(onDone) {
             fetch(SHEET_URL)
-                .then(r => r.text())
+                .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
                 .then(csv => { saveCache(csv); onDone && onDone(csv); })
                 .catch(() => {
-                    $('spinner').innerHTML = '<p style="color:#ef4444;font-size:.85rem">Failed to load data.</p>';
+                    // data.csv não encontrado — tenta Google Sheets como fallback
+                    fetch(FALLBACK_URL)
+                        .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+                        .then(csv => { saveCache(csv); onDone && onDone(csv); })
+                        .catch(() => {
+                            $('spinner').innerHTML = '<p style="color:#ef4444;font-size:.85rem">Failed to load data.</p>';
+                        });
                 });
         }
 

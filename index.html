@@ -1420,6 +1420,20 @@
 
             if (curVideo) { closeModal(true); return; }
             if (curModel) { goBack(true); return; }
+
+            // Fallback: voltou para home sem modelo/video ativo
+            curModel = null;
+            curVideo = null;
+            searchQ = '';
+            searchEl.value = '';
+            searchEl.placeholder = 'Search model…';
+            if (homeLink) homeLink.textContent = 'RIPNSFW';
+            document.title = 'RIPNSFW';
+            backBtn.style.display = 'none';
+            videoGrid.style.display = 'none';
+            modelGrid.style.display = 'grid';
+            renderModels();
+            window.scrollTo({ top: 0, behavior: 'instant' });
         });
 
         function parsePath() {
@@ -1551,7 +1565,11 @@
                 e.preventDefault();
                 if (curVideo) { closeModal(false); return; }
                 if (curModel) { goBack(false); return; }
+                // Já na home mas grid pode estar vazio — força re-render
                 if (location.pathname !== (BASE + '/')) history.pushState({}, '', BASE + '/');
+                videoGrid.style.display = 'none';
+                modelGrid.style.display = 'grid';
+                renderModels();
                 window.scrollTo({ top: 0, behavior: 'instant' });
             };
         }
@@ -1561,11 +1579,11 @@
         document.addEventListener('keydown', e => { if (e.key === 'Escape' && curVideo) closeModal(false); });
 
         // ── Init ──────────────────────────────────────────────────────────────────────
-        const CACHE_KEY = 'ep_csv_v5';
+        const CACHE_KEY = 'ep_csv_v6'; // v6: switched to local data.csv
         const CACHE_TTL = 30 * 60 * 1000;
 
         // Wipe old cache keys
-        ['ep_csv_cache', 'ep_csv_v2', 'ep_csv_v3', 'ep_csv_v4'].forEach(k => { try { localStorage.removeItem(k); } catch { } });
+        ['ep_csv_cache', 'ep_csv_v2', 'ep_csv_v3', 'ep_csv_v4', 'ep_csv_v5'].forEach(k => { try { localStorage.removeItem(k); } catch { } });
 
         function saveCache(csv) {
             try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), csv })); } catch { }
@@ -1626,6 +1644,10 @@
                         if (v) openVideo(v, true);
                     }
                 } else {
+                    // Modelo não encontrado ou URL inválida → vai para home
+                    if (modelSlug) history.replaceState({}, '', BASE + '/');
+                    videoGrid.style.display = 'none';
+                    modelGrid.style.display = 'grid';
                     renderModels();
                 }
             });

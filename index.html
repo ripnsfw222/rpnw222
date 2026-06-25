@@ -365,7 +365,13 @@
         @media(min-width:640px) {
             #modal {
                 align-items: center;
-                padding: 1rem
+                padding: 1.5rem
+            }
+        }
+
+        @media(min-width:1024px) {
+            #modal {
+                padding: 2.5rem
             }
         }
 
@@ -377,20 +383,29 @@
             background: #080f1e;
             border-radius: 1.25rem 1.25rem 0 0;
             border: 1px solid rgba(255, 255, 255, .07);
-            overflow: hidden;
+            overflow-y: auto;
+            overflow-x: hidden;
+            position: relative;
             max-height: 92dvh
         }
 
         @media(min-width:640px) {
             .modal-box {
                 border-radius: 1.5rem;
-                max-height: 88dvh
+                max-width: 92vw;
+                max-height: 90dvh
             }
         }
 
-        @media(min-width:768px) {
+        @media(min-width:1024px) {
             .modal-box {
-                flex-direction: row
+                max-width: 1100px;
+            }
+        }
+
+        @media(min-width:1280px) {
+            .modal-box {
+                max-width: 1200px;
             }
         }
 
@@ -410,33 +425,50 @@
             border: none
         }
 
-        @media(min-width:768px) {
-            .modal-video {
-                flex: 2 1 0;
-                aspect-ratio: unset;
-                min-height: 280px
-            }
-        }
-
         .modal-info {
-            flex: 1;
-            padding: .9rem 1.1rem 1.25rem;
-            overflow-y: auto;
-            min-height: 0
+            padding: 1rem 1.1rem 1.5rem;
         }
 
         @media(min-width:768px) {
             .modal-info {
-                width: 280px;
-                flex: none;
-                padding: 1.5rem 1.6rem
+                display: flex;
+                gap: 2rem;
+                padding: 1.5rem 1.8rem 2rem;
+            }
+
+            .modal-info-left {
+                flex: 1;
+                min-width: 0;
+            }
+
+            .modal-info-right {
+                width: 320px;
+                flex-shrink: 0;
             }
         }
 
-        @media(min-width:1024px) {
-            .modal-info {
-                width: 310px
-            }
+        /* Modal Close Button */
+        .modal-close-btn {
+            position: absolute;
+            top: .75rem;
+            right: .75rem;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            cursor: pointer;
+            border-radius: 50%;
+            padding: .45rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background .15s, border-color .15s;
+            z-index: 10;
+        }
+
+        .modal-close-btn:hover {
+            background: rgba(30, 41, 59, 0.9);
+            border-color: rgba(255, 255, 255, 0.2);
         }
 
         /* Modal info */
@@ -837,6 +869,107 @@
             padding: 4rem 0;
             font-size: .85rem
         }
+
+        /* Tabs styles */
+        .tabs-wrap {
+            display: flex;
+            justify-content: center;
+            gap: .5rem;
+            margin-bottom: 1.5rem;
+            background: rgba(15, 23, 42, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: .35rem;
+            border-radius: 1rem;
+            width: max-content;
+            margin-left: auto;
+            margin-right: auto;
+            backdrop-filter: blur(8px);
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            padding: .5rem 1.25rem;
+            font-size: .8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            cursor: pointer;
+            border-radius: .75rem;
+            transition: all .2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .tab-btn:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .tab-btn.active {
+            color: #fff;
+            background: #ec4899;
+            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.35);
+        }
+
+        /* Pagination styles */
+        .pagination-wrap {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: .35rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .pg-btn {
+            background: rgba(15, 23, 42, 0.45);
+            border: 1px solid rgba(255, 255, 255, .06);
+            color: #94a3b8;
+            padding: .45rem .75rem;
+            font-size: .75rem;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: .5rem;
+            transition: all .15s;
+            user-select: none;
+        }
+
+        .pg-btn:hover:not(.disabled) {
+            background: rgba(30, 41, 59, 0.8);
+            color: #fff;
+            border-color: rgba(255, 255, 255, .15);
+        }
+
+        .pg-btn.active {
+            background: #ec4899;
+            color: #fff;
+            border-color: #ec4899;
+            box-shadow: 0 0 10px rgba(236, 72, 153, 0.35);
+        }
+
+        .pg-btn.disabled {
+            opacity: .35;
+            cursor: not-allowed;
+        }
+
+        .pg-dots {
+            color: #475569;
+            padding: 0 .25rem;
+            font-weight: 700;
+            font-size: .8rem;
+            user-select: none;
+        }
+
+        /* Video model name */
+        .vcard-model-name {
+            font-size: .75rem;
+            font-weight: 800;
+            color: #fff;
+            margin: 0 0 .15rem 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
     </style>
 </head>
 
@@ -939,40 +1072,40 @@
         </div>
 
         <main id="main">
+            <div id="tab-container" class="tabs-wrap">
+                <button id="tab-videos" class="tab-btn active">Videos</button>
+                <button id="tab-models" class="tab-btn">Models</button>
+            </div>
             <div id="model-grid"></div>
             <div id="video-grid"></div>
+            <div id="pagination" class="pagination-wrap" style="display: none;"></div>
         </main>
     </div>
 
     <!-- Modal -->
     <div id="modal" role="dialog" aria-modal="true">
         <div class="modal-box">
-            <div class="modal-video" id="modal-video">
-                <button class="close-btn-mob" id="close-mob" aria-label="Fechar">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M18 6 6 18M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
+            <button class="modal-close-btn" id="close-desk" aria-label="Close">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 6 6 18M6 6l12 12" />
+                </svg>
+            </button>
+            <div class="modal-video" id="modal-video"></div>
             <div class="modal-info" id="modal-info">
-                <div class="modal-header">
+                <div class="modal-info-left">
                     <div style="min-width:0">
                         <p class="modal-title" id="m-title"></p>
                         <p class="modal-cat" id="m-cat"></p>
                         <p class="modal-guests" id="m-guests"></p>
                         <p class="modal-id" id="m-id"></p>
                     </div>
-                    <button class="close-btn" id="close-desk" aria-label="Fechar">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M18 6 6 18M6 6l12 12" />
-                        </svg>
-                    </button>
                 </div>
-                <div class="player-tabs" id="ptabs"></div>
-                <p class="dl-label">Download</p>
-                <div class="dl-links" id="dl-links"></div>
+                <div class="modal-info-right">
+                    <div class="player-tabs" id="ptabs"></div>
+                    <p class="dl-label">Download</p>
+                    <div class="dl-links" id="dl-links"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -1131,6 +1264,9 @@
         let activePlayerIdx = 0;
         let searchQ = '';
         let debTimer = null;
+        let currentTab = 'videos';  // 'models' or 'videos'
+        let currentVideoPage = 1;
+        const VIDEOS_PER_PAGE = 24;
 
         // ── DOM refs ──────────────────────────────────────────────────────────────────
         const $ = id => document.getElementById(id);
@@ -1148,6 +1284,8 @@
         const mId = $('m-id');
         const ptabs = $('ptabs');
         const dlLinks = $('dl-links');
+        const tabContainer = $('tab-container');
+        const paginationEl = $('pagination');
 
         // ── Case-insensitive model lookup ─────────────────────────────────────────────
         // Finds a model in modelMap regardless of casing (e.g. JackandJill vs JACKANDJILL)
@@ -1192,7 +1330,7 @@
             imgWrap.appendChild(grad);
             const cnt = document.createElement('span');
             cnt.className = 'mcard-count';
-            cnt.textContent = m.count + ' vídeos';
+            cnt.textContent = m.count + ' videos';
             imgWrap.appendChild(cnt);
             const lbl = document.createElement('p');
             lbl.className = 'mcard-name';
@@ -1217,7 +1355,7 @@
             if (items.length === 0) {
                 const empty = document.createElement('p');
                 empty.className = 'empty';
-                empty.textContent = 'Nenhum modelo encontrado.';
+                empty.textContent = 'No models found.';
                 modelGrid.appendChild(empty);
                 return;
             }
@@ -1280,6 +1418,14 @@
             }
             const info = document.createElement('div');
             info.className = 'vcard-info';
+
+            if (!curModel) {
+                const modelNameEl = document.createElement('p');
+                modelNameEl.className = 'vcard-model-name';
+                modelNameEl.textContent = v.ModelName;
+                info.appendChild(modelNameEl);
+            }
+
             const idEl = document.createElement('p');
             idEl.className = 'vcard-id';
             idEl.textContent = 'ID: ' + v.ID;
@@ -1293,6 +1439,18 @@
                     const g = document.createElement('p');
                     g.className = 'vcard-guests';
                     g.innerHTML = 'w/ ' + others.map(n => {
+                        const m = getModel(n);
+                        if (m) return `<a href="${modelUrl(m)}" onclick="event.stopPropagation();event.preventDefault();openModel(getModel('${n.replace(/'/g, "\\'")}'))" style="color:inherit;text-decoration:underline;text-underline-offset:2px">${n}</a>`;
+                        return n;
+                    }).join(', ');
+                    info.appendChild(g);
+                }
+            } else if (v.Guests) {
+                const guestsList = v.Guests.split(/[,&\/]+/).map(g => g.trim()).filter(Boolean);
+                if (guestsList.length) {
+                    const g = document.createElement('p');
+                    g.className = 'vcard-guests';
+                    g.innerHTML = 'w/ ' + guestsList.map(n => {
                         const m = getModel(n);
                         if (m) return `<a href="${modelUrl(m)}" onclick="event.stopPropagation();event.preventDefault();openModel(getModel('${n.replace(/'/g, "\\'")}'))" style="color:inherit;text-decoration:underline;text-underline-offset:2px">${n}</a>`;
                         return n;
@@ -1329,7 +1487,7 @@
             if (items.length === 0) {
                 const empty = document.createElement('p');
                 empty.className = 'empty';
-                empty.textContent = 'Nenhum vídeo encontrado.';
+                empty.textContent = 'No videos found.';
                 videoGrid.appendChild(empty);
                 return;
             }
@@ -1355,6 +1513,132 @@
             if (idx < items.length) setTimeout(flush, 0);
         }
 
+        // ── Render all videos grid with pagination ────────────────────────────────────
+        let _renderAllVideosToken = 0;
+        function renderAllVideos() {
+            const token = ++_renderAllVideosToken;
+            const q = searchQ.toLowerCase();
+            let items = allData;
+            if (q) {
+                items = allData.filter(v => {
+                    return v.ModelName.toLowerCase().includes(q) ||
+                        v.ID.toLowerCase().includes(q) ||
+                        v.Guests.toLowerCase().includes(q) ||
+                        v.Category.toLowerCase().includes(q) ||
+                        v.Tags.some(t => t.toLowerCase().includes(q));
+                });
+            }
+
+            // Sort by ID descending (most recent first)
+            items = [...items].sort((a, b) => {
+                const idA = parseInt(a.ID, 10) || 0;
+                const idB = parseInt(b.ID, 10) || 0;
+                return idB - idA;
+            });
+
+            videoGrid.innerHTML = '';
+
+            if (items.length === 0) {
+                const empty = document.createElement('p');
+                empty.className = 'empty';
+                empty.textContent = 'No videos found.';
+                videoGrid.appendChild(empty);
+                paginationEl.style.display = 'none';
+                return;
+            }
+
+            const totalPages = Math.ceil(items.length / VIDEOS_PER_PAGE);
+            if (currentVideoPage < 1) currentVideoPage = 1;
+            if (currentVideoPage > totalPages) currentVideoPage = totalPages;
+
+            const startIdx = (currentVideoPage - 1) * VIDEOS_PER_PAGE;
+            const pageItems = items.slice(startIdx, startIdx + VIDEOS_PER_PAGE);
+
+            const frag = document.createDocumentFragment();
+            pageItems.forEach(v => {
+                frag.appendChild(makeVideoCard(v));
+            });
+            videoGrid.appendChild(frag);
+            videoGrid.classList.add('fade-in');
+
+            renderPagination(items.length, currentVideoPage, (newPage) => {
+                currentVideoPage = newPage;
+                const url = new URL(window.location.href);
+                url.searchParams.set('tab', 'videos');
+                url.searchParams.set('page', newPage);
+                history.pushState({ tab: 'videos', page: newPage }, '', url.pathname + url.search);
+                renderAllVideos();
+            });
+        }
+
+        function renderPagination(totalItems, currentPage, onPageChange) {
+            paginationEl.innerHTML = '';
+            const totalPages = Math.ceil(totalItems / VIDEOS_PER_PAGE);
+            if (totalPages <= 1) {
+                paginationEl.style.display = 'none';
+                return;
+            }
+            paginationEl.style.display = 'flex';
+
+            function createBtn(label, page, active = false, disabled = false) {
+                const btn = document.createElement('button');
+                btn.className = 'pg-btn';
+                if (active) btn.classList.add('active');
+                if (disabled) btn.classList.add('disabled');
+                btn.textContent = label;
+                if (!disabled) {
+                    btn.onclick = () => {
+                        window.scrollTo({ top: 0, behavior: 'instant' });
+                        onPageChange(page);
+                    };
+                }
+                return btn;
+            }
+
+            paginationEl.appendChild(createBtn('‹', currentPage - 1, false, currentPage === 1));
+
+            const range = 1;
+            let pages = [];
+            pages.push(1);
+
+            let start = Math.max(2, currentPage - range);
+            let end = Math.min(totalPages - 1, currentPage + range);
+
+            if (start > 2) {
+                pages.push('...');
+            }
+
+            for (let i = start; i <= end; i++) {
+                pages.push(i);
+            }
+
+            if (end < totalPages - 1) {
+                pages.push('...');
+            }
+
+            if (totalPages > 1) {
+                pages.push(totalPages);
+            }
+
+            pages.forEach(p => {
+                if (p === '...') {
+                    const dots = document.createElement('span');
+                    dots.className = 'pg-dots';
+                    dots.textContent = '...';
+                    paginationEl.appendChild(dots);
+                } else {
+                    paginationEl.appendChild(createBtn(p, p, p === currentPage));
+                }
+            });
+
+            paginationEl.appendChild(createBtn('›', currentPage + 1, false, currentPage === totalPages));
+        }
+
+        function getQueryParam(name) {
+            const params = new URLSearchParams(location.search);
+            return params.get(name);
+        }
+
         // ── Routing helpers ───────────────────────────────────────────────────────────
         const BASE = ''; // custom domain at root
 
@@ -1378,8 +1662,10 @@
             else pageTitle.textContent = m.name;
             document.title = m.name + ' — RIPNSFW';
             backBtn.style.display = 'flex';
+            tabContainer.style.display = 'none';
             modelGrid.style.display = 'none';
             videoGrid.style.display = 'grid';
+            paginationEl.style.display = 'none';
             renderVideos();
             window.scrollTo({ top: 0, behavior: 'instant' });
             const url = modelUrl(m);
@@ -1390,16 +1676,35 @@
             curModel = null;
             searchQ = '';
             searchEl.value = '';
-            searchEl.placeholder = 'Search model…';
+            searchEl.placeholder = currentTab === 'models' ? 'Search model…' : 'Search video…';
             if (homeLink) homeLink.textContent = 'RIPNSFW';
             else pageTitle.textContent = 'RIPNSFW';
             document.title = 'RIPNSFW';
             backBtn.style.display = 'none';
-            videoGrid.style.display = 'none';
-            modelGrid.style.display = 'grid';
-            renderModels();
+            tabContainer.style.display = 'flex';
+            
+            if (currentTab === 'models') {
+                videoGrid.style.display = 'none';
+                modelGrid.style.display = 'grid';
+                paginationEl.style.display = 'none';
+                renderModels();
+            } else {
+                modelGrid.style.display = 'none';
+                videoGrid.style.display = 'grid';
+                renderAllVideos();
+            }
             window.scrollTo({ top: 0, behavior: 'instant' });
-            if (!fromPopState) history.pushState({}, '', BASE + '/');
+            if (!fromPopState) {
+                const url = new URL(window.location.href);
+                if (currentTab === 'videos') {
+                    url.searchParams.set('tab', 'videos');
+                    url.searchParams.set('page', currentVideoPage);
+                } else {
+                    url.searchParams.delete('tab');
+                    url.searchParams.delete('page');
+                }
+                history.pushState({}, '', url.pathname + url.search);
+            }
         }
 
         window.addEventListener('popstate', () => {
@@ -1424,17 +1729,34 @@
             if (curModel) { goBack(true); return; }
 
             // Fallback: voltou para home sem modelo/video ativo
+            const tabParam = getQueryParam('tab');
+            const pageParam = parseInt(getQueryParam('page'), 10);
+
             curModel = null;
             curVideo = null;
             searchQ = '';
             searchEl.value = '';
-            searchEl.placeholder = 'Search model…';
-            if (homeLink) homeLink.textContent = 'RIPNSFW';
-            document.title = 'RIPNSFW';
-            backBtn.style.display = 'none';
-            videoGrid.style.display = 'none';
-            modelGrid.style.display = 'grid';
-            renderModels();
+            tabContainer.style.display = 'flex';
+
+            if (tabParam === 'videos') {
+                currentTab = 'videos';
+                currentVideoPage = pageParam || 1;
+                $('tab-models').classList.remove('active');
+                $('tab-videos').classList.add('active');
+                searchEl.placeholder = 'Search video…';
+                modelGrid.style.display = 'none';
+                videoGrid.style.display = 'grid';
+                renderAllVideos();
+            } else {
+                currentTab = 'models';
+                $('tab-models').classList.add('active');
+                $('tab-videos').classList.remove('active');
+                searchEl.placeholder = 'Search model…';
+                videoGrid.style.display = 'none';
+                modelGrid.style.display = 'grid';
+                paginationEl.style.display = 'none';
+                renderModels();
+            }
             window.scrollTo({ top: 0, behavior: 'instant' });
         });
 
@@ -1498,11 +1820,13 @@
             mId.textContent = 'ID: ' + v.ID;
             mCat.style.display = v.Category ? '' : 'none';
 
+            const defaultIdx = players.length > 0 ? players.length - 1 : 0;
+
             ptabs.innerHTML = '';
             if (players.length > 1) {
                 players.forEach((p, i) => {
                     const btn = document.createElement('button');
-                    btn.className = 'ptab' + (i === 0 ? ' active' : '');
+                    btn.className = 'ptab' + (i === defaultIdx ? ' active' : '');
                     btn.textContent = p.label;
                     btn.onclick = () => setActivePlayer(players, i);
                     ptabs.appendChild(btn);
@@ -1514,7 +1838,7 @@
 
             dlLinks.innerHTML = '';
             if (players.length === 0) {
-                dlLinks.innerHTML = '<p class="no-links">Nenhum link disponível.</p>';
+                dlLinks.innerHTML = '<p class="no-links">No links available.</p>';
             } else {
                 players.forEach((p, i) => {
                     if (!p.dl) return;
@@ -1522,21 +1846,20 @@
                     a.href = p.dl;
                     a.target = '_blank';
                     a.rel = 'noopener noreferrer';
-                    a.className = 'dl-link ' + (i === 0 ? 'primary' : 'secondary');
+                    a.className = 'dl-link ' + (i === defaultIdx ? 'primary' : 'secondary');
                     a.innerHTML = 'Download ' + (i + 1) + ' ' + EXT_ICON;
                     dlLinks.appendChild(a);
                 });
             }
 
-            setActivePlayer(players, 0);
+            setActivePlayer(players, defaultIdx);
             modal.classList.add('open');
             document.body.style.overflow = 'hidden';
 
-            if (curModel) {
-                const url = modelUrl(curModel) + '/' + encodeURIComponent(v.ID);
-                if (replaceState) history.replaceState({ model: curModel.name, videoId: v.ID }, '', url);
-                else history.pushState({ model: curModel.name, videoId: v.ID }, '', url);
-            }
+            const mSlug = nameToSlug(v.ModelName);
+            const url = BASE + '/model/' + mSlug + '/' + encodeURIComponent(v.ID);
+            if (replaceState) history.replaceState({ model: v.ModelName, videoId: v.ID }, '', url);
+            else history.pushState({ model: v.ModelName, videoId: v.ID }, '', url);
         }
 
         function closeModal(fromPopState) {
@@ -1545,8 +1868,20 @@
             const iframe = modalVideo.querySelector('iframe');
             if (iframe) iframe.remove();
             curVideo = null;
-            if (!fromPopState && curModel) {
-                history.pushState({ model: curModel.name }, '', modelUrl(curModel));
+            if (!fromPopState) {
+                if (curModel) {
+                    history.pushState({ model: curModel.name }, '', modelUrl(curModel));
+                } else {
+                    const url = new URL(window.location.href);
+                    if (currentTab === 'videos') {
+                        url.searchParams.set('tab', 'videos');
+                        url.searchParams.set('page', currentVideoPage);
+                    } else {
+                        url.searchParams.delete('tab');
+                        url.searchParams.delete('page');
+                    }
+                    history.pushState({}, '', url.pathname + url.search);
+                }
             }
         }
 
@@ -1556,27 +1891,84 @@
             debTimer = setTimeout(() => {
                 searchQ = e.target.value.trim();
                 if (curModel) renderVideos();
-                else renderModels();
+                else if (currentTab === 'videos') {
+                    currentVideoPage = 1;
+                    renderAllVideos();
+                } else renderModels();
             }, 280);
         });
 
         // ── Events ────────────────────────────────────────────────────────────────────
         backBtn.onclick = () => goBack(false);
+
+        $('tab-models').onclick = () => {
+            if (currentTab === 'models') return;
+            currentTab = 'models';
+            $('tab-models').classList.add('active');
+            $('tab-videos').classList.remove('active');
+
+            searchEl.value = '';
+            searchQ = '';
+            searchEl.placeholder = 'Search model…';
+
+            videoGrid.style.display = 'none';
+            modelGrid.style.display = 'grid';
+            paginationEl.style.display = 'none';
+
+            history.pushState({ tab: 'models' }, '', BASE + '/');
+            renderModels();
+        };
+
+        $('tab-videos').onclick = () => {
+            if (currentTab === 'videos') return;
+            currentTab = 'videos';
+            $('tab-models').classList.remove('active');
+            $('tab-videos').classList.add('active');
+
+            searchEl.value = '';
+            searchQ = '';
+            searchEl.placeholder = 'Search video…';
+
+            modelGrid.style.display = 'none';
+            videoGrid.style.display = 'grid';
+
+            currentVideoPage = 1;
+            history.pushState({ tab: 'videos', page: 1 }, '', BASE + '/?tab=videos&page=1');
+            renderAllVideos();
+        };
+
         if (homeLink) {
             homeLink.onclick = (e) => {
                 e.preventDefault();
                 if (curVideo) { closeModal(false); return; }
                 if (curModel) { goBack(false); return; }
-                // Já na home mas grid pode estar vazio — força re-render
-                if (location.pathname !== (BASE + '/')) history.pushState({}, '', BASE + '/');
-                videoGrid.style.display = 'none';
-                modelGrid.style.display = 'grid';
-                renderModels();
+                
+                // Force reset to videos tab on home link click
+                currentTab = 'videos';
+                $('tab-videos').classList.add('active');
+                $('tab-models').classList.remove('active');
+                tabContainer.style.display = 'flex';
+
+                searchEl.value = '';
+                searchQ = '';
+                searchEl.placeholder = 'Search video…';
+
+                modelGrid.style.display = 'none';
+                videoGrid.style.display = 'grid';
+
+                currentVideoPage = 1;
+
+                if (location.pathname !== (BASE + '/') || location.search !== '') {
+                    history.pushState({ tab: 'videos', page: 1 }, '', BASE + '/');
+                }
+                renderAllVideos();
                 window.scrollTo({ top: 0, behavior: 'instant' });
             };
         }
-        $('close-mob').onclick = () => closeModal(false);
-        $('close-desk').onclick = () => closeModal(false);
+        const closeDeskBtn = $('close-desk');
+        if (closeDeskBtn) closeDeskBtn.onclick = () => closeModal(false);
+        const closeMobBtn = $('close-mob');
+        if (closeMobBtn) closeMobBtn.onclick = () => closeModal(false);
         modal.addEventListener('click', e => { if (e.target === modal) closeModal(false); });
         document.addEventListener('keydown', e => { if (e.key === 'Escape' && curVideo) closeModal(false); });
 
@@ -1654,11 +2046,30 @@
                         if (v) openVideo(v, true);
                     }
                 } else {
-                    // Modelo não encontrado ou URL inválida → vai para home
                     if (modelSlug) history.replaceState({}, '', BASE + '/');
-                    videoGrid.style.display = 'none';
-                    modelGrid.style.display = 'grid';
-                    renderModels();
+
+                    const tabParam = getQueryParam('tab');
+                    const pageParam = parseInt(getQueryParam('page'), 10);
+
+                    if (tabParam === 'videos') {
+                        currentTab = 'videos';
+                        currentVideoPage = pageParam || 1;
+                        $('tab-models').classList.remove('active');
+                        $('tab-videos').classList.add('active');
+                        searchEl.placeholder = 'Search video…';
+                        modelGrid.style.display = 'none';
+                        videoGrid.style.display = 'grid';
+                        renderAllVideos();
+                    } else {
+                        currentTab = 'models';
+                        $('tab-models').classList.add('active');
+                        $('tab-videos').classList.remove('active');
+                        searchEl.placeholder = 'Search model…';
+                        videoGrid.style.display = 'none';
+                        modelGrid.style.display = 'grid';
+                        paginationEl.style.display = 'none';
+                        renderModels();
+                    }
                 }
             });
         }

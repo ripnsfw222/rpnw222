@@ -1235,6 +1235,14 @@
                 [array[i], array[j]] = [array[j], array[i]];
             }
         }
+        function markVideosAsSeen(items) {
+            try {
+                const seen = JSON.parse(sessionStorage.getItem('seen_videos') || '[]');
+                const seenSet = new Set(seen);
+                items.forEach(item => seenSet.add(item.ID));
+                sessionStorage.setItem('seen_videos', JSON.stringify([...seenSet]));
+            } catch (e) { }
+        }
         function csvSplit(line) {
             const cols = [];
             let cur = '', inQ = false;
@@ -1561,6 +1569,11 @@
 
             const startIdx = (currentVideoPage - 1) * VIDEOS_PER_PAGE;
             const pageItems = items.slice(startIdx, startIdx + VIDEOS_PER_PAGE);
+
+            // Marca os vídeos exibidos nesta página como vistos para não repetir no F5
+            if (!q) {
+                markVideosAsSeen(pageItems);
+            }
 
             const frag = document.createDocumentFragment();
             pageItems.forEach(v => {
@@ -2026,8 +2039,27 @@
 
         function processCSV(csv) {
             allData = parseCSV(csv);
-            shuffledAllData = [...allData];
-            shuffleArray(shuffledAllData);
+            // Separa os vídeos vistos dos não vistos para priorizar os não vistos no embaralhamento
+            try {
+                const seen = JSON.parse(sessionStorage.getItem('seen_videos') || '[]');
+                const seenSet = new Set(seen);
+                let unseen = allData.filter(v => !seenSet.has(v.ID));
+                let seenVideos = allData.filter(v => seenSet.has(v.ID));
+                
+                // Se restar menos de uma página de vídeos não vistos, reinicia a lista
+                if (unseen.length < VIDEOS_PER_PAGE) {
+                    sessionStorage.removeItem('seen_videos');
+                    unseen = [...allData];
+                    seenVideos = [];
+                }
+                
+                shuffleArray(unseen);
+                shuffleArray(seenVideos);
+                shuffledAllData = [...unseen, ...seenVideos];
+            } catch (e) {
+                shuffledAllData = [...allData];
+                shuffleArray(shuffledAllData);
+            }
             const tempMap = new Map();
 
             // Conta vídeos onde a modelo é a principal

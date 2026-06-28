@@ -1435,7 +1435,17 @@
             circle.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>`;
             playWrap.appendChild(circle);
             thumb.appendChild(playWrap);
-            // Column I (previously Category, now download links) removed from video card display
+            // Mostra o selo "Source Quality" se o vídeo tiver links de download na coluna I
+            const colILinks = v.Category ? v.Category.split(',').map(l => l.trim()).filter(l => {
+                const s = l.toLowerCase();
+                return s.startsWith('http') || s.includes('://') || s.startsWith('www.');
+            }) : [];
+            if (colILinks.length > 0) {
+                const cat = document.createElement('span');
+                cat.className = 'vcard-cat';
+                cat.textContent = 'Source Quality';
+                thumb.appendChild(cat);
+            }
             const info = document.createElement('div');
             info.className = 'vcard-info';
 
@@ -1870,7 +1880,7 @@
                     a.target = '_blank';
                     a.rel = 'noopener noreferrer';
                     a.className = 'dl-link ' + (i === 0 ? 'primary' : 'secondary');
-                    a.innerHTML = 'Download ' + (i + 1) + ' ' + EXT_ICON;
+                    a.innerHTML = 'Download Source ' + (i + 1) + ' ' + EXT_ICON;
                     dlLinks.appendChild(a);
                 });
             } else if (players.length === 0) {

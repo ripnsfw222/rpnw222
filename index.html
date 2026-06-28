@@ -1,0 +1,2207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RIPNSFW SXYPRN</title>
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box
+        }
+
+        html {
+            scroll-behavior: auto
+        }
+
+        body {
+            margin: 0;
+            background: #020617;
+            color: #e2e8f0;
+            font-family: system-ui, -apple-system, sans-serif;
+            overflow-x: hidden
+        }
+
+        /* Layout */
+        #header {
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            padding: .75rem 1rem
+        }
+
+        #header-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: .75rem
+        }
+
+        #title-row {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            flex-shrink: 0
+        }
+
+        #back-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: inherit;
+            cursor: pointer;
+            padding: .4rem;
+            border-radius: 50%;
+            transition: background .15s
+        }
+
+        #back-btn:hover {
+            background: rgba(255, 255, 255, .1)
+        }
+
+        #page-title {
+            margin: 0;
+            font-size: 1.15rem;
+            font-weight: 900;
+            font-style: italic;
+            text-transform: uppercase;
+            letter-spacing: -.04em;
+            color: #fff;
+            white-space: nowrap
+        }
+
+        #search-wrap {
+            position: relative;
+            flex: 1;
+            min-width: 180px;
+            max-width: 360px;
+            margin-left: auto
+        }
+
+        #search-icon {
+            position: absolute;
+            left: .65rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+            pointer-events: none;
+            display: flex
+        }
+
+        #search {
+            width: 100%;
+            background: rgba(2, 6, 23, .6);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: .75rem;
+            padding: .45rem .75rem .45rem 2.2rem;
+            font-size: .85rem;
+            color: #e2e8f0;
+            outline: none;
+            transition: border-color .15s
+        }
+
+        #search:focus {
+            border-color: rgba(236, 72, 153, .5)
+        }
+
+        #main {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1.25rem .75rem 3rem
+        }
+
+        /* Grids */
+        #model-grid,
+        #video-grid {
+            display: grid;
+            gap: .85rem;
+            contain: layout style
+        }
+
+        #model-grid {
+            grid-template-columns: repeat(2, 1fr)
+        }
+
+        #video-grid {
+            grid-template-columns: 1fr;
+            display: none
+        }
+
+        @media(min-width:480px) {
+            #model-grid {
+                grid-template-columns: repeat(3, 1fr)
+            }
+        }
+
+        @media(min-width:640px) {
+            #model-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1rem
+            }
+
+            #video-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem
+            }
+        }
+
+        @media(min-width:900px) {
+            #model-grid {
+                grid-template-columns: repeat(4, 1fr)
+            }
+        }
+
+        @media(min-width:1100px) {
+            #model-grid {
+                grid-template-columns: repeat(5, 1fr)
+            }
+
+            #video-grid {
+                grid-template-columns: repeat(3, 1fr)
+            }
+        }
+
+        /* Model card */
+        .mcard {
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            contain: layout style;
+            content-visibility: auto;
+            contain-intrinsic-size: 0 260px
+        }
+
+        .mcard-img {
+            position: relative;
+            aspect-ratio: 3/4;
+            border-radius: 1rem;
+            overflow: hidden;
+            background: #0f172a;
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, .06);
+            transition: box-shadow .2s
+        }
+
+        .mcard:hover .mcard-img {
+            box-shadow: 0 0 0 1.5px rgba(236, 72, 153, .45)
+        }
+
+        .mcard-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transform: translateZ(0);
+            transition: transform .4s ease, opacity .3s ease;
+            opacity: 0
+        }
+
+        .mcard-img img.loaded {
+            opacity: 1
+        }
+
+        .mcard:hover .mcard-img img {
+            transform: scale(1.05) translateZ(0)
+        }
+
+        .mcard-grad {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, .82) 0%, transparent 55%);
+            pointer-events: none
+        }
+
+        .mcard-count {
+            position: absolute;
+            bottom: .5rem;
+            left: .75rem;
+            font-size: .5rem;
+            font-weight: 900;
+            color: #ec4899;
+            text-transform: uppercase;
+            letter-spacing: .12em
+        }
+
+        .mcard-name {
+            text-align: center;
+            font-size: .7rem;
+            font-weight: 700;
+            color: #94a3b8;
+            margin-top: .35rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            transition: color .15s
+        }
+
+        .mcard:hover .mcard-name {
+            color: #fff
+        }
+
+        /* Video card */
+        .vcard {
+            cursor: pointer;
+            background: rgba(15, 23, 42, .45);
+            border: 1px solid rgba(255, 255, 255, .06);
+            border-radius: 1rem;
+            overflow: hidden;
+            transition: background .15s;
+            -webkit-tap-highlight-color: transparent;
+            contain: layout style;
+            content-visibility: auto;
+            contain-intrinsic-size: 0 220px
+        }
+
+        .vcard:hover {
+            background: rgba(15, 23, 42, .8)
+        }
+
+        .vcard-thumb {
+            position: relative;
+            aspect-ratio: 16/9;
+            background: #1e293b;
+            overflow: hidden
+        }
+
+        .vcard-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            opacity: 0;
+            transition: opacity .3s ease
+        }
+
+        .vcard-thumb img.loaded {
+            opacity: .82
+        }
+
+        .vcard:hover .vcard-thumb img {
+            opacity: 1
+        }
+
+        .vcard-play {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, .38);
+            opacity: 0;
+            transition: opacity .2s
+        }
+
+        .vcard:hover .vcard-play {
+            opacity: 1
+        }
+
+        .play-circle {
+            width: 2.75rem;
+            height: 2.75rem;
+            background: #dc2626;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, .4)
+        }
+
+        .vcard-cat {
+            position: absolute;
+            top: .5rem;
+            right: .5rem;
+            background: rgba(0, 0, 0, .7);
+            backdrop-filter: blur(6px);
+            padding: .15rem .45rem;
+            border-radius: .25rem;
+            font-size: .5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #fff
+        }
+
+        .vcard-info {
+            padding: .65rem .75rem .75rem
+        }
+
+        .vcard-id {
+            font-size: .7rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap
+        }
+
+        .vcard-guests {
+            font-size: .6rem;
+            font-weight: 700;
+            color: #ec4899;
+            text-transform: uppercase;
+            margin-top: .2rem
+        }
+
+        /* Modal */
+        #modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            background: rgba(0, 0, 0, .97);
+            backdrop-filter: blur(16px);
+            align-items: flex-end;
+            justify-content: center
+        }
+
+        #modal.open {
+            display: flex
+        }
+
+        @media(min-width:640px) {
+            #modal {
+                align-items: center;
+                padding: 1.5rem
+            }
+        }
+
+        @media(min-width:1024px) {
+            #modal {
+                padding: 2.5rem
+            }
+        }
+
+        .modal-box {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 940px;
+            background: #080f1e;
+            border-radius: 1.25rem 1.25rem 0 0;
+            border: 1px solid rgba(255, 255, 255, .07);
+            overflow-y: auto;
+            overflow-x: hidden;
+            position: relative;
+            max-height: 92dvh
+        }
+
+        @media(min-width:640px) {
+            .modal-box {
+                border-radius: 1.5rem;
+                max-width: 92vw;
+                max-height: 90dvh
+            }
+        }
+
+        @media(min-width:1024px) {
+            .modal-box {
+                max-width: 1100px;
+            }
+        }
+
+        @media(min-width:1280px) {
+            .modal-box {
+                max-width: 1200px;
+            }
+        }
+
+        .modal-video {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+            flex-shrink: 0
+        }
+
+        .modal-video iframe {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: none
+        }
+
+        .modal-info {
+            padding: 1rem 1.1rem 1.5rem;
+        }
+
+        @media(min-width:768px) {
+            .modal-info {
+                display: flex;
+                gap: 2rem;
+                padding: 1.5rem 1.8rem 2rem;
+            }
+
+            .modal-info-left {
+                flex: 1;
+                min-width: 0;
+            }
+
+            .modal-info-right {
+                width: 320px;
+                flex-shrink: 0;
+            }
+        }
+
+        /* Modal Close Button */
+        .modal-close-btn {
+            position: absolute;
+            top: .75rem;
+            right: .75rem;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            cursor: pointer;
+            border-radius: 50%;
+            padding: .45rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background .15s, border-color .15s;
+            z-index: 10;
+        }
+
+        .modal-close-btn:hover {
+            background: rgba(30, 41, 59, 0.9);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Modal info */
+        .modal-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: .5rem;
+            margin-bottom: .85rem
+        }
+
+        .modal-title {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            font-style: italic;
+            color: #fff;
+            line-height: 1.2;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap
+        }
+
+        .modal-cat {
+            font-size: .55rem;
+            font-weight: 700;
+            color: #ec4899;
+            text-transform: uppercase;
+            letter-spacing: .12em;
+            margin-top: .2rem
+        }
+
+        .modal-guests {
+            font-size: .65rem;
+            color: #94a3b8;
+            margin-top: .2rem
+        }
+
+        .modal-id {
+            font-size: .55rem;
+            color: #334155;
+            font-family: monospace;
+            margin-top: .15rem
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            padding: .2rem;
+            flex-shrink: 0;
+            transition: color .15s;
+            display: flex
+        }
+
+        .close-btn:hover {
+            color: #fff
+        }
+
+        .close-btn-mob {
+            position: absolute;
+            top: .65rem;
+            right: .65rem;
+            background: rgba(0, 0, 0, .6);
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 50%;
+            padding: .35rem;
+            display: flex
+        }
+
+        @media(min-width:768px) {
+            .close-btn-mob {
+                display: none
+            }
+        }
+
+        /* Player tabs */
+        .player-tabs {
+            display: flex;
+            gap: .35rem;
+            margin-bottom: .85rem
+        }
+
+        .ptab {
+            flex: 1;
+            padding: .35rem;
+            border-radius: .5rem;
+            font-size: .55rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+            transition: background .15s, color .15s;
+            background: #1e293b;
+            color: #64748b
+        }
+
+        .ptab:hover {
+            background: #334155;
+            color: #fff
+        }
+
+        .ptab.active {
+            background: #dc2626;
+            color: #fff
+        }
+
+        /* Download links */
+        .dl-label {
+            font-size: .55rem;
+            font-weight: 700;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            margin-bottom: .4rem
+        }
+
+        .dl-links {
+            display: flex;
+            flex-direction: column;
+            gap: .4rem
+        }
+
+        .dl-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: .55rem .75rem;
+            border-radius: .65rem;
+            font-size: .65rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: #fff;
+            transition: background .15s
+        }
+
+        .dl-link.primary {
+            background: #dc2626
+        }
+
+        .dl-link.primary:hover {
+            background: #b91c1c
+        }
+
+        .dl-link.secondary {
+            background: #1e293b
+        }
+
+        .dl-link.secondary:hover {
+            background: #334155
+        }
+
+        .no-links {
+            font-size: .75rem;
+            color: #334155
+        }
+
+        /* ── Security screen ─────────────────────────────────────────────────────── */
+        #spinner {
+            display: flex;
+            height: 100vh;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            background: #020617;
+            padding: 1.5rem;
+            animation: fadeInSpin .4s ease both;
+        }
+
+        @keyframes fadeInSpin {
+            from {
+                opacity: 0
+            }
+
+            to {
+                opacity: 1
+            }
+        }
+
+        .sec-logo {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            margin-bottom: 2.5rem;
+            font-size: .7rem;
+            font-weight: 900;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: .2em;
+        }
+
+        .sec-logo svg {
+            flex-shrink: 0
+        }
+
+        .sec-card {
+            width: 100%;
+            max-width: 380px;
+            background: #0b1223;
+            border: 1px solid rgba(255, 255, 255, .07);
+            border-radius: 1.25rem;
+            padding: 2rem 1.75rem 1.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .sec-row {
+            display: flex;
+            align-items: center;
+            gap: .85rem
+        }
+
+        .sec-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: .6rem;
+            flex-shrink: 0;
+            background: rgba(236, 72, 153, .12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sec-heading {
+            margin: 0;
+            font-size: .95rem;
+            font-weight: 800;
+            color: #f1f5f9;
+            line-height: 1.3
+        }
+
+        .sec-sub {
+            margin: .2rem 0 0;
+            font-size: .7rem;
+            color: #475569
+        }
+
+        .sec-checks {
+            display: flex;
+            flex-direction: column;
+            gap: .55rem
+        }
+
+        .chk {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            font-size: .72rem;
+            color: #64748b;
+            transition: color .3s
+        }
+
+        .chk.done {
+            color: #94a3b8
+        }
+
+        .chk.active {
+            color: #e2e8f0
+        }
+
+        .chk-dot {
+            width: .9rem;
+            height: .9rem;
+            border-radius: 50%;
+            flex-shrink: 0;
+            border: 1.5px solid #1e293b;
+            background: #0b1223;
+            transition: all .3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chk.done .chk-dot {
+            background: #10b981;
+            border-color: #10b981
+        }
+
+        .chk.active .chk-dot {
+            border-color: #ec4899;
+            animation: pulseDot .8s ease infinite
+        }
+
+        @keyframes pulseDot {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(236, 72, 153, .4)
+            }
+
+            50% {
+                box-shadow: 0 0 0 5px rgba(236, 72, 153, 0)
+            }
+        }
+
+        .chk-check {
+            display: none
+        }
+
+        .chk.done .chk-check {
+            display: block
+        }
+
+        .chk.done .chk-dot-inner {
+            display: none
+        }
+
+        .sec-bar-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: .5rem
+        }
+
+        .sec-bar-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center
+        }
+
+        .sec-bar-label span:first-child {
+            font-size: .65rem;
+            color: #475569;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .1em
+        }
+
+        #sec-pct {
+            font-size: .65rem;
+            font-weight: 800;
+            color: #ec4899
+        }
+
+        .sec-bar-track {
+            height: 3px;
+            background: #1e293b;
+            border-radius: 2px;
+            overflow: hidden
+        }
+
+        #sec-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #9333ea, #ec4899);
+            border-radius: 2px;
+            transition: width .4s ease
+        }
+
+        .sec-notice {
+            font-size: .6rem;
+            color: #334155;
+            text-align: center;
+            line-height: 1.6
+        }
+
+        .sec-notice b {
+            color: #475569
+        }
+
+        /* Fade-in */
+        .fade-in {
+            animation: fi .22s ease-out both
+        }
+
+        @keyframes fi {
+            from {
+                opacity: 0;
+                transform: translateY(5px)
+            }
+
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+
+        /* Scrollbar */
+        .modal-info::-webkit-scrollbar {
+            width: 3px
+        }
+
+        .modal-info::-webkit-scrollbar-thumb {
+            background: rgba(236, 72, 153, .4);
+            border-radius: 4px
+        }
+
+        /* Empty state */
+        .empty {
+            grid-column: 1/-1;
+            text-align: center;
+            color: #334155;
+            padding: 4rem 0;
+            font-size: .85rem
+        }
+
+        /* Tabs styles */
+        .tabs-wrap {
+            display: flex;
+            justify-content: center;
+            gap: .5rem;
+            margin-bottom: 1.5rem;
+            background: rgba(15, 23, 42, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: .35rem;
+            border-radius: 1rem;
+            width: max-content;
+            margin-left: auto;
+            margin-right: auto;
+            backdrop-filter: blur(8px);
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            padding: .5rem 1.25rem;
+            font-size: .8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            cursor: pointer;
+            border-radius: .75rem;
+            transition: all .2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .tab-btn:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .tab-btn.active {
+            color: #fff;
+            background: #ec4899;
+            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.35);
+        }
+
+        /* Pagination styles */
+        .pagination-wrap {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: .35rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .pg-btn {
+            background: rgba(15, 23, 42, 0.45);
+            border: 1px solid rgba(255, 255, 255, .06);
+            color: #94a3b8;
+            padding: .45rem .75rem;
+            font-size: .75rem;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: .5rem;
+            transition: all .15s;
+            user-select: none;
+        }
+
+        .pg-btn:hover:not(.disabled) {
+            background: rgba(30, 41, 59, 0.8);
+            color: #fff;
+            border-color: rgba(255, 255, 255, .15);
+        }
+
+        .pg-btn.active {
+            background: #ec4899;
+            color: #fff;
+            border-color: #ec4899;
+            box-shadow: 0 0 10px rgba(236, 72, 153, 0.35);
+        }
+
+        .pg-btn.disabled {
+            opacity: .35;
+            cursor: not-allowed;
+        }
+
+        .pg-dots {
+            color: #475569;
+            padding: 0 .25rem;
+            font-weight: 700;
+            font-size: .8rem;
+            user-select: none;
+        }
+
+        /* Video model name */
+        .vcard-model-name {
+            font-size: .75rem;
+            font-weight: 800;
+            color: #fff;
+            margin: 0 0 .15rem 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .vcard-model-name a {
+            color: #ec4899;
+            text-decoration: none;
+            transition: opacity .15s;
+        }
+        .vcard-model-name a:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="spinner">
+        <div class="sec-logo">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
+            RIPNSFW
+        </div>
+
+        <div class="sec-card">
+            <div class="sec-row">
+                <div class="sec-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 8v4M12 16h.01" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="sec-heading">Verifying your access</p>
+                    <p class="sec-sub">Please wait while we validate your session…</p>
+                </div>
+            </div>
+
+            <div class="sec-checks">
+                <div class="chk" id="chk1">
+                    <div class="chk-dot">
+                        <svg class="chk-check" width="8" height="8" viewBox="0 0 12 12" fill="none" stroke="white"
+                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="2,6 5,9 10,3" />
+                        </svg>
+                    </div>
+                    <span>Verifying IP address</span>
+                </div>
+                <div class="chk" id="chk2">
+                    <div class="chk-dot">
+                        <svg class="chk-check" width="8" height="8" viewBox="0 0 12 12" fill="none" stroke="white"
+                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="2,6 5,9 10,3" />
+                        </svg>
+                    </div>
+                    <span>Validating browser session</span>
+                </div>
+                <div class="chk" id="chk3">
+                    <div class="chk-dot">
+                        <svg class="chk-check" width="8" height="8" viewBox="0 0 12 12" fill="none" stroke="white"
+                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="2,6 5,9 10,3" />
+                        </svg>
+                    </div>
+                    <span>Loading secure catalog</span>
+                </div>
+            </div>
+
+            <div class="sec-bar-wrap">
+                <div class="sec-bar-label">
+                    <span>Progress</span>
+                    <span id="sec-pct">0%</span>
+                </div>
+                <div class="sec-bar-track">
+                    <div id="sec-bar-fill"></div>
+                </div>
+            </div>
+
+            <p class="sec-notice">This usually takes <b>less than 5 seconds</b>.<br>Do not close or refresh this page.
+            </p>
+        </div>
+    </div>
+
+    <div id="app" style="display:none">
+        <div id="header">
+            <div id="header-inner">
+                <div id="title-row">
+                    <button id="back-btn" aria-label="Voltar">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M19 12H5M12 5l-7 7 7 7" />
+                        </svg>
+                    </button>
+                    <h1 id="page-title">
+                        <a id="home-link" href="/" style="text-decoration: none; color: inherit;">RIPNSFW</a>
+                    </h1>
+                </div>
+                <div id="search-wrap">
+                    <span id="search-icon">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8" />
+                            <path d="m21 21-4.35-4.35" />
+                        </svg>
+                    </span>
+                    <input id="search" type="search" placeholder="Search…" autocomplete="off" spellcheck="false">
+                </div>
+            </div>
+        </div>
+
+        <main id="main">
+            <div id="tab-container" class="tabs-wrap">
+                <button id="tab-videos" class="tab-btn active">Videos</button>
+                <button id="tab-models" class="tab-btn">Models</button>
+            </div>
+            <div id="model-grid"></div>
+            <div id="video-grid"></div>
+            <div id="pagination" class="pagination-wrap" style="display: none;"></div>
+        </main>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" role="dialog" aria-modal="true">
+        <div class="modal-box">
+            <button class="modal-close-btn" id="close-desk" aria-label="Close">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 6 6 18M6 6l12 12" />
+                </svg>
+            </button>
+            <div class="modal-video" id="modal-video"></div>
+            <div class="modal-info" id="modal-info">
+                <div class="modal-info-left">
+                    <div style="min-width:0">
+                        <p class="modal-title" id="m-title"></p>
+                        <p class="modal-cat" id="m-cat"></p>
+                        <p class="modal-guests" id="m-guests"></p>
+                        <p class="modal-id" id="m-id"></p>
+                    </div>
+                </div>
+                <div class="modal-info-right">
+                    <div class="player-tabs" id="ptabs"></div>
+                    <p class="dl-label">Download</p>
+                    <div class="dl-links" id="dl-links"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ── GitHub Pages SPA redirect handler ────────────────────────────────────────
+        (function () {
+            const redir = sessionStorage.getItem('spa_redirect');
+            if (redir && redir !== '/') {
+                sessionStorage.removeItem('spa_redirect');
+                history.replaceState(null, '', redir);
+            }
+        })();
+
+        // ── Security screen controller ────────────────────────────────────────────────
+        (function () {
+            let pct = 0;
+            let rafId = null;
+            let done = false;
+
+            const fill = document.getElementById('sec-bar-fill');
+            const pctEl = document.getElementById('sec-pct');
+            const chk1 = document.getElementById('chk1');
+            const chk2 = document.getElementById('chk2');
+            const chk3 = document.getElementById('chk3');
+
+            function setCheck(el, state) {
+                el.classList.remove('active', 'done');
+                if (state) el.classList.add(state);
+            }
+            function updateChecks(p) {
+                if (p < 35) { setCheck(chk1, 'active'); setCheck(chk2, ''); setCheck(chk3, ''); }
+                else if (p < 70) { setCheck(chk1, 'done'); setCheck(chk2, 'active'); setCheck(chk3, ''); }
+                else if (p < 99) { setCheck(chk1, 'done'); setCheck(chk2, 'done'); setCheck(chk3, 'active'); }
+                else { setCheck(chk1, 'done'); setCheck(chk2, 'done'); setCheck(chk3, 'done'); }
+            }
+
+            let lastTime = 0;
+            function tick(ts) {
+                if (done) return;
+                if (ts - lastTime < 60) { rafId = requestAnimationFrame(tick); return; }
+                lastTime = ts;
+                const speed = pct < 30 ? 0.8
+                    : pct < 55 ? 0.5
+                        : pct < 72 ? 0.28
+                            : pct < 82 ? 0.1
+                                : 0;
+                pct = Math.min(pct + speed, 82);
+                fill.style.width = pct + '%';
+                pctEl.textContent = Math.round(pct) + '%';
+                updateChecks(pct);
+                if (pct < 82) rafId = requestAnimationFrame(tick);
+            }
+            rafId = requestAnimationFrame(tick);
+
+            window._secDone = function (onFinish) {
+                done = true;
+                cancelAnimationFrame(rafId);
+                let p2 = pct;
+                function finish() {
+                    p2 = Math.min(p2 + 4, 100);
+                    fill.style.width = p2 + '%';
+                    pctEl.textContent = Math.round(p2) + '%';
+                    updateChecks(p2);
+                    if (p2 < 100) requestAnimationFrame(finish);
+                    else {
+                        setTimeout(() => {
+                            const sp = document.getElementById('spinner');
+                            sp.style.transition = 'opacity .35s ease';
+                            sp.style.opacity = '0';
+                            setTimeout(() => { sp.style.display = 'none'; onFinish(); }, 350);
+                        }, 220);
+                    }
+                }
+                requestAnimationFrame(finish);
+            };
+        })();
+
+        // ── Config ────────────────────────────────────────────────────────────────────
+        const SHEET_URL = "/data.csv";   // caminho absoluto — evita resolver relativo a /model/... após replaceState
+        const IMGS_PATH = "/imgs/";
+
+        const IMG_VERSION = Math.floor(Date.now() / (1000 * 60 * 60 * 24)); // muda 1x por dia
+
+        // IGNORED é carregado de /blacklist.txt em paralelo com o CSV
+        let IGNORED = new Set();
+
+        // ── Shared IntersectionObserver ───────────────────────────────────────────────
+        const imgObs = new IntersectionObserver(entries => {
+            for (const e of entries) {
+                if (!e.isIntersecting) continue;
+                const img = e.target;
+                if (img.dataset.src) { img.src = img.dataset.src; delete img.dataset.src; }
+                imgObs.unobserve(img);
+            }
+        }, { rootMargin: '250px' });
+
+        // ── Utilities ─────────────────────────────────────────────────────────────────
+        function nameToSlug(name) {
+            return name.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+        }
+        function toSlug(name) { return nameToSlug(name) + ".jpg"; }
+        function toEmbed(url) {
+            if (!url) return '';
+            try {
+                const u = new URL(url);
+                const h = u.hostname;
+                if (h.includes('streamtape') || h.includes('vidneststream')) return url.replace(/\/v\//, '/e/');
+                if (h.includes('doodstream') || h.includes('lulustream')) return url.replace(/\/d\//, '/e/');
+                if (h.includes('vidnest')) { const id = u.pathname.replace(/^\//, ''); return u.origin + '/embed-' + id + '.html'; }
+                return url;
+            } catch { return url; }
+        }
+        function csvSplit(line) {
+            const cols = [];
+            let cur = '', inQ = false;
+            for (let i = 0; i < line.length; i++) {
+                const c = line[i];
+                if (c === '"') { inQ = !inQ; }
+                else if (c === ',' && !inQ) { cols.push(cur.trim()); cur = ''; }
+                else cur += c;
+            }
+            cols.push(cur.trim());
+            return cols;
+        }
+        function parseCSV(csv) {
+            const lines = csv.trim().replace(/\r/g, '').split('\n');
+            const out = [];
+            for (let i = 1; i < lines.length; i++) {
+                const v = csvSplit(lines[i]);
+                if (!v[2]) continue;
+                const name = v[2].replace(/[\s\u00a0\u200b\u200c\u200d\ufeff]+/g, ' ').trim();
+                if (!name) continue;
+                if (IGNORED.has(name.toUpperCase())) continue;
+                const l1 = v[3] || '', l2 = v[4] || '', l3 = v[5] || '';
+                out.push({
+                    ModelName: name,
+                    Link1: l1, Link2: l2, Link3: l3,
+                    Embed1: toEmbed(l1), Embed2: toEmbed(l2), Embed3: toEmbed(l3),
+                    Guests: v[7] || '',
+                    Category: v[8] || '',
+                    ID: v[10] || '',
+                    Tags: (v[11] || '').replace(/"/g, '').replace(/,/g, ' ').split(/[#\s]+/).filter(Boolean),
+                    Thumb: v[0] ? '/thumbs/' + v[0].trim() : '',
+                    Photo: v[0] || '',
+                });
+            }
+            return out.reverse();
+        }
+
+        // ── State ─────────────────────────────────────────────────────────────────────
+        let allData = [];
+        let modelMap = new Map();   // name → { name, slug, count }
+        let curModel = null;
+        let curVideo = null;
+        let activePlayerIdx = 0;
+        let searchQ = '';
+        let debTimer = null;
+        let currentTab = 'videos';  // 'models' or 'videos'
+        let currentVideoPage = 1;
+        const VIDEOS_PER_PAGE = 24;
+
+        // ── DOM refs ──────────────────────────────────────────────────────────────────
+        const $ = id => document.getElementById(id);
+        const modelGrid = $('model-grid');
+        const videoGrid = $('video-grid');
+        const pageTitle = $('page-title');
+        const homeLink = $('home-link');
+        const backBtn = $('back-btn');
+        const searchEl = $('search');
+        const modal = $('modal');
+        const modalVideo = $('modal-video');
+        const mTitle = $('m-title');
+        const mCat = $('m-cat');
+        const mGuests = $('m-guests');
+        const mId = $('m-id');
+        const ptabs = $('ptabs');
+        const dlLinks = $('dl-links');
+        const tabContainer = $('tab-container');
+        const paginationEl = $('pagination');
+
+        // ── Case-insensitive model lookup ─────────────────────────────────────────────
+        // Finds a model in modelMap regardless of casing (e.g. JackandJill vs JACKANDJILL)
+        function getModel(name) {
+            if (!name) return null;
+            // First try exact match (fast path)
+            if (modelMap.has(name)) return modelMap.get(name);
+            // Fallback: case-insensitive search
+            const upper = name.toUpperCase();
+            for (const [key, val] of modelMap) {
+                if (key.toUpperCase() === upper) return val;
+            }
+            return null;
+        }
+
+        // ── Lazy image helper ─────────────────────────────────────────────────────────
+        function lazyImg(src, alt, fallback) {
+            const img = document.createElement('img');
+            img.dataset.src = src;
+            img.alt = alt;
+            img.decoding = 'async';
+            img.onload = () => img.classList.add('loaded');
+            img.onerror = () => { img.onerror = null; img.src = fallback; img.classList.add('loaded'); };
+            imgObs.observe(img);
+            return img;
+        }
+
+        // ── Build a single model card element ────────────────────────────────────────
+        function makeModelCard(m) {
+            const card = document.createElement('div');
+            card.className = 'mcard';
+            card.onclick = () => openModel(m);
+            const imgWrap = document.createElement('div');
+            imgWrap.className = 'mcard-img';
+            const img = lazyImg(
+                IMGS_PATH + m.slug + '?' + IMG_VERSION, m.name,
+                `https://ui-avatars.com/api/?name=${encodeURIComponent(m.name)}&background=1e293b&color=fff&size=400`
+            );
+            imgWrap.appendChild(img);
+            const grad = document.createElement('div');
+            grad.className = 'mcard-grad';
+            imgWrap.appendChild(grad);
+            const cnt = document.createElement('span');
+            cnt.className = 'mcard-count';
+            cnt.textContent = m.count + ' videos';
+            imgWrap.appendChild(cnt);
+            const lbl = document.createElement('p');
+            lbl.className = 'mcard-name';
+            lbl.textContent = m.name;
+            card.appendChild(imgWrap);
+            card.appendChild(lbl);
+            return card;
+        }
+
+        // ── Render model grid in idle chunks ──────────────────────────────────────────
+        let _renderModelToken = 0;
+        function renderModels() {
+            const token = ++_renderModelToken;
+            const q = searchQ.toLowerCase();
+            const items = [];
+            for (const [, m] of modelMap) {
+                if (!q || m.name.toLowerCase().includes(q)) items.push(m);
+            }
+
+            modelGrid.innerHTML = '';
+
+            if (items.length === 0) {
+                const empty = document.createElement('p');
+                empty.className = 'empty';
+                empty.textContent = 'No models found.';
+                modelGrid.appendChild(empty);
+                return;
+            }
+
+            const CHUNK = 20;
+            let idx = 0;
+
+            function loadChunk() {
+                if (token !== _renderModelToken) return;
+                const frag = document.createDocumentFragment();
+                const limit = Math.min(idx + CHUNK, items.length);
+                while (idx < limit) frag.appendChild(makeModelCard(items[idx++]));
+                modelGrid.appendChild(frag);
+
+                if (idx < items.length) {
+                    // Reposiciona sentinel depois dos novos cards
+                    sentinel.remove();
+                    modelGrid.appendChild(sentinel);
+                } else {
+                    sentinel.remove();
+                    observer.disconnect();
+                }
+            }
+
+            const sentinel = document.createElement('div');
+            sentinel.style.cssText = 'grid-column:1/-1;height:1px';
+
+            const observer = new IntersectionObserver(entries => {
+                if (entries[0].isIntersecting) loadChunk();
+            }, { rootMargin: '400px' });
+
+            // Carrega primeiro chunk imediatamente, só depois ativa o observer
+            loadChunk();
+            modelGrid.appendChild(sentinel);
+            observer.observe(sentinel);
+            modelGrid.classList.add('fade-in');
+        }
+
+        // ── Build a single video card element ────────────────────────────────────────
+        function makeVideoCard(v) {
+            const card = document.createElement('div');
+            card.className = 'vcard';
+            card.onclick = () => openVideo(v);
+            const thumb = document.createElement('div');
+            thumb.className = 'vcard-thumb';
+            const img = lazyImg(v.Thumb || v.Photo, v.ID, 'https://placehold.co/600x338/0f172a/1e293b?text=.');
+            thumb.appendChild(img);
+            const playWrap = document.createElement('div');
+            playWrap.className = 'vcard-play';
+            const circle = document.createElement('div');
+            circle.className = 'play-circle';
+            circle.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>`;
+            playWrap.appendChild(circle);
+            thumb.appendChild(playWrap);
+            // Column I (previously Category, now download links) removed from video card display
+            const info = document.createElement('div');
+            info.className = 'vcard-info';
+
+            if (!curModel) {
+                const modelNameEl = document.createElement('p');
+                modelNameEl.className = 'vcard-model-name';
+                const m = getModel(v.ModelName);
+                if (m) {
+                    modelNameEl.innerHTML = `<a href="${modelUrl(m)}" onclick="event.stopPropagation();event.preventDefault();openModel(getModel('${v.ModelName.replace(/'/g, "\\'")}'))">${v.ModelName}</a>`;
+                } else {
+                    modelNameEl.textContent = v.ModelName;
+                }
+                info.appendChild(modelNameEl);
+            }
+
+            const idEl = document.createElement('p');
+            idEl.className = 'vcard-id';
+            idEl.textContent = 'ID: ' + v.ID;
+            info.appendChild(idEl);
+
+            // Monta w/ excluindo a modelo atual da página
+            if (curModel) {
+                const allParticipants = [v.ModelName, ...v.Guests.split(/[,&\/]+/).map(g => g.trim()).filter(Boolean)];
+                const others = allParticipants.filter(n => n.toUpperCase() !== curModel.name.toUpperCase());
+                if (others.length) {
+                    const g = document.createElement('p');
+                    g.className = 'vcard-guests';
+                    g.innerHTML = 'w/ ' + others.map(n => {
+                        const m = getModel(n);
+                        if (m) return `<a href="${modelUrl(m)}" onclick="event.stopPropagation();event.preventDefault();openModel(getModel('${n.replace(/'/g, "\\'")}'))" style="color:inherit;text-decoration:underline;text-underline-offset:2px">${n}</a>`;
+                        return n;
+                    }).join(', ');
+                    info.appendChild(g);
+                }
+            } else if (v.Guests) {
+                const guestsList = v.Guests.split(/[,&\/]+/).map(g => g.trim()).filter(Boolean);
+                if (guestsList.length) {
+                    const g = document.createElement('p');
+                    g.className = 'vcard-guests';
+                    g.innerHTML = 'w/ ' + guestsList.map(n => {
+                        const m = getModel(n);
+                        if (m) return `<a href="${modelUrl(m)}" onclick="event.stopPropagation();event.preventDefault();openModel(getModel('${n.replace(/'/g, "\\'")}'))" style="color:inherit;text-decoration:underline;text-underline-offset:2px">${n}</a>`;
+                        return n;
+                    }).join(', ');
+                    info.appendChild(g);
+                }
+            }
+
+            card.appendChild(thumb);
+            card.appendChild(info);
+            return card;
+        }
+
+        // ── Render video grid in idle chunks ──────────────────────────────────────────
+        let _renderVideoToken = 0;
+        function renderVideos() {
+            const token = ++_renderVideoToken;
+            const q = searchQ.toLowerCase();
+            const modelName = curModel.name;
+            const items = allData.filter(v => {
+                const isMain = v.ModelName.toUpperCase() === modelName.toUpperCase();
+                const isGuest = v.Guests.split(/[,&\/]+/).map(g => g.trim().toUpperCase())
+                    .includes(modelName.toUpperCase());
+                if (!isMain && !isGuest) return false;
+                if (!q) return true;
+                return v.ID.toLowerCase().includes(q) ||
+                    v.Guests.toLowerCase().includes(q) ||
+                    v.Tags.some(t => t.toLowerCase().includes(q));
+            });
+
+            videoGrid.innerHTML = '';
+
+            if (items.length === 0) {
+                const empty = document.createElement('p');
+                empty.className = 'empty';
+                empty.textContent = 'No videos found.';
+                videoGrid.appendChild(empty);
+                return;
+            }
+
+            const CHUNK = 9;
+            let idx = 0;
+
+            function flush() {
+                if (token !== _renderVideoToken) return;
+                const frag = document.createDocumentFragment();
+                const limit = Math.min(idx + CHUNK, items.length);
+                while (idx < limit) frag.appendChild(makeVideoCard(items[idx++]));
+                videoGrid.appendChild(frag);
+                if (idx < items.length) setTimeout(flush, 0);
+            }
+
+            const firstFrag = document.createDocumentFragment();
+            const firstLimit = Math.min(CHUNK, items.length);
+            while (idx < firstLimit) firstFrag.appendChild(makeVideoCard(items[idx++]));
+            videoGrid.appendChild(firstFrag);
+            videoGrid.classList.add('fade-in');
+
+            if (idx < items.length) setTimeout(flush, 0);
+        }
+
+        // ── Render all videos grid with pagination ────────────────────────────────────
+        let _renderAllVideosToken = 0;
+        function renderAllVideos() {
+            const token = ++_renderAllVideosToken;
+            const q = searchQ.toLowerCase();
+            let items = allData;
+            if (q) {
+                items = allData.filter(v => {
+                    return v.ModelName.toLowerCase().includes(q) ||
+                        v.ID.toLowerCase().includes(q) ||
+                        v.Guests.toLowerCase().includes(q) ||
+                        v.Tags.some(t => t.toLowerCase().includes(q));
+                });
+            }
+
+            // Sort by ID descending (most recent first)
+            items = [...items].sort((a, b) => {
+                const idA = parseInt(a.ID, 10) || 0;
+                const idB = parseInt(b.ID, 10) || 0;
+                return idB - idA;
+            });
+
+            videoGrid.innerHTML = '';
+
+            if (items.length === 0) {
+                const empty = document.createElement('p');
+                empty.className = 'empty';
+                empty.textContent = 'No videos found.';
+                videoGrid.appendChild(empty);
+                paginationEl.style.display = 'none';
+                return;
+            }
+
+            const totalPages = Math.ceil(items.length / VIDEOS_PER_PAGE);
+            if (currentVideoPage < 1) currentVideoPage = 1;
+            if (currentVideoPage > totalPages) currentVideoPage = totalPages;
+
+            const startIdx = (currentVideoPage - 1) * VIDEOS_PER_PAGE;
+            const pageItems = items.slice(startIdx, startIdx + VIDEOS_PER_PAGE);
+
+            const frag = document.createDocumentFragment();
+            pageItems.forEach(v => {
+                frag.appendChild(makeVideoCard(v));
+            });
+            videoGrid.appendChild(frag);
+            videoGrid.classList.add('fade-in');
+
+            renderPagination(items.length, currentVideoPage, (newPage) => {
+                currentVideoPage = newPage;
+                const url = new URL(window.location.href);
+                url.searchParams.set('tab', 'videos');
+                url.searchParams.set('page', newPage);
+                history.pushState({ tab: 'videos', page: newPage }, '', url.pathname + url.search);
+                renderAllVideos();
+            });
+        }
+
+        function renderPagination(totalItems, currentPage, onPageChange) {
+            paginationEl.innerHTML = '';
+            const totalPages = Math.ceil(totalItems / VIDEOS_PER_PAGE);
+            if (totalPages <= 1) {
+                paginationEl.style.display = 'none';
+                return;
+            }
+            paginationEl.style.display = 'flex';
+
+            function createBtn(label, page, active = false, disabled = false) {
+                const btn = document.createElement('button');
+                btn.className = 'pg-btn';
+                if (active) btn.classList.add('active');
+                if (disabled) btn.classList.add('disabled');
+                btn.textContent = label;
+                if (!disabled) {
+                    btn.onclick = () => {
+                        window.scrollTo({ top: 0, behavior: 'instant' });
+                        onPageChange(page);
+                    };
+                }
+                return btn;
+            }
+
+            paginationEl.appendChild(createBtn('‹', currentPage - 1, false, currentPage === 1));
+
+            const range = 1;
+            let pages = [];
+            pages.push(1);
+
+            let start = Math.max(2, currentPage - range);
+            let end = Math.min(totalPages - 1, currentPage + range);
+
+            if (start > 2) {
+                pages.push('...');
+            }
+
+            for (let i = start; i <= end; i++) {
+                pages.push(i);
+            }
+
+            if (end < totalPages - 1) {
+                pages.push('...');
+            }
+
+            if (totalPages > 1) {
+                pages.push(totalPages);
+            }
+
+            pages.forEach(p => {
+                if (p === '...') {
+                    const dots = document.createElement('span');
+                    dots.className = 'pg-dots';
+                    dots.textContent = '...';
+                    paginationEl.appendChild(dots);
+                } else {
+                    paginationEl.appendChild(createBtn(p, p, p === currentPage));
+                }
+            });
+
+            paginationEl.appendChild(createBtn('›', currentPage + 1, false, currentPage === totalPages));
+        }
+
+        function getQueryParam(name) {
+            const params = new URLSearchParams(location.search);
+            return params.get(name);
+        }
+
+        // ── Routing helpers ───────────────────────────────────────────────────────────
+        const BASE = ''; // custom domain at root
+
+        function modelUrl(m) {
+            return BASE + '/model/' + nameToSlug(m.name);
+        }
+
+        let slugMap = new Map();
+        function buildSlugMap() {
+            slugMap.clear();
+            for (const [, m] of modelMap) slugMap.set(nameToSlug(m.name), m);
+        }
+
+        // ── Navigation ────────────────────────────────────────────────────────────────
+        function openModel(m, replaceState) {
+            curModel = m;
+            searchQ = '';
+            searchEl.value = '';
+            searchEl.placeholder = `Search in ${m.name}…`;
+            if (homeLink) homeLink.textContent = m.name;
+            else pageTitle.textContent = m.name;
+            document.title = m.name + ' — RIPNSFW';
+            backBtn.style.display = 'flex';
+            tabContainer.style.display = 'none';
+            modelGrid.style.display = 'none';
+            videoGrid.style.display = 'grid';
+            paginationEl.style.display = 'none';
+            renderVideos();
+            window.scrollTo({ top: 0, behavior: 'instant' });
+            const url = modelUrl(m);
+            if (replaceState) history.replaceState({ model: m.name }, '', url);
+            else history.pushState({ model: m.name }, '', url);
+        }
+        function goBack(fromPopState) {
+            curModel = null;
+            searchQ = '';
+            searchEl.value = '';
+            searchEl.placeholder = currentTab === 'models' ? 'Search model…' : 'Search video…';
+            if (homeLink) homeLink.textContent = 'RIPNSFW';
+            else pageTitle.textContent = 'RIPNSFW';
+            document.title = 'RIPNSFW';
+            backBtn.style.display = 'none';
+            tabContainer.style.display = 'flex';
+            
+            if (currentTab === 'models') {
+                videoGrid.style.display = 'none';
+                modelGrid.style.display = 'grid';
+                paginationEl.style.display = 'none';
+                renderModels();
+            } else {
+                modelGrid.style.display = 'none';
+                videoGrid.style.display = 'grid';
+                renderAllVideos();
+            }
+            window.scrollTo({ top: 0, behavior: 'instant' });
+            if (!fromPopState) {
+                const url = new URL(window.location.href);
+                if (currentTab === 'videos') {
+                    url.searchParams.set('tab', 'videos');
+                    url.searchParams.set('page', currentVideoPage);
+                } else {
+                    url.searchParams.delete('tab');
+                    url.searchParams.delete('page');
+                }
+                history.pushState({}, '', url.pathname + url.search);
+            }
+        }
+
+        window.addEventListener('popstate', () => {
+            const { modelSlug, videoId } = parsePath();
+
+            if (modelSlug && videoId) {
+                const m = slugMap.get(modelSlug);
+                if (m) {
+                    if (!curModel || curModel.name !== m.name) openModel(m, true);
+                    const v = allData.find(r => r.ID === videoId);
+                    if (v) { openVideo(v, true); return; }
+                }
+            }
+
+            if (modelSlug) {
+                if (curVideo) { closeModal(true); return; }
+                const m = slugMap.get(modelSlug);
+                if (m) { openModel(m, true); return; }
+            }
+
+            if (curVideo) { closeModal(true); return; }
+            if (curModel) { goBack(true); return; }
+
+            // Fallback: voltou para home sem modelo/video ativo
+            const tabParam = getQueryParam('tab');
+            const pageParam = parseInt(getQueryParam('page'), 10);
+
+            curModel = null;
+            curVideo = null;
+            searchQ = '';
+            searchEl.value = '';
+            tabContainer.style.display = 'flex';
+
+            if (tabParam === 'videos') {
+                currentTab = 'videos';
+                currentVideoPage = pageParam || 1;
+                $('tab-models').classList.remove('active');
+                $('tab-videos').classList.add('active');
+                searchEl.placeholder = 'Search video…';
+                modelGrid.style.display = 'none';
+                videoGrid.style.display = 'grid';
+                renderAllVideos();
+            } else {
+                currentTab = 'models';
+                $('tab-models').classList.add('active');
+                $('tab-videos').classList.remove('active');
+                searchEl.placeholder = 'Search model…';
+                videoGrid.style.display = 'none';
+                modelGrid.style.display = 'grid';
+                paginationEl.style.display = 'none';
+                renderModels();
+            }
+            window.scrollTo({ top: 0, behavior: 'instant' });
+        });
+
+        function parsePath() {
+            const match = location.pathname.match(/\/model\/([^\/]+)(?:\/([^\/]+))?/);
+            if (!match) return {};
+            return { modelSlug: match[1], videoId: match[2] ? decodeURIComponent(match[2]) : null };
+        }
+        function getSlugFromPath() { return parsePath().modelSlug || null; }
+
+        // ── Modal ─────────────────────────────────────────────────────────────────────
+        const EXT_ICON = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`;
+
+        function buildPlayers(v) {
+            const data = [
+                { embed: v.Embed1, dl: v.Link1, label: 'Player 1' },
+                { embed: v.Embed2, dl: v.Link2, label: 'Player 2' },
+                { embed: v.Embed3, dl: v.Link3, label: 'Player 3' },
+            ].filter(p => p.embed);
+            return data;
+        }
+
+        function setActivePlayer(players, idx) {
+            activePlayerIdx = idx;
+            const old = modalVideo.querySelector('iframe');
+            if (old) old.remove();
+            if (players[idx]) {
+                const iframe = document.createElement('iframe');
+                iframe.src = players[idx].embed;
+                iframe.allowFullscreen = true;
+                iframe.setAttribute('allowfullscreen', '');
+                modalVideo.insertBefore(iframe, modalVideo.firstChild);
+            }
+            const tabs = ptabs.querySelectorAll('.ptab');
+            tabs.forEach((t, i) => t.classList.toggle('active', i === idx));
+        }
+
+        function openVideo(v, replaceState) {
+            curVideo = v;
+            const players = buildPlayers(v);
+
+            const displayName = curModel ? curModel.name : v.ModelName;
+            mTitle.textContent = displayName;
+            mCat.textContent = ''; // Column I (previously Category) removed from modal display
+
+            // Monta lista de "w/" excluindo a modelo atual da página
+            const allParticipants = [v.ModelName, ...v.Guests.split(/[,&\/]+/).map(g => g.trim()).filter(Boolean)];
+            const others = allParticipants.filter(n => n.toUpperCase() !== displayName.toUpperCase());
+            if (others.length) {
+                mGuests.style.display = '';
+                mGuests.innerHTML = 'w/ ' + others.map(n => {
+                    const m = getModel(n);
+                    if (m) return `<a href="${modelUrl(m)}" onclick="event.preventDefault();closeModal(false);openModel(getModel('${n.replace(/'/g, "\\'")}'))" style="color:inherit;text-decoration:underline;text-underline-offset:2px">${n}</a>`;
+                    return n;
+                }).join(', ');
+            } else {
+                mGuests.style.display = 'none';
+                mGuests.innerHTML = '';
+            }
+
+            mId.textContent = 'ID: ' + v.ID;
+            mCat.style.display = 'none'; // Column I (previously Category) display disabled
+
+            const defaultIdx = 0;
+
+            ptabs.innerHTML = '';
+            if (players.length > 1) {
+                players.forEach((p, i) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'ptab' + (i === defaultIdx ? ' active' : '');
+                    btn.textContent = p.label;
+                    btn.onclick = () => setActivePlayer(players, i);
+                    ptabs.appendChild(btn);
+                });
+                ptabs.style.display = 'flex';
+            } else {
+                ptabs.style.display = 'none';
+            }
+
+            dlLinks.innerHTML = '';
+            const colILinks = v.Category ? v.Category.split(',').map(l => l.trim()).filter(l => {
+                const s = l.toLowerCase();
+                return s.startsWith('http') || s.includes('://') || s.startsWith('www.');
+            }) : [];
+
+            if (colILinks.length > 0) {
+                colILinks.forEach((link, i) => {
+                    const a = document.createElement('a');
+                    a.href = link.startsWith('www.') ? 'https://' + link : link;
+                    a.target = '_blank';
+                    a.rel = 'noopener noreferrer';
+                    a.className = 'dl-link ' + (i === 0 ? 'primary' : 'secondary');
+                    a.innerHTML = 'Download ' + (i + 1) + ' ' + EXT_ICON;
+                    dlLinks.appendChild(a);
+                });
+            } else if (players.length === 0) {
+                dlLinks.innerHTML = '<p class="no-links">No links available.</p>';
+            } else {
+                players.forEach((p, i) => {
+                    if (!p.dl) return;
+                    const a = document.createElement('a');
+                    a.href = p.dl;
+                    a.target = '_blank';
+                    a.rel = 'noopener noreferrer';
+                    a.className = 'dl-link ' + (i === defaultIdx ? 'primary' : 'secondary');
+                    a.innerHTML = 'Download ' + (i + 1) + ' ' + EXT_ICON;
+                    dlLinks.appendChild(a);
+                });
+            }
+
+            setActivePlayer(players, defaultIdx);
+            modal.classList.add('open');
+            document.body.style.overflow = 'hidden';
+
+            const mSlug = nameToSlug(v.ModelName);
+            const url = BASE + '/model/' + mSlug + '/' + encodeURIComponent(v.ID);
+            if (replaceState) history.replaceState({ model: v.ModelName, videoId: v.ID }, '', url);
+            else history.pushState({ model: v.ModelName, videoId: v.ID }, '', url);
+        }
+
+        function closeModal(fromPopState) {
+            modal.classList.remove('open');
+            document.body.style.overflow = '';
+            const iframe = modalVideo.querySelector('iframe');
+            if (iframe) iframe.remove();
+            curVideo = null;
+            if (!fromPopState) {
+                if (curModel) {
+                    history.pushState({ model: curModel.name }, '', modelUrl(curModel));
+                } else {
+                    const url = new URL(window.location.href);
+                    if (currentTab === 'videos') {
+                        url.searchParams.set('tab', 'videos');
+                        url.searchParams.set('page', currentVideoPage);
+                    } else {
+                        url.searchParams.delete('tab');
+                        url.searchParams.delete('page');
+                    }
+                    history.pushState({}, '', url.pathname + url.search);
+                }
+            }
+        }
+
+        // ── Search ────────────────────────────────────────────────────────────────────
+        searchEl.addEventListener('input', e => {
+            clearTimeout(debTimer);
+            debTimer = setTimeout(() => {
+                searchQ = e.target.value.trim();
+                if (curModel) renderVideos();
+                else if (currentTab === 'videos') {
+                    currentVideoPage = 1;
+                    renderAllVideos();
+                } else renderModels();
+            }, 280);
+        });
+
+        // ── Events ────────────────────────────────────────────────────────────────────
+        backBtn.onclick = () => goBack(false);
+
+        $('tab-models').onclick = () => {
+            if (currentTab === 'models') return;
+            currentTab = 'models';
+            $('tab-models').classList.add('active');
+            $('tab-videos').classList.remove('active');
+
+            searchEl.value = '';
+            searchQ = '';
+            searchEl.placeholder = 'Search model…';
+
+            videoGrid.style.display = 'none';
+            modelGrid.style.display = 'grid';
+            paginationEl.style.display = 'none';
+
+            history.pushState({ tab: 'models' }, '', BASE + '/');
+            renderModels();
+        };
+
+        $('tab-videos').onclick = () => {
+            if (currentTab === 'videos') return;
+            currentTab = 'videos';
+            $('tab-models').classList.remove('active');
+            $('tab-videos').classList.add('active');
+
+            searchEl.value = '';
+            searchQ = '';
+            searchEl.placeholder = 'Search video…';
+
+            modelGrid.style.display = 'none';
+            videoGrid.style.display = 'grid';
+
+            currentVideoPage = 1;
+            history.pushState({ tab: 'videos', page: 1 }, '', BASE + '/?tab=videos&page=1');
+            renderAllVideos();
+        };
+
+        if (homeLink) {
+            homeLink.onclick = (e) => {
+                e.preventDefault();
+                if (curVideo) { closeModal(false); return; }
+                if (curModel) { goBack(false); return; }
+                
+                // Force reset to videos tab on home link click
+                currentTab = 'videos';
+                $('tab-videos').classList.add('active');
+                $('tab-models').classList.remove('active');
+                tabContainer.style.display = 'flex';
+
+                searchEl.value = '';
+                searchQ = '';
+                searchEl.placeholder = 'Search video…';
+
+                modelGrid.style.display = 'none';
+                videoGrid.style.display = 'grid';
+
+                currentVideoPage = 1;
+
+                if (location.pathname !== (BASE + '/') || location.search !== '') {
+                    history.pushState({ tab: 'videos', page: 1 }, '', BASE + '/');
+                }
+                renderAllVideos();
+                window.scrollTo({ top: 0, behavior: 'instant' });
+            };
+        }
+        const closeDeskBtn = $('close-desk');
+        if (closeDeskBtn) closeDeskBtn.onclick = () => closeModal(false);
+        const closeMobBtn = $('close-mob');
+        if (closeMobBtn) closeMobBtn.onclick = () => closeModal(false);
+        modal.addEventListener('click', e => { if (e.target === modal) closeModal(false); });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape' && curVideo) closeModal(false); });
+
+        // ── Init ──────────────────────────────────────────────────────────────────────
+        const CACHE_KEY = 'ep_csv_v8'; // v8: switched to local data.csv with local thumbs support
+        const CACHE_TTL = 30 * 60 * 1000;
+
+        // Wipe old cache keys
+        ['ep_csv_cache', 'ep_csv_v2', 'ep_csv_v3', 'ep_csv_v4', 'ep_csv_v5', 'ep_csv_v6', 'ep_csv_v7'].forEach(k => { try { localStorage.removeItem(k); } catch { } });
+
+        function saveCache(csv) {
+            try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), csv })); } catch { }
+        }
+
+        const FALLBACK_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSs1GhZQnhVZLayT56Ik4zsE2GaWyVV6A0IeUz6YSMKGSN9jnmXjpWtIVbfUsXH1_Os17RG_oju8Ba3/pub?gid=0&single=true&output=csv';
+
+        function fetchFresh(onDone) {
+            // Adiciona timestamp (?t=...) para evitar cache de requisição HTTP do arquivo data.csv
+            fetch(SHEET_URL + '?t=' + Date.now())
+                .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+                .then(csv => { saveCache(csv); onDone && onDone(csv); })
+                .catch(() => {
+                    // data.csv não encontrado — tenta Google Sheets como fallback
+                    fetch(FALLBACK_URL + '&t=' + Date.now())
+                        .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+                        .then(csv => { saveCache(csv); onDone && onDone(csv); })
+                        .catch(() => {
+                            $('spinner').innerHTML = '<p style="color:#ef4444;font-size:.85rem">Failed to load data.</p>';
+                        });
+                });
+        }
+
+        function processCSV(csv) {
+            allData = parseCSV(csv);
+            const tempMap = new Map();
+
+            // Conta vídeos onde a modelo é a principal
+            for (let i = 0; i < allData.length; i++) {
+                const n = allData[i].ModelName;
+                if (!tempMap.has(n)) tempMap.set(n, { name: n, slug: toSlug(n), count: 0, firstIdx: i });
+                tempMap.get(n).count++;
+            }
+
+            // Conta também aparições como convidada (coluna H / Guests) — case-insensitive
+            for (let i = 0; i < allData.length; i++) {
+                const row = allData[i];
+                if (!row.Guests) continue;
+                row.Guests.split(/[,&\/]+/).map(g => g.trim()).forEach(gName => {
+                    if (!gName) return;
+                    if (IGNORED.has(gName.toUpperCase())) return;
+                    const existingKey = [...tempMap.keys()].find(k => k.toUpperCase() === gName.toUpperCase());
+                    if (existingKey) {
+                        const m = tempMap.get(existingKey);
+                        m.count++;
+                        if (i < m.firstIdx) m.firstIdx = i;
+                    } else {
+                        tempMap.set(gName, { name: gName, slug: toSlug(gName), count: 1, firstIdx: i });
+                    }
+                });
+            }
+
+            const sorted = [...tempMap.values()]
+                .filter(m => m.count > 1 && !IGNORED.has(m.name.toUpperCase()))
+                .sort((a, b) => a.firstIdx - b.firstIdx);
+            modelMap = new Map(sorted.map(m => [m.name, m]));
+            buildSlugMap();
+
+            window._secDone(() => {
+                $('app').style.display = '';
+                const { modelSlug, videoId } = parsePath();
+                if (modelSlug && slugMap.has(modelSlug)) {
+                    const m = slugMap.get(modelSlug);
+                    openModel(m, true);
+                    if (videoId) {
+                        const v = allData.find(r => r.ID === videoId);
+                        if (v) openVideo(v, true);
+                    }
+                } else {
+                    if (modelSlug) history.replaceState({}, '', BASE + '/');
+
+                    const tabParam = getQueryParam('tab');
+                    const pageParam = parseInt(getQueryParam('page'), 10);
+
+                    if (tabParam === 'videos') {
+                        currentTab = 'videos';
+                        currentVideoPage = pageParam || 1;
+                        $('tab-models').classList.remove('active');
+                        $('tab-videos').classList.add('active');
+                        searchEl.placeholder = 'Search video…';
+                        modelGrid.style.display = 'none';
+                        videoGrid.style.display = 'grid';
+                        renderAllVideos();
+                    } else {
+                        currentTab = 'models';
+                        $('tab-models').classList.add('active');
+                        $('tab-videos').classList.remove('active');
+                        searchEl.placeholder = 'Search model…';
+                        videoGrid.style.display = 'none';
+                        modelGrid.style.display = 'grid';
+                        paginationEl.style.display = 'none';
+                        renderModels();
+                    }
+                }
+            });
+        }
+
+        (function init() {
+            // Carrega blacklist.txt e CSV em paralelo
+            const blFetch = fetch('/blacklist.txt')
+                .then(r => r.ok ? r.text() : '')
+                .then(txt => {
+                    IGNORED = new Set(
+                        txt.split('\n').map(l => l.trim().toUpperCase()).filter(Boolean)
+                    );
+                })
+                .catch(() => {}); // falha silenciosa: mantém IGNORED vazio
+
+            let served = false;
+            try {
+                const raw = localStorage.getItem(CACHE_KEY);
+                if (raw) {
+                    const { ts, csv } = JSON.parse(raw);
+                    served = true;
+                    blFetch.then(() => {
+                        processCSV(csv);
+                        if (Date.now() - ts > CACHE_TTL) fetchFresh(processCSV);
+                    });
+                }
+            } catch { }
+            if (!served) blFetch.then(() => fetchFresh(csv => processCSV(csv)));
+        })();
+    </script>
+
+    <!-- Scroll buttons (above CTA) -->
+    <style>
+        #scroll-btns {
+            position: fixed;
+            bottom: 5.5rem;
+            right: 1.5rem;
+            z-index: 998;
+            display: flex;
+            flex-direction: column;
+            gap: .4rem;
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity .4s ease, transform .4s ease;
+            pointer-events: none;
+        }
+
+        #scroll-btns.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .scroll-btn {
+            width: 2.5rem;
+            height: 2.5rem;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 50%;
+            color: #94a3b8;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background .15s, color .15s;
+        }
+
+        .scroll-btn:hover {
+            background: rgba(30, 41, 59, 0.95);
+            color: #fff;
+        }
+    </style>
+
+    <div id="scroll-btns">
+        <button class="scroll-btn" id="scroll-top" aria-label="Ir ao topo" title="Topo">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 15l-6-6-6 6" />
+            </svg>
+        </button>
+        <button class="scroll-btn" id="scroll-bottom" aria-label="Ir ao fim" title="Fim">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 9l6 6 6-6" />
+            </svg>
+        </button>
+    </div>
+
+    <script>
+        (function () {
+            const btns = document.getElementById('scroll-btns');
+
+            window.addEventListener('scroll', function () {
+                const scrolled = window.scrollY > 300;
+                btns.classList.toggle('visible', scrolled);
+            }, { passive: true });
+
+            document.getElementById('scroll-top').onclick = function () {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+            document.getElementById('scroll-bottom').onclick = function () {
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            };
+        })();
+    </script>
+
+
+</body>
+
+</html>

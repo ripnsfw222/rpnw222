@@ -1229,6 +1229,12 @@
                 return url;
             } catch { return url; }
         }
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
         function csvSplit(line) {
             const cols = [];
             let cur = '', inQ = false;
@@ -1268,6 +1274,7 @@
 
         // ── State ─────────────────────────────────────────────────────────────────────
         let allData = [];
+        let shuffledAllData = [];
         let modelMap = new Map();   // name → { name, slug, count }
         let curModel = null;
         let curVideo = null;
@@ -1527,22 +1534,15 @@
         function renderAllVideos() {
             const token = ++_renderAllVideosToken;
             const q = searchQ.toLowerCase();
-            let items = allData;
+            let items = shuffledAllData;
             if (q) {
-                items = allData.filter(v => {
+                items = shuffledAllData.filter(v => {
                     return v.ModelName.toLowerCase().includes(q) ||
                         v.ID.toLowerCase().includes(q) ||
                         v.Guests.toLowerCase().includes(q) ||
                         v.Tags.some(t => t.toLowerCase().includes(q));
                 });
             }
-
-            // Sort by ID descending (most recent first)
-            items = [...items].sort((a, b) => {
-                const idA = parseInt(a.ID, 10) || 0;
-                const idB = parseInt(b.ID, 10) || 0;
-                return idB - idA;
-            });
 
             videoGrid.innerHTML = '';
 
@@ -2026,6 +2026,8 @@
 
         function processCSV(csv) {
             allData = parseCSV(csv);
+            shuffledAllData = [...allData];
+            shuffleArray(shuffledAllData);
             const tempMap = new Map();
 
             // Conta vídeos onde a modelo é a principal

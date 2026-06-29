@@ -352,10 +352,11 @@
             position: fixed;
             inset: 0;
             z-index: 50;
-            background: rgba(0, 0, 0, .97);
+            background: rgba(0, 0, 0, .85);
             backdrop-filter: blur(16px);
-            align-items: flex-end;
-            justify-content: center
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
         }
 
         #modal.open {
@@ -364,7 +365,6 @@
 
         @media(min-width:640px) {
             #modal {
-                align-items: center;
                 padding: 1.5rem
             }
         }
@@ -381,19 +381,19 @@
             width: 100%;
             max-width: 940px;
             background: #080f1e;
-            border-radius: 1.25rem 1.25rem 0 0;
+            border-radius: 1.25rem;
             border: 1px solid rgba(255, 255, 255, .07);
             overflow-y: auto;
             overflow-x: hidden;
             position: relative;
-            max-height: 92dvh
+            max-height: 90dvh;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
         }
 
         @media(min-width:640px) {
             .modal-box {
                 border-radius: 1.5rem;
                 max-width: 92vw;
-                max-height: 90dvh
             }
         }
 

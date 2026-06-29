@@ -1881,7 +1881,7 @@
                     if (i === 0) {
                         // Apenas a Part 1 (ou link único) passa pelo anúncio intermediário
                         const encodedLink = btoa(unescape(encodeURIComponent(realLink)));
-                        a.href = 'download.html?dest=' + encodedLink;
+                        a.href = '/download.html?dest=' + encodedLink;
                     } else {
                         // As demais partes (Part 2, 3...) abrem direto no link final sem propaganda intermediária
                         a.href = realLink;

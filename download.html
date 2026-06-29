@@ -17,6 +17,7 @@
             --text-secondary: #94a3b8;
             --primary-gradient: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
             --green-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --red-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
         }
 
         body {
@@ -74,6 +75,11 @@
         .container:hover {
             box-shadow: 0 30px 60px rgba(236, 72, 153, 0.08), 0 25px 50px -12px rgba(0, 0, 0, 0.6);
             transform: translateY(-2px);
+        }
+
+        .container.border-warning {
+            border-color: rgba(239, 68, 68, 0.4);
+            box-shadow: 0 20px 40px rgba(239, 68, 68, 0.1), 0 25px 50px -12px rgba(0, 0, 0, 0.6);
         }
 
         h1 {
@@ -149,6 +155,15 @@
 
         .btn-green:hover {
             box-shadow: 0 8px 25px rgba(16, 185, 129, 0.45);
+        }
+
+        .btn-red {
+            background: var(--red-gradient);
+            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.25);
+        }
+
+        .btn-red:hover {
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.45);
         }
 
         /* Screen Layout & Animations */
@@ -276,6 +291,27 @@
             }
         }
 
+        /* Warning Icon for Adblock Screen */
+        .warning-icon-wrapper {
+            width: 64px;
+            height: 64px;
+            background: rgba(239, 68, 68, 0.15);
+            border: 2px solid rgba(239, 68, 68, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem auto;
+            color: #ef4444;
+            animation: pulseWarning 2s infinite;
+        }
+
+        @keyframes pulseWarning {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
         /* Icons */
         .icon {
             display: inline-block;
@@ -287,9 +323,26 @@
             stroke-linecap: round;
             stroke-linejoin: round;
         }
+
+        .icon-large {
+            width: 2rem;
+            height: 2rem;
+        }
+
+        /* CSS rule that adblockers are forced to hide cosmetically */
+        .ads-detect-banner {
+            position: absolute;
+            left: -9999px;
+            top: -9999px;
+            width: 1px;
+            height: 1px;
+        }
     </style>
 </head>
 <body>
+
+    <!-- Dummy div for cosmetic filter detection -->
+    <div id="ads-detect" class="ads-detect-banner adsbox ad-zone ad-banner pub_300x250">&nbsp;</div>
 
     <!-- Gradient definition for the progress circle -->
     <svg style="width:0;height:0;position:absolute;" aria-hidden="true" focusable="false">
@@ -299,7 +352,27 @@
         </linearGradient>
     </svg>
 
-    <div class="container">
+    <div class="container" id="main-container">
+        <!-- ADBLOCK DETECTED SCREEN (HIDDEN BY DEFAULT) -->
+        <div id="step-adblock" class="step hidden">
+            <div class="warning-icon-wrapper">
+                <svg class="icon icon-large" viewBox="0 0 24 24">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+            </div>
+            <h1>ADBLOCK DETECTED</h1>
+            <p>We noticed you are using an ad blocker (like uBlock Origin, AdBlock, or Brave Shields). RIPNSFW is a free site that relies on ads to pay for servers and keep running.<br><br>Please disable your ad blocker for our site and refresh this page to unlock your download.</p>
+            
+            <button class="btn btn-red" onclick="window.location.reload()">
+                I Disabled It, Refresh Page
+                <svg class="icon" viewBox="0 0 24 24">
+                    <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+                </svg>
+            </button>
+        </div>
+
         <!-- STEP 1 (UNLOCK) -->
         <div id="step-1" class="step">
             <h1>UNLOCK DOWNLOAD</h1>
@@ -412,6 +485,58 @@
         // General Configuration
         const ADSTERRA_SMARTLINK = 'https://arisefeistyleery.com/rnu03equf?key=94ef38b51ed5c9e3f9c3951968e843fb';
         const TOTAL_SECONDS = 10;
+
+        // AdBlocker Detection Logic (Dual Check)
+        async function runAdblockDetector() {
+            let isAdblockActive = false;
+
+            // 1. Cosmetic Filter Check (Check if ad class elements are hidden by stylesheet injector)
+            const testDiv = document.getElementById('ads-detect');
+            if (testDiv) {
+                const styles = window.getComputedStyle(testDiv);
+                if (styles.display === 'none' || styles.visibility === 'hidden' || testDiv.offsetHeight === 0) {
+                    isAdblockActive = true;
+                }
+            }
+
+            // 2. Network Fetch Check (Check if uBlock/Adblock cuts off connections to Adsterra script domain)
+            if (!isAdblockActive) {
+                try {
+                    await fetch('https://arisefeistyleery.com/f3/f4/d7/f3f4d711c66608b53564826cfa0200d1.js', { 
+                        method: 'HEAD', 
+                        mode: 'no-cors',
+                        cache: 'no-store'
+                    });
+                } catch (e) {
+                    isAdblockActive = true; // Connection was blocked by browser/adblocker
+                }
+            }
+
+            // If Adblock is detected, lock screen down
+            if (isAdblockActive) {
+                showAdblockWarning();
+            }
+        }
+
+        function showAdblockWarning() {
+            // Show adblock step, hide others
+            document.getElementById('step-1').classList.add('hidden');
+            document.getElementById('step-2').classList.add('hidden');
+            document.getElementById('step-3').classList.add('hidden');
+            
+            document.getElementById('step-adblock').classList.remove('hidden');
+            document.getElementById('main-container').classList.add('border-warning');
+        }
+
+        // Run detection immediately on load
+        window.addEventListener('DOMContentLoaded', () => {
+            runAdblockDetector();
+        });
+
+        // Backup check after page fully loaded to catch delayed blockers
+        window.addEventListener('load', () => {
+            setTimeout(runAdblockDetector, 800);
+        });
 
         // Secure Base64 decoding
         function getDestUrl() {

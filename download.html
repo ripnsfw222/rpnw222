@@ -363,7 +363,7 @@
                 </svg>
             </div>
             <h1>ADBLOCK DETECTED</h1>
-            <p>We noticed you are using an ad blocker (like uBlock Origin, AdBlock, or Brave Shields). RIPNSFW is a free site that relies on ads to pay for servers and keep running.<br><br>Please disable your ad blocker for our site and refresh this page to unlock your download.</p>
+            <p>We noticed you are using an ad blocker or antivirus protection (like uBlock Origin, AdBlock, Brave Shields, or Kaspersky Anti-Banner/Private Browsing). RIPNSFW is a free site that relies on ads to pay for servers and keep running.<br><br>Please disable your ad blocker / antivirus for our site and refresh this page to unlock your download.</p>
             
             <button class="btn btn-red" onclick="window.location.reload()">
                 I Disabled It, Refresh Page
@@ -485,6 +485,8 @@
         // General Configuration
         const ADSTERRA_SMARTLINK = 'https://arisefeistyleery.com/rnu03equf?key=94ef38b51ed5c9e3f9c3951968e843fb';
         const TOTAL_SECONDS = 10;
+        let countdownTimer = null;
+        let adblockDetected = false;
 
         // AdBlocker Detection Logic (Dual Check)
         async function runAdblockDetector() {
@@ -499,16 +501,20 @@
                 }
             }
 
-            // 2. Network Fetch Check (Check if uBlock/Adblock cuts off connections to Adsterra script domain)
+            // 2. Network Fetch Check (Check if uBlock/Adblock/Antivirus cuts off connections to Adsterra script domain)
             if (!isAdblockActive) {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 1800); // 1.8s timeout to avoid hanging on firewall drops
                 try {
                     await fetch('https://arisefeistyleery.com/f3/f4/d7/f3f4d711c66608b53564826cfa0200d1.js', { 
                         method: 'HEAD', 
                         mode: 'no-cors',
-                        cache: 'no-store'
+                        cache: 'no-store',
+                        signal: controller.signal
                     });
+                    clearTimeout(timeoutId);
                 } catch (e) {
-                    isAdblockActive = true; // Connection was blocked by browser/adblocker
+                    isAdblockActive = true; // Connection was blocked or timed out (Adblock or Antivirus active)
                 }
             }
 
@@ -519,7 +525,11 @@
         }
 
         function showAdblockWarning() {
-            // Show adblock step, hide others
+            adblockDetected = true;
+            if (countdownTimer) {
+                clearInterval(countdownTimer);
+            }
+            // Show adblock step, hide others completely
             document.getElementById('step-1').classList.add('hidden');
             document.getElementById('step-2').classList.add('hidden');
             document.getElementById('step-3').classList.add('hidden');
@@ -551,12 +561,16 @@
             }
         }
 
-        function startVerification() {
+        async function startVerification() {
             const dest = getDestUrl();
             if (!dest) {
                 alert('Invalid or corrupted download link! Please go back and try again.');
                 return;
             }
+
+            // Verify Adblock network before starting countdown
+            await runAdblockDetector();
+            if (adblockDetected) return;
 
             // 1. Open the Adsterra Smartlink in a new tab
             window.open(ADSTERRA_SMARTLINK, '_blank');
@@ -574,7 +588,12 @@
             countdownEl.textContent = seconds;
             progressCircle.style.strokeDashoffset = 0;
 
-            const timer = setInterval(() => {
+            countdownTimer = setInterval(() => {
+                if (adblockDetected) {
+                    clearInterval(countdownTimer);
+                    return;
+                }
+
                 seconds--;
                 countdownEl.textContent = Math.max(0, seconds);
 
@@ -583,13 +602,14 @@
                 progressCircle.style.strokeDashoffset = progressOffset;
 
                 if (seconds <= 0) {
-                    clearInterval(timer);
+                    clearInterval(countdownTimer);
                     showDownloadLink(dest);
                 }
             }, 1000);
         }
 
         function showDownloadLink(dest) {
+            if (adblockDetected) return;
             // Transition to Step 3 (Download Ready)
             document.getElementById('step-2').classList.add('hidden');
             document.getElementById('step-3').classList.remove('hidden');

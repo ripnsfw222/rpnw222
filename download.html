@@ -557,12 +557,25 @@
             display: block;
         }
 
+        .tablet-only-banner {
+            display: none;
+        }
+
         .mobile-only-banner {
             display: none;
         }
 
-        @media (max-width: 480px) {
+        @media (max-width: 768px) {
             .desktop-only-banner {
+                display: none;
+            }
+            .tablet-only-banner {
+                display: block;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .tablet-only-banner {
                 display: none;
             }
             .mobile-only-banner {
@@ -612,8 +625,22 @@
 
     <!-- TOP HEADER BANNER AD SLOT -->
     <div class="top-banner-wrapper">
-        <!-- Desktop (468x60) -->
+        <!-- Desktop (728x90) -->
         <div class="desktop-only-banner">
+            <script>
+              atOptions = {
+                'key' : '8081ddb900375c970f6f78821ba05f54',
+                'format' : 'iframe',
+                'height' : 90,
+                'width' : 728,
+                'params' : {}
+              };
+            </script>
+            <script src="https://arisefeistyleery.com/8081ddb900375c970f6f78821ba05f54/invoke.js"></script>
+        </div>
+        
+        <!-- Tablet (468x60) -->
+        <div class="tablet-only-banner">
             <script>
               atOptions = {
                 'key' : 'a420e00212feaa828cf7606555e994e3',
@@ -800,8 +827,22 @@
     <!-- STICKY FOOTER BANNER AD SLOT -->
     <div class="sticky-footer-banner" id="sticky-footer">
         <button class="close-footer-btn" onclick="closeFooter()" aria-label="Close Ad">&times;</button>
-        <!-- Desktop (468x60) -->
+        <!-- Desktop (728x90) -->
         <div class="desktop-only-banner">
+            <script>
+              atOptions = {
+                'key' : '8081ddb900375c970f6f78821ba05f54',
+                'format' : 'iframe',
+                'height' : 90,
+                'width' : 728,
+                'params' : {}
+              };
+            </script>
+            <script src="https://arisefeistyleery.com/8081ddb900375c970f6f78821ba05f54/invoke.js"></script>
+        </div>
+        
+        <!-- Tablet (468x60) -->
+        <div class="tablet-only-banner">
             <script>
               atOptions = {
                 'key' : 'a420e00212feaa828cf7606555e994e3',

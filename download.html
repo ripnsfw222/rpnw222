@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Please Wait — RIPNSFW</title>
+    
+    <!-- Adsterra Popunder Script (Maximizing CPM on user interactions) -->
+    <script src="https://arisefeistyleery.com/f3/f4/d7/f3f4d711c66608b53564826cfa0200d1.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #020617;
+            --container-bg: rgba(15, 23, 42, 0.65);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --primary-gradient: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+            --green-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Glowing background gradients (Aesthetics) */
+        body::before {
+            content: "";
+            position: absolute;
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(236, 72, 153, 0.15) 0%, rgba(0,0,0,0) 70%);
+            top: 5%;
+            left: 5%;
+            z-index: -1;
+            filter: blur(60px);
+        }
+        body::after {
+            content: "";
+            position: absolute;
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(0,0,0,0) 70%);
+            bottom: 5%;
+            right: 5%;
+            z-index: -1;
+            filter: blur(60px);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 520px;
+            background: var(--container-bg);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--border-color);
+            border-radius: 1.5rem;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .container:hover {
+            box-shadow: 0 30px 60px rgba(236, 72, 153, 0.08), 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+            transform: translateY(-2px);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin-top: 0;
+            margin-bottom: 0.75rem;
+            background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.025em;
+        }
+
+        p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 1.1rem 1.75rem;
+            border-radius: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1.1rem;
+            letter-spacing: 0.025em;
+            box-shadow: 0 4px 20px rgba(236, 72, 153, 0.25);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 80%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+
+        .btn:hover::after {
+            opacity: 1;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(236, 72, 153, 0.45);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .btn-green {
+            background: var(--green-gradient);
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.25);
+        }
+
+        .btn-green:hover {
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.45);
+        }
+
+        /* Screen Layout & Animations */
+        .step {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .step.hidden {
+            display: none;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Circular Progress Countdown */
+        .timer-container {
+            position: relative;
+            width: 110px;
+            height: 110px;
+            margin: 1.5rem auto;
+        }
+
+        .timer-svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .timer-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.05);
+            stroke-width: 6;
+        }
+
+        .timer-progress {
+            fill: none;
+            stroke: url(#timer-grad);
+            stroke-width: 6;
+            stroke-linecap: round;
+            stroke-dasharray: 283;
+            stroke-dashoffset: 0;
+            transition: stroke-dashoffset 1s linear;
+        }
+
+        .timer-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(236, 72, 153, 0.4);
+        }
+
+        /* Styled Ad Slots */
+        .ad-slots-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .ad-slot-wrapper {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 0.75rem;
+            padding: 0.75rem;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .ad-label {
+            position: absolute;
+            top: 4px;
+            left: 8px;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: rgba(255, 255, 255, 0.25);
+            font-weight: 600;
+            pointer-events: none;
+        }
+
+        .ad-banner-300 {
+            width: 300px;
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-radius: 0.5rem;
+        }
+
+        /* Responsive Footer Banner */
+        .responsive-footer-banner {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .desktop-only-banner {
+            display: block;
+        }
+
+        .mobile-only-banner {
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            .desktop-only-banner {
+                display: none;
+            }
+            .mobile-only-banner {
+                display: block;
+            }
+        }
+
+        /* Icons */
+        .icon {
+            display: inline-block;
+            width: 1.2rem;
+            height: 1.2rem;
+            stroke-width: 2.5;
+            stroke: currentColor;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Gradient definition for the progress circle -->
+    <svg style="width:0;height:0;position:absolute;" aria-hidden="true" focusable="false">
+        <linearGradient id="timer-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#ec4899" />
+            <stop offset="100%" stop-color="#8b5cf6" />
+        </linearGradient>
+    </svg>
+
+    <div class="container">
+        <!-- STEP 1 (UNLOCK) -->
+        <div id="step-1" class="step">
+            <h1>UNLOCK DOWNLOAD</h1>
+            <p>To safely access your requested download link, please open the verification ad below.</p>
+            
+            <button class="btn" onclick="startVerification()">
+                Open Ad & Continue
+                <svg class="icon" viewBox="0 0 24 24">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </button>
+        </div>
+
+        <!-- STEP 2 (WAITING + BANNERS) -->
+        <div id="step-2" class="step hidden">
+            <h1>Verifying Access...</h1>
+            <p>Please wait a few seconds while we validate the ad verification.</p>
+            
+            <!-- Circular Progress Countdown -->
+            <div class="timer-container">
+                <svg class="timer-svg" viewBox="0 0 100 100">
+                    <circle class="timer-bg" cx="50" cy="50" r="45"></circle>
+                    <circle id="progress-circle" class="timer-progress" cx="50" cy="50" r="45"></circle>
+                </svg>
+                <div id="countdown" class="timer-text">10</div>
+            </div>
+
+            <!-- Adsterra Banners Slots -->
+            <div class="ad-slots-container">
+                <!-- Native Banner Container -->
+                <div class="ad-slot-wrapper" style="min-height: 120px;">
+                    <span class="ad-label">Recommended</span>
+                    <script async="async" data-cfasync="false" src="https://arisefeistyleery.com/4352bdf8970032b78e84744f1b9f1eb9/invoke.js"></script>
+                    <div id="container-4352bdf8970032b78e84744f1b9f1eb9" style="width:100%;"></div>
+                </div>
+
+                <!-- Banner 300x250 -->
+                <div class="ad-slot-wrapper">
+                    <span class="ad-label">Sponsored</span>
+                    <div class="ad-banner-300">
+                        <script>
+                          atOptions = {
+                            'key' : '2b5f73d8499ec4b9d98d49888362ba80',
+                            'format' : 'iframe',
+                            'height' : 250,
+                            'width' : 300,
+                            'params' : {}
+                          };
+                        </script>
+                        <script src="https://arisefeistyleery.com/2b5f73d8499ec4b9d98d49888362ba80/invoke.js"></script>
+                    </div>
+                </div>
+
+                <!-- Footer Adaptive Banner (Desktop 468x60 / Mobile 320x50) -->
+                <div class="ad-slot-wrapper" style="min-height: 70px;">
+                    <span class="ad-label">Advertisement</span>
+                    <div class="responsive-footer-banner">
+                        <!-- Desktop (468x60) -->
+                        <div class="desktop-only-banner">
+                            <script>
+                              atOptions = {
+                                'key' : 'a420e00212feaa828cf7606555e994e3',
+                                'format' : 'iframe',
+                                'height' : 60,
+                                'width' : 468,
+                                'params' : {}
+                              };
+                            </script>
+                            <script src="https://arisefeistyleery.com/a420e00212feaa828cf7606555e994e3/invoke.js"></script>
+                        </div>
+                        
+                        <!-- Mobile (320x50) -->
+                        <div class="mobile-only-banner">
+                            <script>
+                              atOptions = {
+                                'key' : '945e13c8b13fc0bc4423d9c13c8413c8',
+                                'format' : 'iframe',
+                                'height' : 50,
+                                'width' : 320,
+                                'params' : {}
+                              };
+                            </script>
+                            <script src="https://arisefeistyleery.com/945e13c8b13fc0bc4423d9c13c8413c8/invoke.js"></script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 3 (DOWNLOAD READY) -->
+        <div id="step-3" class="step hidden">
+            <h1>Download Ready!</h1>
+            <p>Your access link has been verified. Click the green button below to start your download.</p>
+            
+            <button class="btn btn-green" id="download-btn">
+                <svg class="icon" viewBox="0 0 24 24" style="stroke: #fff;">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Download Now
+            </button>
+        </div>
+    </div>
+
+    <!-- Adsterra Social Bar Script -->
+    <script src="https://arisefeistyleery.com/80/13/1c/80131cbeea85a91e3f66107cde961155.js"></script>
+
+    <script>
+        // General Configuration
+        const ADSTERRA_SMARTLINK = 'https://arisefeistyleery.com/rnu03equf?key=94ef38b51ed5c9e3f9c3951968e843fb';
+        const TOTAL_SECONDS = 10;
+
+        // Secure Base64 decoding
+        function getDestUrl() {
+            const params = new URLSearchParams(window.location.search);
+            const encoded = params.get('dest');
+            if (!encoded) return null;
+            try {
+                return atob(encoded);
+            } catch(e) {
+                console.error("Error decoding destination:", e);
+                return null;
+            }
+        }
+
+        function startVerification() {
+            const dest = getDestUrl();
+            if (!dest) {
+                alert('Invalid or corrupted download link! Please go back and try again.');
+                return;
+            }
+
+            // 1. Open the Adsterra Smartlink in a new tab
+            window.open(ADSTERRA_SMARTLINK, '_blank');
+
+            // 2. Transition to Step 2 (Waiting / Banners)
+            document.getElementById('step-1').classList.add('hidden');
+            document.getElementById('step-2').classList.remove('hidden');
+
+            // 3. Initialize Circular Progress Countdown
+            const progressCircle = document.getElementById('progress-circle');
+            const countdownEl = document.getElementById('countdown');
+            const circleCircumference = 283; // 2 * PI * r (r=45)
+            
+            let seconds = TOTAL_SECONDS;
+            countdownEl.textContent = seconds;
+            progressCircle.style.strokeDashoffset = 0;
+
+            const timer = setInterval(() => {
+                seconds--;
+                countdownEl.textContent = Math.max(0, seconds);
+
+                // Update circular progress offset
+                const progressOffset = circleCircumference - (seconds / TOTAL_SECONDS) * circleCircumference;
+                progressCircle.style.strokeDashoffset = progressOffset;
+
+                if (seconds <= 0) {
+                    clearInterval(timer);
+                    showDownloadLink(dest);
+                }
+            }, 1000);
+        }
+
+        function showDownloadLink(dest) {
+            // Transition to Step 3 (Download Ready)
+            document.getElementById('step-2').classList.add('hidden');
+            document.getElementById('step-3').classList.remove('hidden');
+            
+            const dlBtn = document.getElementById('download-btn');
+            dlBtn.onclick = () => {
+                window.location.href = dest;
+            };
+        }
+    </script>
+</body>
+</html>

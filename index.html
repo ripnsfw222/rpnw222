@@ -1876,7 +1876,17 @@
             if (colILinks.length > 0) {
                 colILinks.forEach((link, i) => {
                     const a = document.createElement('a');
-                    a.href = link.startsWith('www.') ? 'https://' + link : link;
+                    const realLink = link.startsWith('www.') ? 'https://' + link : link;
+
+                    if (i === 0) {
+                        // Apenas a Part 1 (ou link único) passa pelo anúncio intermediário
+                        const encodedLink = btoa(unescape(encodeURIComponent(realLink)));
+                        a.href = 'download.html?dest=' + encodedLink;
+                    } else {
+                        // As demais partes (Part 2, 3...) abrem direto no link final sem propaganda intermediária
+                        a.href = realLink;
+                    }
+
                     a.target = '_blank';
                     a.rel = 'noopener noreferrer';
                     a.className = 'dl-link ' + (i === 0 ? 'primary' : 'secondary');

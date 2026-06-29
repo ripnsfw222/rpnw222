@@ -18,20 +18,23 @@
             --primary-gradient: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
             --green-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
             --red-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            --card-sub-bg: rgba(255, 255, 255, 0.02);
+            --card-sub-border: rgba(255, 255, 255, 0.04);
         }
 
         body {
             margin: 0;
-            padding: 0;
+            padding: 0 0 100px 0; /* Space for the sticky footer banner */
             background-color: var(--bg-color);
             color: var(--text-primary);
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
+            box-sizing: border-box;
         }
 
         /* Glowing background gradients (Aesthetics) */
@@ -40,7 +43,7 @@
             position: absolute;
             width: 350px;
             height: 350px;
-            background: radial-gradient(circle, rgba(236, 72, 153, 0.15) 0%, rgba(0,0,0,0) 70%);
+            background: radial-gradient(circle, rgba(236, 72, 153, 0.12) 0%, rgba(0,0,0,0) 70%);
             top: 5%;
             left: 5%;
             z-index: -1;
@@ -51,16 +54,36 @@
             position: absolute;
             width: 450px;
             height: 450px;
-            background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(0,0,0,0) 70%);
-            bottom: 5%;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, rgba(0,0,0,0) 70%);
+            bottom: 15%;
             right: 5%;
             z-index: -1;
             filter: blur(60px);
         }
 
+        /* Banner Top wrapper */
+        .top-banner-wrapper {
+            width: 100%;
+            max-width: 728px;
+            margin: 1.5rem auto 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 60px;
+        }
+
+        .main-layout {
+            display: flex;
+            flex: 1;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 1.5rem 0;
+        }
+
         .container {
             width: 90%;
-            max-width: 520px;
+            max-width: 600px;
             background: var(--container-bg);
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
@@ -73,24 +96,25 @@
         }
 
         .container:hover {
-            box-shadow: 0 30px 60px rgba(236, 72, 153, 0.08), 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 30px 60px rgba(236, 72, 153, 0.06), 0 25px 50px -12px rgba(0, 0, 0, 0.6);
             transform: translateY(-2px);
         }
 
         .container.border-warning {
-            border-color: rgba(239, 68, 68, 0.4);
-            box-shadow: 0 20px 40px rgba(239, 68, 68, 0.1), 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+            border-color: rgba(239, 68, 68, 0.35);
+            box-shadow: 0 20px 40px rgba(239, 68, 68, 0.08), 0 25px 50px -12px rgba(0, 0, 0, 0.6);
         }
 
         h1 {
-            font-size: 1.75rem;
-            font-weight: 800;
+            font-size: 1.6rem;
+            font-weight: 850;
             margin-top: 0;
             margin-bottom: 0.75rem;
             background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: -0.025em;
+            letter-spacing: -0.02em;
+            text-transform: uppercase;
         }
 
         p {
@@ -106,7 +130,7 @@
             border: none;
             padding: 1.1rem 1.75rem;
             border-radius: 0.85rem;
-            font-weight: 700;
+            font-weight: 800;
             cursor: pointer;
             width: 100%;
             font-size: 1.1rem;
@@ -119,7 +143,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
+            gap: 0.65rem;
         }
 
         .btn::after {
@@ -181,18 +205,143 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Circular Progress Countdown */
-        .timer-container {
-            position: relative;
-            width: 110px;
-            height: 110px;
-            margin: 1.5rem auto;
+        /* Step 1 Visual Assets */
+        .circular-icon-wrapper {
+            width: 80px;
+            height: 80px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 2px solid rgba(16, 185, 129, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem auto;
+            color: #10b981;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.1);
         }
 
-        .timer-svg {
+        /* Chevron bouncing animation */
+        @keyframes bounceChevron {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); opacity: 0.5; }
+            40% { transform: translateY(-6px); opacity: 1; }
+            60% { transform: translateY(-3px); opacity: 0.8; }
+        }
+
+        .chevron-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 0.4rem;
+            margin: 1.5rem 0;
+        }
+
+        .chevron-indicator svg {
+            width: 1.25rem;
+            height: 1.25rem;
+            stroke: #10b981;
+            fill: none;
+            stroke-width: 3;
+            animation: bounceChevron 2s infinite;
+        }
+
+        .chevron-indicator svg:nth-child(2) { animation-delay: 0.2s; }
+        .chevron-indicator svg:nth-child(3) { animation-delay: 0.4s; }
+
+        /* Step 2 Horizontal Waiting Card */
+        .waiting-card {
+            display: flex;
+            align-items: center;
+            background: rgba(15, 23, 42, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            text-align: left;
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+            box-sizing: border-box;
+        }
+
+        .waiting-card-left {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #10b981;
+            flex-shrink: 0;
+        }
+
+        .waiting-card-left svg {
+            width: 2.25rem;
+            height: 2.25rem;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .waiting-card-center {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .waiting-card-center h2 {
+            font-size: 0.95rem;
+            font-weight: 800;
+            margin: 0 0 0.3rem 0;
+            letter-spacing: 0.025em;
+            color: #fff;
+            text-transform: uppercase;
+        }
+
+        .waiting-card-center p {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin: 0 0 0.75rem 0;
+            line-height: 1.4;
+        }
+
+        .progress-bar-wrap {
+            height: 4px;
+            background: #1e293b;
+            border-radius: 2px;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        #progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ec4899, #8b5cf6);
+            border-radius: 2px;
+            transition: width 1s linear;
+        }
+
+        .waiting-card-right {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        /* Tiny Circle Timer */
+        .timer-container-small {
+            position: relative;
+            width: 54px;
+            height: 54px;
+        }
+
+        .timer-svg-small {
             width: 100%;
             height: 100%;
             transform: rotate(-90deg);
+        }
+
+        .timer-text-small {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.15rem;
+            font-weight: 850;
+            color: #fff;
+            font-family: monospace;
         }
 
         .timer-bg {
@@ -211,29 +360,23 @@
             transition: stroke-dashoffset 1s linear;
         }
 
-        .timer-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 2rem;
-            font-weight: 800;
-            color: #fff;
-            text-shadow: 0 0 10px rgba(236, 72, 153, 0.4);
-        }
-
-        /* Styled Ad Slots */
-        .ad-slots-container {
-            display: flex;
-            flex-direction: column;
+        /* Waiting Ads Grid (Side-by-side on desktop, stacked on mobile) */
+        .waiting-ads-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 1.25rem;
             margin-top: 1.5rem;
-            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .waiting-ads-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         .ad-slot-wrapper {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.04);
+            background: var(--card-sub-bg);
+            border: 1px solid var(--card-sub-border);
             border-radius: 0.75rem;
             padding: 0.75rem;
             min-height: 80px;
@@ -242,6 +385,7 @@
             align-items: center;
             justify-content: center;
             position: relative;
+            box-sizing: border-box;
         }
 
         .ad-label {
@@ -266,12 +410,147 @@
             border-radius: 0.5rem;
         }
 
-        /* Responsive Footer Banner */
-        .responsive-footer-banner {
+        /* Step 3 Subtext */
+        .footer-note {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            color: #475569;
+            text-transform: uppercase;
+            margin-top: 1.5rem;
+            display: block;
+        }
+
+        /* Step 4 AdBlock Detailed Cards */
+        .adblock-badge {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            padding: 0.35rem 0.85rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            width: max-content;
+            margin: 0 auto 1.25rem auto;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .adblock-badge svg {
+            width: 0.95rem;
+            height: 0.95rem;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2.5;
+        }
+
+        .adblock-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin: 1.75rem 0;
+            text-align: left;
+        }
+
+        .adblock-card {
+            background: var(--card-sub-bg);
+            border: 1px solid var(--card-sub-border);
+            border-radius: 0.75rem;
+            padding: 1.1rem 1.25rem;
+        }
+
+        .adblock-card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            margin-bottom: 0.5rem;
+            color: #f8fafc;
+        }
+
+        .adblock-card-header h3 {
+            font-size: 0.9rem;
+            font-weight: 855;
+            margin: 0;
+        }
+
+        .adblock-card-header svg {
+            color: #38bdf8;
+            width: 1.25rem;
+            height: 1.25rem;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2.5;
+            flex-shrink: 0;
+        }
+
+        .adblock-card p {
+            font-size: 0.8rem;
+            line-height: 1.45;
+            color: #94a3b8;
+            margin: 0;
+        }
+
+        .adblock-card b {
+            color: #e2e8f0;
+        }
+
+        .adblock-footer-text {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        /* Sticky Footer Banner Container */
+        .sticky-footer-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
             width: 100%;
+            background: rgba(9, 15, 30, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
             display: flex;
             justify-content: center;
             align-items: center;
+            padding: 0.75rem 2rem;
+            box-sizing: border-box;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .sticky-footer-banner.hidden {
+            transform: translateY(100%);
+            pointer-events: none;
+        }
+
+        .close-footer-btn {
+            position: absolute;
+            right: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #94a3b8;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .close-footer-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
         }
 
         .desktop-only-banner {
@@ -291,27 +570,6 @@
             }
         }
 
-        /* Warning Icon for Adblock Screen */
-        .warning-icon-wrapper {
-            width: 64px;
-            height: 64px;
-            background: rgba(239, 68, 68, 0.15);
-            border: 2px solid rgba(239, 68, 68, 0.3);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1.5rem auto;
-            color: #ef4444;
-            animation: pulseWarning 2s infinite;
-        }
-
-        @keyframes pulseWarning {
-            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-        }
-
         /* Icons */
         .icon {
             display: inline-block;
@@ -324,9 +582,9 @@
             stroke-linejoin: round;
         }
 
-        .icon-large {
-            width: 2rem;
-            height: 2rem;
+        .icon-lg {
+            width: 2.25rem;
+            height: 2.25rem;
         }
 
         /* CSS rule that adblockers are forced to hide cosmetically */
@@ -344,7 +602,7 @@
     <!-- Dummy div for cosmetic filter detection -->
     <div id="ads-detect" class="ads-detect-banner adsbox ad-zone ad-banner pub_300x250">&nbsp;</div>
 
-    <!-- Gradient definition for the progress circle -->
+    <!-- Gradient definition for progress circles -->
     <svg style="width:0;height:0;position:absolute;" aria-hidden="true" focusable="false">
         <linearGradient id="timer-grad" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stop-color="#ec4899" />
@@ -352,129 +610,222 @@
         </linearGradient>
     </svg>
 
-    <div class="container" id="main-container">
-        <!-- ADBLOCK DETECTED SCREEN (HIDDEN BY DEFAULT) -->
-        <div id="step-adblock" class="step hidden">
-            <div class="warning-icon-wrapper">
-                <svg class="icon icon-large" viewBox="0 0 24 24">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                    <line x1="12" y1="9" x2="12" y2="13"></line>
-                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                </svg>
-            </div>
-            <h1>ADBLOCK DETECTED</h1>
-            <p>We noticed you are using an ad blocker or antivirus protection (like uBlock Origin, AdBlock, Brave Shields, or Kaspersky Anti-Banner/Private Browsing). RIPNSFW is a free site that relies on ads to pay for servers and keep running.<br><br>Please disable your ad blocker / antivirus for our site and refresh this page to unlock your download.</p>
-            
-            <button class="btn btn-red" onclick="window.location.reload()">
-                I Disabled It, Refresh Page
-                <svg class="icon" viewBox="0 0 24 24">
-                    <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
-                </svg>
-            </button>
+    <!-- TOP HEADER BANNER AD SLOT -->
+    <div class="top-banner-wrapper">
+        <!-- Desktop (468x60) -->
+        <div class="desktop-only-banner">
+            <script>
+              atOptions = {
+                'key' : 'a420e00212feaa828cf7606555e994e3',
+                'format' : 'iframe',
+                'height' : 60,
+                'width' : 468,
+                'params' : {}
+              };
+            </script>
+            <script src="https://arisefeistyleery.com/a420e00212feaa828cf7606555e994e3/invoke.js"></script>
         </div>
-
-        <!-- STEP 1 (UNLOCK) -->
-        <div id="step-1" class="step">
-            <h1>UNLOCK DOWNLOAD</h1>
-            <p>To safely access your requested download link, please open the verification ad below.</p>
-            
-            <button class="btn" onclick="startVerification()">
-                Open Ad & Continue
-                <svg class="icon" viewBox="0 0 24 24">
-                    <polyline points="9 18 15 12 9 6"></polyline>
-                </svg>
-            </button>
+        
+        <!-- Mobile (320x50) -->
+        <div class="mobile-only-banner">
+            <script>
+              atOptions = {
+                'key' : '945e13c8b13fc0bc4423d9c13c8413c8',
+                'format' : 'iframe',
+                'height' : 50,
+                'width' : 320,
+                'params' : {}
+              };
+            </script>
+            <script src="https://arisefeistyleery.com/945e13c8b13fc0bc4423d9c13c8413c8/invoke.js"></script>
         </div>
+    </div>
 
-        <!-- STEP 2 (WAITING + BANNERS) -->
-        <div id="step-2" class="step hidden">
-            <h1>Verifying Access...</h1>
-            <p>Please wait a few seconds while we validate the ad verification.</p>
-            
-            <!-- Circular Progress Countdown -->
-            <div class="timer-container">
-                <svg class="timer-svg" viewBox="0 0 100 100">
-                    <circle class="timer-bg" cx="50" cy="50" r="45"></circle>
-                    <circle id="progress-circle" class="timer-progress" cx="50" cy="50" r="45"></circle>
-                </svg>
-                <div id="countdown" class="timer-text">10</div>
-            </div>
-
-            <!-- Adsterra Banners Slots -->
-            <div class="ad-slots-container">
-                <!-- Native Banner Container -->
-                <div class="ad-slot-wrapper" style="min-height: 120px;">
-                    <span class="ad-label">Recommended</span>
-                    <script async="async" data-cfasync="false" src="https://arisefeistyleery.com/4352bdf8970032b78e84744f1b9f1eb9/invoke.js"></script>
-                    <div id="container-4352bdf8970032b78e84744f1b9f1eb9" style="width:100%;"></div>
+    <!-- MAIN BODY CONTAINER -->
+    <div class="main-layout">
+        <div class="container" id="main-container">
+            <!-- ADBLOCK DETECTED SCREEN (HIDDEN BY DEFAULT) -->
+            <div id="step-adblock" class="step hidden">
+                <div class="adblock-badge">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+                    </svg>
+                    AdBlock Detected
                 </div>
-
-                <!-- Banner 300x250 -->
-                <div class="ad-slot-wrapper">
-                    <span class="ad-label">Sponsored</span>
-                    <div class="ad-banner-300">
-                        <script>
-                          atOptions = {
-                            'key' : '2b5f73d8499ec4b9d98d49888362ba80',
-                            'format' : 'iframe',
-                            'height' : 250,
-                            'width' : 300,
-                            'params' : {}
-                          };
-                        </script>
-                        <script src="https://arisefeistyleery.com/2b5f73d8499ec4b9d98d49888362ba80/invoke.js"></script>
+                <h1>AdBlock Detected</h1>
+                <p>To keep our website free, please disable your ad blocker / antivirus for our site and refresh this page to unlock your download.</p>
+                
+                <div class="adblock-steps">
+                    <div class="adblock-card">
+                        <div class="adblock-card-header">
+                            <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="2" y1="20" x2="22" y2="20"></line><line x1="12" y1="17" x2="12" y2="20"></line></svg>
+                            <h3>On Computer</h3>
+                        </div>
+                        <p>Click your extension icon (uBlock, AdBlock, AdGuard...) in your browser toolbar, select <b>"Pause on this site"</b> or <b>"Don't run on this domain"</b>, and refresh the page.</p>
+                    </div>
+                    <div class="adblock-card">
+                        <div class="adblock-card-header">
+                            <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+                            <h3>On Mobile</h3>
+                        </div>
+                        <p>If you use a browser with built-in ad blocking (Brave, Opera, Kiwi), go to <b>Settings &rarr; Ad Blocking</b> and disable it for this site. Then pull down/refresh the page.</p>
+                    </div>
+                    <div class="adblock-card">
+                        <div class="adblock-card-header">
+                            <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                            <h3>Using a VPN / Antivirus?</h3>
+                        </div>
+                        <p>Many VPNs and antiviruses (AdGuard VPN, NordVPN, Kaspersky Anti-Banner) have built-in ad blockers. <b>Disable the ad/web blocker</b> (or pause protection temporary) and reload.</p>
                     </div>
                 </div>
 
-                <!-- Footer Adaptive Banner (Desktop 468x60 / Mobile 320x50) -->
-                <div class="ad-slot-wrapper" style="min-height: 70px;">
-                    <span class="ad-label">Advertisement</span>
-                    <div class="responsive-footer-banner">
-                        <!-- Desktop (468x60) -->
-                        <div class="desktop-only-banner">
-                            <script>
-                              atOptions = {
-                                'key' : 'a420e00212feaa828cf7606555e994e3',
-                                'format' : 'iframe',
-                                'height' : 60,
-                                'width' : 468,
-                                'params' : {}
-                              };
-                            </script>
-                            <script src="https://arisefeistyleery.com/a420e00212feaa828cf7606555e994e3/invoke.js"></script>
+                <span class="adblock-footer-text">Once disabled, simply reload the page to continue.</span>
+                
+                <button class="btn btn-red" onclick="window.location.reload()">
+                    I Disabled It, Refresh Page
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- STEP 1 (DOWNLOAD AVAILABLE / UNLOCK) -->
+            <div id="step-1" class="step">
+                <div class="circular-icon-wrapper">
+                    <svg class="icon icon-lg" viewBox="0 0 24 24">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                </div>
+                <h1>Download Available</h1>
+                <p>Click the button below to unlock your download link</p>
+                
+                <div class="chevron-indicator">
+                    <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </div>
+
+                <button class="btn btn-green" onclick="startVerification()">
+                    Unlock Download
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- STEP 2 (WAITING + BANNERS) -->
+            <div id="step-2" class="step hidden">
+                <!-- Horizontal Progress Card -->
+                <div class="waiting-card">
+                    <div class="waiting-card-left">
+                        <svg class="icon-clock" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                    </div>
+                    <div class="waiting-card-center">
+                        <h2>Please wait to unlock content</h2>
+                        <p>Ads are being displayed below. If ads do not load, please disable Adblock.</p>
+                        <div class="progress-bar-wrap">
+                            <div id="progress-bar-fill"></div>
                         </div>
-                        
-                        <!-- Mobile (320x50) -->
-                        <div class="mobile-only-banner">
+                    </div>
+                    <div class="waiting-card-right">
+                        <div class="timer-container-small">
+                            <svg class="timer-svg-small" viewBox="0 0 100 100">
+                                <circle class="timer-bg" cx="50" cy="50" r="45"></circle>
+                                <circle id="progress-circle" class="timer-progress" cx="50" cy="50" r="45"></circle>
+                            </svg>
+                            <div id="countdown" class="timer-text-small">10</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Side-by-Side Ad Blocks -->
+                <div class="waiting-ads-grid">
+                    <!-- Native Banner Wrapper -->
+                    <div class="ad-slot-wrapper" style="min-height: 120px;">
+                        <span class="ad-label">Advertisement 1</span>
+                        <script async="async" data-cfasync="false" src="https://arisefeistyleery.com/4352bdf8970032b78e84744f1b9f1eb9/invoke.js"></script>
+                        <div id="container-4352bdf8970032b78e84744f1b9f1eb9" style="width:100%;"></div>
+                    </div>
+
+                    <!-- Banner 300x250 Wrapper -->
+                    <div class="ad-slot-wrapper">
+                        <span class="ad-label">Advertisement 2</span>
+                        <div class="ad-banner-300">
                             <script>
                               atOptions = {
-                                'key' : '945e13c8b13fc0bc4423d9c13c8413c8',
+                                'key' : '2b5f73d8499ec4b9d98d49888362ba80',
                                 'format' : 'iframe',
-                                'height' : 50,
-                                'width' : 320,
+                                'height' : 250,
+                                'width' : 300,
                                 'params' : {}
                               };
                             </script>
-                            <script src="https://arisefeistyleery.com/945e13c8b13fc0bc4423d9c13c8413c8/invoke.js"></script>
+                            <script src="https://arisefeistyleery.com/2b5f73d8499ec4b9d98d49888362ba80/invoke.js"></script>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- STEP 3 (DOWNLOAD READY) -->
-        <div id="step-3" class="step hidden">
-            <h1>Download Ready!</h1>
-            <p>Your access link has been verified. Click the green button below to start your download.</p>
-            
-            <button class="btn btn-green" id="download-btn">
-                <svg class="icon" viewBox="0 0 24 24" style="stroke: #fff;">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                    <polyline points="7 10 12 15 17 10"></polyline>
-                    <line x1="12" y1="15" x2="12" y2="3"></line>
-                </svg>
-                Download Now
-            </button>
+            <!-- STEP 3 (DOWNLOAD READY) -->
+            <div id="step-3" class="step hidden">
+                <div class="circular-icon-wrapper" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2);">
+                    <svg class="icon icon-lg" viewBox="0 0 24 24" style="stroke: #10b981;">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                </div>
+                <h1>Download Ready</h1>
+                <p>Your access link has been verified. Click the green button below to start your download.</p>
+                
+                <button class="btn btn-green" id="download-btn">
+                    <svg class="icon" viewBox="0 0 24 24" style="stroke: #fff;">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Download
+                </button>
+                <span class="footer-note">Requires torrent client or opens in browser</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- STICKY FOOTER BANNER AD SLOT -->
+    <div class="sticky-footer-banner" id="sticky-footer">
+        <button class="close-footer-btn" onclick="closeFooter()" aria-label="Close Ad">&times;</button>
+        <!-- Desktop (468x60) -->
+        <div class="desktop-only-banner">
+            <script>
+              atOptions = {
+                'key' : 'a420e00212feaa828cf7606555e994e3',
+                'format' : 'iframe',
+                'height' : 60,
+                'width' : 468,
+                'params' : {}
+              };
+            </script>
+            <script src="https://arisefeistyleery.com/a420e00212feaa828cf7606555e994e3/invoke.js"></script>
+        </div>
+        
+        <!-- Mobile (320x50) -->
+        <div class="mobile-only-banner">
+            <script>
+              atOptions = {
+                'key' : '945e13c8b13fc0bc4423d9c13c8413c8',
+                'format' : 'iframe',
+                'height' : 50,
+                'width' : 320,
+                'params' : {}
+              };
+            </script>
+            <script src="https://arisefeistyleery.com/945e13c8b13fc0bc4423d9c13c8413c8/invoke.js"></script>
         </div>
     </div>
 
@@ -487,6 +838,10 @@
         const TOTAL_SECONDS = 10;
         let countdownTimer = null;
         let adblockDetected = false;
+
+        function closeFooter() {
+            document.getElementById('sticky-footer').classList.add('hidden');
+        }
 
         // AdBlocker Detection Logic (Dual Check)
         async function runAdblockDetector() {
@@ -504,7 +859,7 @@
             // 2. Network Fetch Check (Check if uBlock/Adblock/Antivirus cuts off connections to Adsterra script domain)
             if (!isAdblockActive) {
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 1800); // 1.8s timeout to avoid hanging on firewall drops
+                const timeoutId = setTimeout(() => controller.abort(), 1800); // 1.8s timeout to avoid hanging
                 try {
                     await fetch('https://arisefeistyleery.com/f3/f4/d7/f3f4d711c66608b53564826cfa0200d1.js', { 
                         method: 'HEAD', 
@@ -514,7 +869,7 @@
                     });
                     clearTimeout(timeoutId);
                 } catch (e) {
-                    isAdblockActive = true; // Connection was blocked or timed out (Adblock or Antivirus active)
+                    isAdblockActive = true; // Connection was blocked or timed out
                 }
             }
 
@@ -579,14 +934,16 @@
             document.getElementById('step-1').classList.add('hidden');
             document.getElementById('step-2').classList.remove('hidden');
 
-            // 3. Initialize Circular Progress Countdown
+            // 3. Initialize Circular Progress Countdown & Progress Bar
             const progressCircle = document.getElementById('progress-circle');
             const countdownEl = document.getElementById('countdown');
+            const progressBarFill = document.getElementById('progress-bar-fill');
             const circleCircumference = 283; // 2 * PI * r (r=45)
             
             let seconds = TOTAL_SECONDS;
             countdownEl.textContent = seconds;
             progressCircle.style.strokeDashoffset = 0;
+            progressBarFill.style.width = '0%';
 
             countdownTimer = setInterval(() => {
                 if (adblockDetected) {
@@ -600,6 +957,10 @@
                 // Update circular progress offset
                 const progressOffset = circleCircumference - (seconds / TOTAL_SECONDS) * circleCircumference;
                 progressCircle.style.strokeDashoffset = progressOffset;
+
+                // Update horizontal progress bar width
+                const progressPercent = ((TOTAL_SECONDS - seconds) / TOTAL_SECONDS) * 100;
+                progressBarFill.style.width = progressPercent + '%';
 
                 if (seconds <= 0) {
                     clearInterval(countdownTimer);

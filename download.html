@@ -897,20 +897,28 @@
                 }
             }
 
-            // 2. Network Fetch Check (Check if uBlock/Adblock/Antivirus cuts off connections to Adsterra script domain)
+            // 2. Network Fetch Check (Check if connections to Adsterra script or Google Ads are blocked)
             if (!isAdblockActive) {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 1800); // 1.8s timeout to avoid hanging
-                try {
-                    await fetch('https://arisefeistyleery.com/f3/f4/d7/f3f4d711c66608b53564826cfa0200d1.js', { 
-                        method: 'HEAD', 
-                        mode: 'no-cors',
-                        cache: 'no-store',
-                        signal: controller.signal
-                    });
-                    clearTimeout(timeoutId);
-                } catch (e) {
-                    isAdblockActive = true; // Connection was blocked or timed out
+                const testUrls = [
+                    'https://arisefeistyleery.com/f3/f4/d7/f3f4d711c66608b53564826cfa0200d1.js',
+                    'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'
+                ];
+                for (const url of testUrls) {
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 1800); // 1.8s timeout to avoid hanging
+                    try {
+                        await fetch(url, { 
+                            method: 'HEAD', 
+                            mode: 'no-cors',
+                            cache: 'no-store',
+                            signal: controller.signal
+                        });
+                        clearTimeout(timeoutId);
+                    } catch (e) {
+                        isAdblockActive = true; // Connection was blocked or timed out
+                        clearTimeout(timeoutId);
+                        break;
+                    }
                 }
             }
 

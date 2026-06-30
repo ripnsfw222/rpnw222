@@ -2,3 +2,5 @@ _tools/
 node_modules/
 .DS_Store
 Thumbs.db
+instrucoes_backup.txt
+instrucoes_pagina_anuncios.txt

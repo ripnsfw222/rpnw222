@@ -6,8 +6,12 @@
     <title>Please Wait — RIPNSFW</title>
     <link rel="icon" type="image/png" href="/favicon.png">
     
-    <!-- Adsterra Popunder Script (Maximizing CPM on user interactions) -->
-    <script src="https://arisefeistyleery.com/f3/f4/d7/f3f4d711c66608b53564826cfa0200d1.js"></script>
+    <!-- PopAds Standard Adcode -->
+    <script type="text/javascript" data-cfasync="false">
+    /*<![CDATA[/* */
+    (function(){var l=window,g="eab3f80d64469eb83e5eac38272d6175",p=[["siteId",308*420*128+415+349-11903344],["minBid",0],["popundersPerIP","0"],["delayBetween",0],["default",false],["defaultPerDay",0],["topmostLayer","auto"]],z=["d3d3LnhhZHNtYXJ0LmNvbS92YW5jaG9yLm1pbi5jc3M=","ZDExZW5xMnJ5bXkweWwuY2xvdWRmcm9udC5uZXQvUlR0ZFFKL3RqcXVlcnktbGFuZy5taW4uanM="],k=-1,i,n,m=function(){clearTimeout(n);k++;if(z[k]&&!(1808784051000<(new Date).getTime()&&1<k)){i=l.document.createElement("script");i.type="text/javascript";i.async=!0;var r=l.document.getElementsByTagName("script")[0];i.src="https://"+atob(z[k]);i.crossOrigin="anonymous";i.onerror=m;i.onload=function(){clearTimeout(n);l[g.slice(0,16)+g.slice(0,16)]||m()};n=setTimeout(m,5E3);r.parentNode.insertBefore(i,r)}};if(!l[g]){try{Object.freeze(l[g]=p)}catch(e){}m()}})();
+    /*]]>/* */
+    </script>
 
     <style>
         :root {
@@ -607,8 +611,8 @@
             position: absolute;
             left: -9999px;
             top: -9999px;
-            width: 1px;
-            height: 1px;
+            width: 300px;
+            height: 250px;
         }
     </style>
 </head>
@@ -890,21 +894,23 @@
         async function runAdblockDetector() {
             let isAdblockActive = false;
 
-            // 1. Cosmetic Filter Check (Check if ad class elements are hidden by stylesheet injector)
+            // 1. Cosmetic Filter Check (Enhanced)
+            // We use standard banner sizing and classes as some blockers ignore 1x1 divs
             const testDiv = document.getElementById('ads-detect');
             if (testDiv) {
                 const styles = window.getComputedStyle(testDiv);
-                if (styles.display === 'none' || styles.visibility === 'hidden' || testDiv.offsetHeight === 0) {
+                if (styles.display === 'none' || styles.visibility === 'hidden' || testDiv.offsetHeight === 0 || testDiv.offsetWidth === 0) {
                     isAdblockActive = true;
                 }
             }
 
-            // 2. Network Fetch Check (Check if connections to Adsterra script or Google Ads are blocked)
+            // 2. Network Fetch Check (Enhanced)
             if (!isAdblockActive) {
+                // We test both EasyList rule patterns (like /showads.js) and active ad domains
                 const testUrls = [
-                    'https://arisefeistyleery.com/f3/f4/d7/f3f4d711c66608b53564826cfa0200d1.js',
-                    'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle_fake_file.js',
-                    'https://securepubads.g.doubleclick.net/gampad/ads_fake_file.js'
+                    window.location.origin + '/showads.js', // Standard EasyList pattern (fails only if blocked by client)
+                    'https://www.xadsmart.com/vanchor.min.css', // PopAds Core Domain
+                    'https://arisefeistyleery.com/f3/f4/d7/f3f4d711c66608b53564826cfa0200d1.js' // Adsterra Popunder
                 ];
                 for (const url of testUrls) {
                     const controller = new AbortController();
